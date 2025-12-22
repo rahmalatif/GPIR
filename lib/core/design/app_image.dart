@@ -49,7 +49,10 @@ Widget _errorWidget() {
       children: [
         const Icon(Icons.broken_image, size: 48),
         const SizedBox(height: 8),
-        const Text('Image load error'),
+        const Text('Image load error' , style: TextStyle(
+          fontSize: 10,
+          color: Colors.white
+        ),),
         const SizedBox(height: 4),
       ],
     ),

@@ -14,35 +14,26 @@ class LoginView extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 60),
-
             AppImage(
               image: "assets/png/logo.png",
               height: 184,
               width: 184,
             ),
-
             const SizedBox(height: 20),
             Text(
               "Login as $role",
               style: const TextStyle(fontSize: 24, color: Colors.white),
             ),
-
             const SizedBox(height: 10),
-
             const Text(
               "Please sign in to continue",
               style: TextStyle(fontSize: 20, color: Colors.white70),
             ),
-
             const SizedBox(height: 30),
-
             _InputText("ID", false),
             const SizedBox(height: 20),
-
             _InputText("Password", true),
-
             const SizedBox(height: 60),
-
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF46F0D2),
@@ -51,7 +42,23 @@ class LoginView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                print("ROLE = $role");
+
+                if (role == "Student") {
+                  print("Going to STUDENT");
+                  Navigator.pushNamed(context, '/studentDashboard');
+                }
+                else if (role == "Doctor") {
+                  print("Going to DOCTOR");
+                //  Navigator.pushNamed(context, 'doctorDashboard');
+                }
+                else {
+                  print("Going to ADMIN");
+                 // Navigator.pushNamed(context, 'adminDashboard');
+                }
+              },
+
               child: const Text(
                 "Login",
                 style: TextStyle(fontSize: 18, color: Colors.black),

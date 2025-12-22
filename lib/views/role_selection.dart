@@ -53,7 +53,7 @@ class RoleSelectionView extends StatelessWidget {
   }
 }
 
-Widget _selectButton(BuildContext context, String roleText, String argument) {
+Widget _selectButton(BuildContext context, String role, String argument) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       backgroundColor: const Color(0xFF46F0D2),
@@ -68,10 +68,14 @@ Widget _selectButton(BuildContext context, String roleText, String argument) {
         '/login',
         arguments: argument,
       );
+
+    //  print("ROLE IS: $role");
     },
     child: Text(
-      roleText,
+      role,
       style: const TextStyle(fontSize: 18, color: Colors.black),
+
     ),
+
   );
 }
