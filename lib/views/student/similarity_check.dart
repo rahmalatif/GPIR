@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../model/project.dart';
+
 class SimilarityCheckView extends StatelessWidget {
-  const SimilarityCheckView({super.key});
+
+  const SimilarityCheckView(
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
+    final projectIdea =
+    ModalRoute.of(context)!.settings.arguments as ProjectIdea;
+
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
@@ -33,20 +40,18 @@ class SimilarityCheckView extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
-
               const SizedBox(height: 20),
+              Container(
+                width: 350,
+                height: 130,
 
-              Card(
                 color: const Color(0xff4699A8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    children: const [
+                    children:  [
                       Text(
-                        'Smart Attendance System',
+                       projectIdea.name,
                         style: TextStyle(
                           fontSize: 22,
                           color: Colors.black,
@@ -55,7 +60,7 @@ class SimilarityCheckView extends StatelessWidget {
                       ),
                       SizedBox(height: 15),
                       Text(
-                        'A mobile app with QR-based attendance system for students and teachers.',
+                        projectIdea.description,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -66,28 +71,22 @@ class SimilarityCheckView extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 30),
-
               const Text(
                 "Project Found",
                 style: TextStyle(fontSize: 22, color: Colors.grey),
               ),
-
               const SizedBox(height: 60),
-
               const Text(
                 "Not Found Before",
                 style: TextStyle(fontSize: 32, color: Colors.white),
               ),
-
               const SizedBox(height: 80),
-
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff4699A8),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
                   ),

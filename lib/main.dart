@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         '/ideaToDrView' :(context)=>IdeaToDrView(),
       },
       debugShowCheckedModeBanner: false,
-      initialRoute: '/studentDashboard',
+      initialRoute: '/chooseSupervisor',
     );
 
   }
