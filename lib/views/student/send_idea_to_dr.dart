@@ -107,13 +107,10 @@ class SendIdeaToDrView extends StatelessWidget {
               width: 300,
               child: ElevatedButton(
                 onPressed: () {
-                  context.go(
-                    '/sendIdeaToDr',
-                    extra: {
-                      'projectIdea': projectIdea,
-                      'doctor': doctor,
-                    },
-                  );
+                  context.go('/confirmSubmission', extra: {
+                    'doctor': doctor,
+                    'projectIdea': projectIdea,
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0D0F1A),
