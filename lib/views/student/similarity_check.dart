@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/model/doctor.dart';
+import 'package:graduation_project_recommender/views/student/choose_supervisor.dart';
 import '../model/project.dart';
 
 class SimilarityCheckView extends StatelessWidget {
+  final ProjectIdea projectIdea;
 
-  const SimilarityCheckView(
-      {super.key});
+  const SimilarityCheckView({
+    super.key,
+    required this.projectIdea,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final projectIdea =
-    ModalRoute.of(context)!.settings.arguments as ProjectIdea;
-
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
@@ -41,28 +43,32 @@ class SimilarityCheckView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+
+              /// Project Card
               Container(
                 width: 350,
                 height: 130,
-
-                color: const Color(0xff4699A8),
+                decoration: BoxDecoration(
+                  color: const Color(0xff4699A8),
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    children:  [
+                    children: [
                       Text(
-                       projectIdea.name,
-                        style: TextStyle(
+                        projectIdea.name,
+                        style: const TextStyle(
                           fontSize: 22,
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Text(
                         projectIdea.description,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.black,
                         ),
@@ -71,6 +77,7 @@ class SimilarityCheckView extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 30),
               const Text(
                 "Project Found",
@@ -82,6 +89,7 @@ class SimilarityCheckView extends StatelessWidget {
                 style: TextStyle(fontSize: 32, color: Colors.white),
               ),
               const SizedBox(height: 80),
+
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff4699A8),
@@ -92,7 +100,10 @@ class SimilarityCheckView extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/chooseSupervisor');
+                  context.go(
+                    '/chooseSupervisor',
+                    extra: projectIdea,
+                  );
                 },
                 child: const Text(
                   "Submit Idea",

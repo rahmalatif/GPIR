@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/model/doctor.dart';
+import 'package:graduation_project_recommender/views/model/project.dart';
+import 'package:graduation_project_recommender/views/student/send_idea_to_dr.dart';
 import '../../core/design/app_image.dart';
 
-enum SupervisorStatus { available, full, almostFull }
-
 class ChooseSupervisorView extends StatefulWidget {
-  const ChooseSupervisorView({super.key});
+  final ProjectIdea projectIdea;
+
+
+
+  const ChooseSupervisorView({
+    super.key,
+    required this.projectIdea,
+  });
 
   @override
   State<ChooseSupervisorView> createState() => _ChooseSupervisorViewState();
@@ -13,32 +22,36 @@ class ChooseSupervisorView extends StatefulWidget {
 class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
   int? selectedIndex;
 
-  final List<Map<String, dynamic>> doctors = [
-    {
-      "name": "Dr. Ahmed Ibrahim",
-      "track": "Backend",
-      "slots": 5,
-      "status": SupervisorStatus.available,
-      "image": "assets/png/man.png",
-    },
-    {
-      "name": "Dr. Lamiaa",
-      "track": "Backend",
-      "slots": 0,
-      "status": SupervisorStatus.full,
-      "image": "assets/png/women.png",
-    },
-    {
-      "name": "Dr. Abdelfattah",
-      "track": "AI & ML",
-      "slots": 1,
-      "status": SupervisorStatus.almostFull,
-      "image": "assets/png/man.png",
-    },
+  final List<Doctor> doctors =  [
+    Doctor(
+      name: "Dr. Ahmed Ibrahim",
+      track: "Backend",
+      slots: 5,
+      status: SupervisorStatus.available,
+      image: "assets/png/man.png",
+    ),
+    Doctor(
+      name: "Dr. Lamiaa",
+      track: "Backend",
+      slots: 0,
+      status: SupervisorStatus.full,
+      image: "assets/png/women.png",
+    ),
+    Doctor(
+      name: "Dr. Abdelfattah",
+      track: "AI & ML",
+      slots: 1,
+      status: SupervisorStatus.almostFull,
+      image: "assets/png/man.png",
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    widget.projectIdea;
+
+
+
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
@@ -50,7 +63,6 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
       ),
-
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -60,30 +72,26 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
           ),
           const SizedBox(height: 20),
 
-          // LIST
+
           Expanded(
             child: ListView.builder(
               itemCount: doctors.length,
               itemBuilder: (context, index) {
                 final doctor = doctors[index];
+
                 return DoctorContainer(
-                  name: doctor["name"],
-                  track: doctor["track"],
-                  slots: doctor["slots"],
-                  status: doctor["status"],
-                  profileImage: doctor["image"],
+                  doctor: doctor,
                   isSelected: selectedIndex == index,
                   onTap: () {
-                    setState(() {
-                      selectedIndex = index;
-                    });
+                    if (doctor.status == SupervisorStatus.full) return;
+                    setState(() => selectedIndex = index);
                   },
                 );
               },
             ),
           ),
 
-          // SELECT BUTTON
+
           SizedBox(
             width: 300,
             child: ElevatedButton(
@@ -98,14 +106,16 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
                   return;
                 }
 
-                final selectedDoctor = doctors[selectedIndex!];
-
-                Navigator.pushNamed(
-                  context,
-                  '/nextScreen',
-                  arguments: selectedDoctor,
+                context.go(
+                  '/sendIdeaToDr',
+                  extra: {
+                    'projectIdea': widget.projectIdea,
+                    'doctor': doctors[selectedIndex!],
+                  },
                 );
+
               },
+
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0D0F1A),
                 side: const BorderSide(color: Color(0xff4699A8), width: 2),
@@ -130,23 +140,14 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
   }
 }
 
-
 class DoctorContainer extends StatelessWidget {
-  final String name;
-  final String track;
-  final int slots;
-  final SupervisorStatus status;
-  final String profileImage;
+  final Doctor doctor;
   final bool isSelected;
   final VoidCallback onTap;
 
   const DoctorContainer({
     super.key,
-    required this.name,
-    required this.track,
-    required this.slots,
-    required this.status,
-    required this.profileImage,
+    required this.doctor,
     required this.isSelected,
     required this.onTap,
   });
@@ -159,7 +160,9 @@ class DoctorContainer extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color:  Color(0xff4699A8).withOpacity(0.15),
+          color: isSelected
+              ? const Color(0xff4699A8).withOpacity(0.15)
+              : Colors.transparent,
           border: Border.all(
             color: isSelected ? const Color(0xff4699A8) : Colors.white24,
             width: isSelected ? 2 : 1,
@@ -171,7 +174,7 @@ class DoctorContainer extends StatelessWidget {
             CircleAvatar(
               radius: 24,
               backgroundColor: Colors.transparent,
-              child: AppImage(image: profileImage),
+              child: AppImage(image: doctor.image),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -179,7 +182,7 @@ class DoctorContainer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    doctor.name,
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -188,7 +191,7 @@ class DoctorContainer extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    track,
+                    doctor.track,
                     style:
                     const TextStyle(color: Colors.grey, fontSize: 10),
                   ),
@@ -201,7 +204,7 @@ class DoctorContainer extends StatelessWidget {
                         TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                       Text(
-                        " $slots",
+                        " ${doctor.slots}",
                         style: const TextStyle(
                             fontSize: 12, color: Colors.white),
                       ),
@@ -211,21 +214,21 @@ class DoctorContainer extends StatelessWidget {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: _statusColor(status).withOpacity(0.2),
+                color: _statusColor(doctor.status).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                _status(status),
+                _status(doctor.status),
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
-                  color: _statusColor(status),
+                  color: _statusColor(doctor.status),
                 ),
               ),
             ),
-
           ],
         ),
       ),
@@ -253,5 +256,4 @@ class DoctorContainer extends StatelessWidget {
         return Colors.red;
     }
   }
-
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/core/design/app_image.dart';
 import 'package:intl/intl.dart';
 
@@ -15,9 +16,12 @@ class StudentDashboardView extends StatelessWidget {
       TeamMember(name: "Mohamed Ibrahim", role: "AI Developer"),
     ];
 
-    HaveAnIdeaOnTap() {
-      Navigator.pushNamed(context, '/haveIdea');
+     haveAnIdeaOnTap(BuildContext context) {
+       context.push(
+         '/haveIdea',
+       );
     }
+
 
     String today = DateFormat('dd MMM yyyy').format(DateTime.now());
     return Scaffold(
@@ -141,7 +145,7 @@ class StudentDashboardView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: HaveAnIdeaOnTap,
+                  onTap: () => haveAnIdeaOnTap(context),
                   child: Container(
                     height: 120,
                     width: 130,
