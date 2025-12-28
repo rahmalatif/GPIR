@@ -6,17 +6,13 @@ import '../model/project.dart';
 
 class ConfirmSubmissionView extends StatelessWidget {
   final Doctor doctor;
-
   final ProjectIdea projectIdea;
-  final List<String> teamMembers;
 
-  const ConfirmSubmissionView(
-      {
-        super.key,
-      required this.doctor,
-      required this.projectIdea,
-      required this.teamMembers
-      });
+  const ConfirmSubmissionView({
+    super.key,
+    required this.doctor,
+    required this.projectIdea, required List teamMembers,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,34 +20,37 @@ class ConfirmSubmissionView extends StatelessWidget {
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
-        title: Text(
+        elevation: 0,
+        title: const Text(
           "Confirm Submission",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text(
-              "Your are about to submit your graduation \nproject for approval. please confirm the                       \ndetails below.",
-              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            const Text(
+              "You are about to submit your graduation project for approval.\nPlease confirm the details below.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+
+            const SizedBox(height: 20),
+
             Container(
-              width: 330,
-              height: 300,
+              width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF0D0F1A),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Color(0xff4699A8)),
+                border: Border.all(color: const Color(0xff4699A8)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,120 +65,123 @@ class ConfirmSubmissionView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 18),
+
+                  const SizedBox(height: 20),
+
+
                   Row(
                     children: [
-                      Text(
+                      const Text(
                         "Team Members",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+
+                  const SizedBox(width: 30),
+
+                  Column(
+
+                    children: projectIdea.teamMembers.map((member) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(
+                          "• $member",
+                          style: const TextStyle(color: Colors.white),
                         ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: projectIdea.teamMembers.map((member) {
-                          return Text(
-                            member,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          );
-                        }).toList(),
-                      ),
-
-                    ],
+                      );
+                    }).toList(),
                   ),
+]
+                  ),
+                  const SizedBox(height: 20),
 
-                  SizedBox(height: 8,),
+
                   Row(
                     children: [
-                      Text("Supervisor" , style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),),
-                          Text(
-                              doctor.name,
-                          ),
-                    ],
-                  ),
-
-                  SizedBox(height: 8,),
-                  Row(
-                    children: [
-                      Text("Teaching Assistant" , style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),),
+                      const Text(
+                        "Doctor: ",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(width: 50),
                       Text(
-                        "Eng/ Noha Ali"
+                        doctor.name,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
 
-                  SizedBox(
-                    width: 300,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.push(
-                            '/confirmSubmission', extra: {
-                          'doctor': doctor,
-                          'projectIdea': projectIdea,
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff4699A8),
-                        side: const BorderSide(color: Color(0xff4699A8), width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                  const SizedBox(height: 8),
+
+
+                  const Row(
+                    children: [
+                      Text(
+                        "Teaching Assistant: ",
+                        style: TextStyle(color: Colors.grey),
                       ),
-                      child: const Text(
-                        "submit",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                      const SizedBox(width: 30),
+                      Text(
+                        "Eng/ Noha Ali",
+                        style: TextStyle(color: Colors.white),
                       ),
-                    ),
+                    ],
                   ),
-
-
-                  SizedBox(height: 10,),
-
-                  SizedBox(
-                    width: 300,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.go('/confirmSubmission', extra: {
-                          'doctor': doctor,
-                          'projectIdea': projectIdea,
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0D0F1A),
-                        side: const BorderSide(color: Color(0xff4699A8), width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        "Select",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-
                 ],
+              ),
+            ),
+
+            const Spacer(),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Project submitted successfully ✅"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+
+                  context.go('/studentDashboard');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff4699A8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  "Submit",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xff4699A8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  "Edit",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
