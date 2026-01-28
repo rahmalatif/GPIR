@@ -17,9 +17,13 @@ class StudentDashboardView extends StatelessWidget {
     ];
 
      haveAnIdeaOnTap(BuildContext context) {
-       context.push(
+       context.go(
          '/haveIdea',
        );
+    }
+
+    aiRecommendIdea(BuildContext context){
+       context.go('/aiRecommend');
     }
 
 
@@ -170,26 +174,31 @@ class StudentDashboardView extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 SizedBox(width: 50),
-                Container(
-                  height: 120,
-                  width: 130,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xff4699A8)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: AppImage(image: 'assets/png/ai.png',),
-                      ),
-                      SizedBox(height: 5),
-                      Text("Recommend Idea",
-                          style: TextStyle(color: Colors.white)),
-                    ],
+
+                GestureDetector(
+                  onTap: aiRecommendIdea(context),
+                  child: Container(
+                    height: 120,
+                    width: 130,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Color(0xff4699A8)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: AppImage(image: 'assets/png/ai.png',),
+                        ),
+                        SizedBox(height: 5),
+                        Text("Recommend Idea",
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
                   ),
                 ),
               ],
