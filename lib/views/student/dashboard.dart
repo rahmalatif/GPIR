@@ -36,7 +36,8 @@ class StudentDashboardView extends StatelessWidget {
         title: Text(
           "Good Morning, Rahma",
           style: TextStyle(
-              color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500),
+              color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500
+          ),
         ),
         actions: [
           IconButton(
@@ -178,7 +179,7 @@ class StudentDashboardView extends StatelessWidget {
                 SizedBox(width: 50),
 
                 GestureDetector(
-                  onTap: aiRecommendIdea(context),
+                  onTap: () => aiRecommendIdea(context),
                   child: Container(
                     height: 120,
                     width: 130,
