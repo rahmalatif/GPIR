@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graduation_project_recommender/views/student/recommended_projects.dart';
 import '../model/team.dart';
 
 class AiRecommendView extends StatefulWidget {
@@ -16,6 +17,10 @@ class _AiRecommendViewState extends State<AiRecommendView> {
     TeamMember(name: "Kenzy", track: "Backend"),
     TeamMember(name: "Omar", track: "AI"),
   ];
+
+  List<String> getSelectedTracks() {
+    return Team.map((member) => member.track).toList();
+  }
 
   final TextEditingController nameController = TextEditingController();
 
@@ -68,7 +73,7 @@ class _AiRecommendViewState extends State<AiRecommendView> {
             ),
             const SizedBox(height: 18),
 
-            /// Team Size
+            //team size
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -85,7 +90,7 @@ class _AiRecommendViewState extends State<AiRecommendView> {
                   ),
                   Row(
                     children: [
-                      _buildButton(
+                      _teamButton(
                         icon: Icons.remove,
                         onTap: () {
                           if (teamSize > 1 && teamSize > Team.length) {
@@ -106,7 +111,7 @@ class _AiRecommendViewState extends State<AiRecommendView> {
                           ),
                         ),
                       ),
-                      _buildButton(
+                      _teamButton(
                         icon: Icons.add,
                         onTap: () {
                           setState(() {
@@ -122,7 +127,7 @@ class _AiRecommendViewState extends State<AiRecommendView> {
 
             const SizedBox(height: 30),
 
-            /// Team Members
+            //team members
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
@@ -155,9 +160,7 @@ class _AiRecommendViewState extends State<AiRecommendView> {
                       ),
                     );
                   }).toList(),
-
                   const SizedBox(height: 10),
-
                   GestureDetector(
                     onTap: () {
                       if (Team.length >= teamSize) {
@@ -180,9 +183,7 @@ class _AiRecommendViewState extends State<AiRecommendView> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 12),
-
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
@@ -190,7 +191,17 @@ class _AiRecommendViewState extends State<AiRecommendView> {
                         backgroundColor: Colors.cyanAccent,
                         foregroundColor: Colors.black,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProjectsRecommendationView(
+                              tracks: getSelectedTracks().toSet().toList(),
+
+                            ),
+                          ),
+                        );
+                      },
                       child: const Text("Search"),
                     ),
                   )
@@ -203,7 +214,6 @@ class _AiRecommendViewState extends State<AiRecommendView> {
     );
   }
 
-  /// Add Member Dialog
   void _showAddMemberDialog() {
     showDialog(
       context: context,
@@ -308,7 +318,7 @@ class _AiRecommendViewState extends State<AiRecommendView> {
   }
 }
 
-Widget _buildButton({
+Widget _teamButton({
   required IconData icon,
   required VoidCallback onTap,
 }) {

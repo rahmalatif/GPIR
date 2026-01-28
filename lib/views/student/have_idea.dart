@@ -172,6 +172,7 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
                         features: featuresController.text.trim(),
                         technologies: techController.text.trim(),
                         teamMembers: teamMembers,
+                        requiredTracks: [],
                       );
 
                       context.go(

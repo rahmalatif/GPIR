@@ -5,6 +5,7 @@ class ProjectIdea {
   final String features;
   final String technologies;
   final List teamMembers;
+  final List<String> requiredTracks;
 
   ProjectIdea({
     required this.name,
@@ -13,5 +14,6 @@ class ProjectIdea {
     required this.features,
     required this.technologies,
     required this.teamMembers,
+    required this.requiredTracks,
   });
 }
