@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/core/design/app_image.dart';
 
 class SplashView extends StatefulWidget {
@@ -17,12 +18,12 @@ class _SplashViewState extends State<SplashView> {
     super.initState();
 
     Timer( Duration(seconds: 5), () {
-      Navigator.pushNamed(context, '/role_selection');
+      context.go( '/roleSelection');
     });
   }
 
   void _navigateOnTap() {
-    Navigator.pushNamed(context, '/role_selection');
+   context.go( '/roleSelection');
   }
 
   @override

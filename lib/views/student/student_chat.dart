@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 
@@ -21,7 +22,6 @@ class _StudentChatViewState extends State<StudentChatView> {
         text: "Morning 😊",
         date: DateTime.now().subtract(const Duration(days: 10, minutes: 3)),
         isSentByMe: true),
-
     Message(
         text: "Did you finish the task?",
         date: DateTime.now().subtract(const Duration(days: 9, minutes: 40)),
@@ -34,7 +34,6 @@ class _StudentChatViewState extends State<StudentChatView> {
         text: "I'll send it today",
         date: DateTime.now().subtract(const Duration(days: 9, minutes: 30)),
         isSentByMe: true),
-
     Message(
         text: "Any updates?",
         date: DateTime.now().subtract(const Duration(days: 7, minutes: 20)),
@@ -43,12 +42,10 @@ class _StudentChatViewState extends State<StudentChatView> {
         text: "Working on it now",
         date: DateTime.now().subtract(const Duration(days: 7, minutes: 15)),
         isSentByMe: true),
-
     Message(
         text: "Ok 👍",
         date: DateTime.now().subtract(const Duration(days: 6, minutes: 10)),
         isSentByMe: false),
-
     Message(
         text: "Can we meet tomorrow?",
         date: DateTime.now().subtract(const Duration(days: 5, minutes: 50)),
@@ -57,7 +54,6 @@ class _StudentChatViewState extends State<StudentChatView> {
         text: "Yes sure",
         date: DateTime.now().subtract(const Duration(days: 5, minutes: 45)),
         isSentByMe: true),
-
     Message(
         text: "Reminder about the deadline",
         date: DateTime.now().subtract(const Duration(days: 3, minutes: 30)),
@@ -66,7 +62,6 @@ class _StudentChatViewState extends State<StudentChatView> {
         text: "Thanks for reminding me",
         date: DateTime.now().subtract(const Duration(days: 3, minutes: 25)),
         isSentByMe: true),
-
     Message(
         text: "Are you free now?",
         date: DateTime.now().subtract(const Duration(days: 2, minutes: 10)),
@@ -75,7 +70,6 @@ class _StudentChatViewState extends State<StudentChatView> {
         text: "Yes, what's up?",
         date: DateTime.now().subtract(const Duration(days: 2, minutes: 5)),
         isSentByMe: true),
-
     Message(
         text: "Ok",
         date: DateTime.now().subtract(const Duration(minutes: 20)),
@@ -85,8 +79,6 @@ class _StudentChatViewState extends State<StudentChatView> {
         date: DateTime.now().subtract(const Duration(minutes: 10)),
         isSentByMe: true),
   ];
-
-
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
@@ -108,6 +100,16 @@ class _StudentChatViewState extends State<StudentChatView> {
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            if (messages.isNotEmpty) {
+              context.pop(messages.last.text);
+            } else {
+              context.pop();
+            }
+          },
+        ),
         title: const Center(
           child: Text(
             "Chatting with Rahma",
@@ -127,7 +129,6 @@ class _StudentChatViewState extends State<StudentChatView> {
               padding: const EdgeInsets.all(8),
               reverse: false,
               order: GroupedListOrder.ASC,
-              //useStickyGroupSeparators: true,
               floatingHeader: true,
               elements: messages,
               groupBy: (message) => DateTime(
@@ -140,7 +141,7 @@ class _StudentChatViewState extends State<StudentChatView> {
                 child: Center(
                   child: Container(
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.blueGrey.shade700,
                       borderRadius: BorderRadius.circular(20),
@@ -208,19 +209,18 @@ class _StudentChatViewState extends State<StudentChatView> {
                   icon: const Icon(Icons.send, color: Colors.blue),
                   onPressed: () {
                     if (_controller.text.trim().isEmpty) return;
-
+                    final text = _controller.text;
                     final message = Message(
-                      text: _controller.text,
+                      text: text,
                       date: DateTime.now(),
                       isSentByMe: true,
                     );
-
                     setState(() {
                       messages.add(message);
                     });
-
                     _controller.clear();
                     _scrollToBottom();
+                    Navigator.pop(context, text);
                   },
                 ),
               ],

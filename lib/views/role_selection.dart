@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/core/design/app_image.dart';
 
 class RoleSelectionView extends StatelessWidget {
@@ -63,10 +64,10 @@ Widget _selectButton(BuildContext context, String role, String argument) {
       ),
     ),
     onPressed: () {
-      Navigator.pushNamed(
-        context,
+      context.go(
+
         '/login',
-        arguments: argument,
+        extra: argument,
       );
 
     //  print("ROLE IS: $role");

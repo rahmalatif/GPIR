@@ -3,15 +3,14 @@ import 'package:go_router/go_router.dart';
 
 class NavBar extends StatelessWidget {
   final Widget child;
+
   const NavBar({super.key, required this.child});
 
   int _getIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
 
-    if (location.startsWith('/home')) return 0;
-    if (location.startsWith('/studentChat')) return 1;
-    if (location.startsWith('/projects')) return 2;
-    if (location.startsWith('/profile')) return 3;
+    if (location.startsWith('/studentDashboard')) return 0;
+    if (location.startsWith('/chat')) return 1;
 
     return 0;
   }
@@ -25,23 +24,15 @@ class NavBar extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: const Color(0xff4699A8),
         currentIndex: currentIndex,
-
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black54,
-
         onTap: (index) {
           switch (index) {
             case 0:
-              context.go('/home');
+              context.go('/studentDashboard');
               break;
             case 1:
-              context.go('/studentChat');
-              break;
-            case 2:
-              context.go('/projects');
-              break;
-            case 3:
-              context.go('/profile');
+              context.go('/chat');
               break;
           }
         },
@@ -65,7 +56,6 @@ class NavBar extends StatelessWidget {
         ],
         type: BottomNavigationBarType.fixed,
       ),
-
     );
   }
 }

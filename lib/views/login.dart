@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/core/design/app_image.dart';
 
 class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+  final String role;
+
+  const LoginView({super.key, required this.role});
 
   @override
   Widget build(BuildContext context) {
-    final role = ModalRoute.of(context)!.settings.arguments as String;
-
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       body: Center(
@@ -43,22 +44,12 @@ class LoginView extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                print("ROLE = $role");
-
                 if (role == "Student") {
-                  print("Going to STUDENT");
-                  Navigator.pushNamed(context, '/studentDashboard');
-                }
-                else if (role == "Doctor") {
-                  print("Going to DOCTOR");
-                //  Navigator.pushNamed(context, 'doctorDashboard');
-                }
-                else {
-                  print("Going to ADMIN");
-                 // Navigator.pushNamed(context, 'adminDashboard');
+                  context.go('/studentDashboard');
+                } else if (role == "Doctor") {
+                  context.go('/doctorDashboard');
                 }
               },
-
               child: const Text(
                 "Login",
                 style: TextStyle(fontSize: 18, color: Colors.black),
@@ -70,6 +61,7 @@ class LoginView extends StatelessWidget {
     );
   }
 }
+
 
 Widget _InputText(String label, bool isPassword) {
   return Padding(
