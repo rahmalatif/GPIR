@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/views/student/ai_recommend.dart';
 import 'package:graduation_project_recommender/views/student/confirm_submission.dart';
+import 'package:graduation_project_recommender/views/student/student_chat.dart';
 
 import '../../views/student/dashboard.dart';
 import '../../views/student/have_idea.dart';
@@ -23,6 +24,11 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/studentDashboard',
           builder: (context, state) => const StudentDashboardView(),
+        ),
+
+        GoRoute(
+          path: '/studentChat',
+          builder: (context, state) => const StudentChatView(),
         ),
         GoRoute(
           path: '/haveIdea',

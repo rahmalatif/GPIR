@@ -10,6 +10,7 @@ class ChooseSupervisorView extends StatefulWidget {
 
 
 
+
   const ChooseSupervisorView({
     super.key,
     required this.projectIdea,

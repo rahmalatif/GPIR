@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graduation_project_recommender/views/student/recommended_projects.dart';
+import '../model/project.dart';
 import '../model/team.dart';
 
 class AiRecommendView extends StatefulWidget {
@@ -192,16 +193,27 @@ class _AiRecommendViewState extends State<AiRecommendView> {
                         foregroundColor: Colors.black,
                       ),
                       onPressed: () {
+                        final projectIdea = ProjectIdea(
+                          name: "AI  Project",
+                          description: "Project idea",
+                          specializations: getSelectedTracks().join(", "),
+                          features: "To be defined",
+                          technologies: getSelectedTracks().join(" , "),
+                          teamMembers: Team.map((e) => e.name).toList(),
+                          requiredTracks: getSelectedTracks(),
+                        );
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProjectsRecommendationView(
                               tracks: getSelectedTracks().toSet().toList(),
-
+                              projectIdea: projectIdea,
                             ),
                           ),
                         );
                       },
+
                       child: const Text("Search"),
                     ),
                   )

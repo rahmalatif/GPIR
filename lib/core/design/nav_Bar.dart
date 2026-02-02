@@ -9,7 +9,7 @@ class NavBar extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
 
     if (location.startsWith('/home')) return 0;
-    if (location.startsWith('/chat')) return 1;
+    if (location.startsWith('/studentChat')) return 1;
     if (location.startsWith('/projects')) return 2;
     if (location.startsWith('/profile')) return 3;
 
@@ -25,13 +25,17 @@ class NavBar extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: const Color(0xff4699A8),
         currentIndex: currentIndex,
+
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.black54,
+
         onTap: (index) {
           switch (index) {
             case 0:
               context.go('/home');
               break;
             case 1:
-              context.go('/chat');
+              context.go('/studentChat');
               break;
             case 2:
               context.go('/projects');
@@ -61,6 +65,7 @@ class NavBar extends StatelessWidget {
         ],
         type: BottomNavigationBarType.fixed,
       ),
+
     );
   }
 }

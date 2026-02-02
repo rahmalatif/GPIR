@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/student/choose_supervisor.dart';
+
+import '../model/project.dart';
 
 class ProjectsRecommendationView extends StatelessWidget {
   final List<String> tracks;
+  final ProjectIdea projectIdea;
 
   const ProjectsRecommendationView({
     super.key,
     required this.tracks,
+    required this.projectIdea,
   });
 
   @override
@@ -24,13 +30,13 @@ class ProjectsRecommendationView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         itemCount: 5,
         itemBuilder: (context, index) {
-          return _projectCard();
+          return _projectCard(context);
         },
       ),
     );
   }
 
-  Widget _projectCard() {
+  Widget _projectCard(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -42,10 +48,9 @@ class ProjectsRecommendationView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 "Smart Attendance System",
                 style: TextStyle(
@@ -66,17 +71,12 @@ class ProjectsRecommendationView extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-
           const Text(
             "A mobile app with QR-based attendance for students and instructors.",
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Colors.grey, fontSize: 12),
           ),
 
           const SizedBox(height: 12),
-
 
           Wrap(
             spacing: 6,
@@ -85,16 +85,15 @@ class ProjectsRecommendationView extends StatelessWidget {
               return Chip(
                 label: Text(
                   track,
-                  style:  TextStyle(fontSize: 11),
+                  style: const TextStyle(fontSize: 11),
                 ),
                 backgroundColor: Colors.cyanAccent.withOpacity(0.2),
-                labelStyle: TextStyle(color: Colors.black),
+                labelStyle: const TextStyle(color: Colors.black),
               );
             }).toList(),
           ),
 
           const SizedBox(height: 12),
-
 
           Align(
             alignment: Alignment.centerRight,
@@ -106,12 +105,19 @@ class ProjectsRecommendationView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.go(
+                  '/chooseSupervisor',
+                  extra: projectIdea,
+                );
+              },
               child: const Text("Use This Idea"),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
+
+
