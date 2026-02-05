@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/doctor/dashboard.dart';
 
 import 'package:graduation_project_recommender/views/splash.dart';
 import 'package:graduation_project_recommender/views/login.dart';
@@ -18,6 +19,7 @@ import 'package:graduation_project_recommender/views/student/confirm_submission.
 import 'package:graduation_project_recommender/views/model/project.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 
+import '../design/dr_nav_bar.dart';
 import '../design/nav_Bar.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -37,80 +39,50 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) {
-        final role = state.extra as String;
+        final role = state.extra as String? ?? 'student';
         return LoginView(role: role);
       },
     ),
 
+    // doctor
+    ShellRoute(
+      builder: (context, state, child) {
+
+        return DoctorNavBar(child: child);
+      },
+      routes: [
+
+        GoRoute(
+          path: '/doctorDashboard',
+          builder: (context, state) => const DashboardView(),
+        ),
+
+
+      ],
+    ),
+
+    // student
 
     ShellRoute(
       builder: (context, state, child) {
-        return NavBar(child: child);
+        return StudentNavBar(child: child);
       },
       routes: [
+
         GoRoute(
           path: '/studentDashboard',
           builder: (context, state) => const StudentDashboardView(),
         ),
+
         GoRoute(
-          path: '/chat',
-          builder: (context, state) => const ChatsView(),
+          path: '/studentChat',
+          builder: (context, state) => const StudentChatView(),
         ),
+
+
       ],
-    ),
-
-    GoRoute(
-      path: '/studentChat',
-      builder: (context, state) => const StudentChatView(),
-    ),
-
-    GoRoute(
-      path: '/aiRecommend',
-      builder: (context, state) => const AiRecommendView(),
-    ),
-
-    GoRoute(
-      path: '/haveIdea',
-      builder: (context, state) => const HaveIdeaView(),
-    ),
-
-    GoRoute(
-      path: '/similarityCheck',
-      builder: (context, state) {
-        final projectIdea = state.extra as ProjectIdea;
-        return SimilarityCheckView(projectIdea: projectIdea);
-      },
-    ),
-
-    GoRoute(
-      path: '/chooseSupervisor',
-      builder: (context, state) {
-        final projectIdea = state.extra as ProjectIdea;
-        return ChooseSupervisorView(projectIdea: projectIdea);
-      },
-    ),
-
-    GoRoute(
-      path: '/sendIdeaToDr',
-      builder: (context, state) {
-        final data = state.extra as Map<String, dynamic>;
-        return SendIdeaToDrView(
-          projectIdea: data['projectIdea'] as ProjectIdea,
-          doctor: data['doctor'] as Doctor,
-        );
-      },
-    ),
-
-    GoRoute(
-      path: '/confirmSubmission',
-      builder: (context, state) {
-        final data = state.extra as Map<String, dynamic>;
-        return ConfirmSubmissionView(
-          projectIdea: data['projectIdea'] as ProjectIdea,
-          doctor: data['doctor'] as Doctor,
-          teamMembers: const [],
-        );
-      },
     ),
   ],
 );
+
+

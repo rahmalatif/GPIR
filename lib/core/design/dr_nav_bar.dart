@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class StudentNavBar extends StatelessWidget {
+class DoctorNavBar extends StatelessWidget {
   final Widget child;
 
-  const StudentNavBar({super.key, required this.child});
+  const DoctorNavBar({super.key, required this.child});
 
   int _getIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
 
-    if (location.startsWith('/studentDashboard')) return 0;
-    if (location.startsWith('/chat')) return 1;
+    if (location.startsWith('/doctorDashboard')) return 0;
+    if (location.startsWith('/doctorProjects')) return 1;
+    if (location.startsWith('/doctorChat')) return 2;
+    if (location.startsWith('/doctorProfile')) return 3;
 
     return 0;
   }
@@ -29,7 +31,7 @@ class StudentNavBar extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              context.go('/studentDashboard');
+              context.go('/doctorDashboard');
               break;
             case 1:
               context.go('/chat');
@@ -42,12 +44,12 @@ class StudentNavBar extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.padding_rounded),
             label: 'Projects',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

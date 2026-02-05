@@ -44,12 +44,13 @@ class LoginView extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                if (role == "Student") {
+                if (role.trim().toLowerCase() == "student") {
                   context.go('/studentDashboard');
-                } else if (role == "Doctor") {
+                } else if (role.trim().toLowerCase() == "doctor") {
                   context.go('/doctorDashboard');
                 }
               },
+
               child: const Text(
                 "Login",
                 style: TextStyle(fontSize: 18, color: Colors.black),

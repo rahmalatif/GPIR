@@ -25,7 +25,8 @@ class RoleSelectionView extends StatelessWidget {
             const Text(
               "Welcome",
               style: TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white
+              ),
             ),
 
             const SizedBox(height: 10),
