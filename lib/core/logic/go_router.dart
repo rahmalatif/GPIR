@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/views/doctor/dashboard.dart';
+import 'package:graduation_project_recommender/views/doctor/pending_ideas.dart';
 
 import 'package:graduation_project_recommender/views/splash.dart';
 import 'package:graduation_project_recommender/views/login.dart';
@@ -44,12 +45,79 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-    // doctor
-    ShellRoute(
-      builder: (context, state, child) {
+    //student
+    GoRoute(
+      path: '/studentChat',
+      builder: (context, state) => const StudentChatView(),
+    ),
 
-        return DoctorNavBar(child: child);
+    GoRoute(
+      path: '/aiRecommend',
+      builder: (context, state) => const AiRecommendView(),
+    ),
+
+    GoRoute(
+      path: '/haveIdea',
+      builder: (context, state) => const HaveIdeaView(),
+    ),
+
+    GoRoute(
+      path: '/similarityCheck',
+      builder: (context, state) {
+        final projectIdea = state.extra as ProjectIdea;
+        return SimilarityCheckView(projectIdea: projectIdea);
       },
+    ),
+
+    GoRoute(
+      path: '/chooseSupervisor',
+      builder: (context, state) {
+        final projectIdea = state.extra as ProjectIdea;
+        return ChooseSupervisorView(projectIdea: projectIdea);
+      },
+    ),
+
+    GoRoute(
+      path: '/sendIdeaToDr',
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        return SendIdeaToDrView(
+          projectIdea: data['projectIdea'] as ProjectIdea,
+          doctor: data['doctor'] as Doctor,
+        );
+      },
+    ),
+
+    GoRoute(
+      path: '/confirmSubmission',
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        return ConfirmSubmissionView(
+          projectIdea: data['projectIdea'] as ProjectIdea,
+          doctor: data['doctor'] as Doctor,
+          teamMembers: const [],
+        );
+      },
+    ),
+
+
+
+
+
+
+    //doctor
+
+    GoRoute(
+      path: '/drPendingIdeas',
+      builder: (context, state) => PendingIdeasView(),
+    ),
+
+
+
+
+    //Doctor
+    ShellRoute(
+      builder: (context, state, child) => DoctorNavBar(child: child),
       routes: [
 
         GoRoute(
@@ -57,16 +125,32 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) => const DashboardView(),
         ),
 
+        GoRoute(
+          path: '/doctorProjects',
+          builder: (context, state) => const Scaffold(
+            body: Center(child: Text("Doctor Projects")),
+          ),
+        ),
 
+        GoRoute(
+          path: '/doctorChat',
+          builder: (context, state) => const Scaffold(
+            body: Center(child: Text("Doctor Chat")),
+          ),
+        ),
+
+        GoRoute(
+          path: '/doctorProfile',
+          builder: (context, state) => const Scaffold(
+            body: Center(child: Text("Doctor Profile")),
+          ),
+        ),
       ],
     ),
 
-    // student
-
+// Student
     ShellRoute(
-      builder: (context, state, child) {
-        return StudentNavBar(child: child);
-      },
+      builder: (context, state, child) => StudentNavBar(child: child),
       routes: [
 
         GoRoute(
@@ -79,9 +163,15 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) => const StudentChatView(),
         ),
 
-
+        GoRoute(
+          path: '/studentProfile',
+          builder: (context, state) => const Scaffold(
+            body: Center(child: Text("Student Profile")),
+          ),
+        ),
       ],
     ),
+
   ],
 );
 

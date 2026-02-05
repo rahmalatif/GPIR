@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -103,9 +104,11 @@ class DashboardView extends StatelessWidget {
 
             Row(
               children: [
-                Buttons("View Ideas"),
+                Buttons("View Ideas" , (){
+                  context.go('/drPendingIdeas');
+                } ),
                 const SizedBox(width: 12),
-                Buttons("Add Ideas"),
+                Buttons("Add Ideas" , (){}),
               ],
             ),
 
@@ -149,55 +152,61 @@ Widget _projectcard(String projectType, String number) {
 
 Widget _projects(String status, String name, String date, List<String> team) {
   return Container(
+    width: 320,
+    height: 150,
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
       color: const Color(0xFF1A1D2E),
       borderRadius: BorderRadius.circular(18),
     ),
     child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Text(name, style: TextStyle(color: Colors.white)),
-          Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: status == "Pending" ? Colors.orange : Colors.green,
-              borderRadius: BorderRadius.circular(20),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(name, style: TextStyle(color: Colors.white)),
+            Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: status == "Pending" ? Colors.orange : Colors.green,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(status, style: const TextStyle(color: Colors.white)),
             ),
-            child: Text(status, style: const TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-      const SizedBox(height: 6),
-      Text(team.join(", "), style: const TextStyle(color: Colors.grey)),
-      Text("Date: $date", style: const TextStyle(color: Colors.grey)),
-      Row(
-        children: [
-          Spacer(),
-          TextButton(onPressed: () {}, child: Text("View" , style: TextStyle(
-            color: Colors.cyan
-          ),) ,),
-        ],
-      ),
-    ],
-  ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(team.join(", "), style: const TextStyle(color: Colors.grey)),
+
+        Row(
+          children: [
+            Text("Date: $date", style: const TextStyle(color: Colors.grey)),
+            Spacer(),
+            TextButton(onPressed: () {}, child: Text("View" , style: TextStyle(
+                color: Colors.cyan
+            ),) ,),
+          ],
+        ),
+      ],
+    ),
 
   );
 }
 
-Widget Buttons(String text) {
+Widget Buttons(String text ,VoidCallback onTap) {
   return Expanded(
-    child: Container(
-      height: 48,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1D2E),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Center(
-        child: Text(text, style: const TextStyle(color: Colors.white)),
+    child: GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 48,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1D2E),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Center(
+          child: Text(text, style: const TextStyle(color: Colors.white)),
+        ),
       ),
     ),
   );
