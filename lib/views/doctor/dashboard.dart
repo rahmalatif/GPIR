@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../model/DR_project.dart';
+
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
   String greeting() {
-    final hour = DateTime.now().hour;
+    final hour = DateTime
+        .now()
+        .hour;
     if (hour < 12) return 'Good Morning,\nDr. Ahmed Ibrahim';
     if (hour < 17) return 'Good Afternoon,\nDr. Ahmed Ibrahim';
     return 'Good Evening,\nDr. Ahmed Ibrahim';
@@ -75,6 +79,23 @@ class DashboardView extends StatelessWidget {
                     "Smart Attendance System",
                     "2024",
                     ["Ahmed", "Sara", "Omar"],
+                    context,
+                  ),
+                  SizedBox(height: 12),
+                  _projects(
+                    "Accepted",
+                    "Health Tracker App",
+                    "2024",
+                    ["Laila", "Youssef",],
+                    context,
+                  ),
+                  SizedBox(height: 12),
+                  _projects(
+                    "Accepted",
+                    "Smart Attendance System",
+                    "2024",
+                    ["Ahmed", "Sara", "Omar"],
+                    context,
                   ),
                   SizedBox(height: 12),
                   _projects(
@@ -82,6 +103,7 @@ class DashboardView extends StatelessWidget {
                     "Health Tracker App",
                     "2024",
                     ["Laila", "Youssef"],
+                    context,
                   ),
                   SizedBox(height: 12),
                   _projects(
@@ -89,13 +111,7 @@ class DashboardView extends StatelessWidget {
                     "Health Tracker App",
                     "2024",
                     ["Laila", "Youssef"],
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
+                    context,
                   ),
                 ],
               ),
@@ -104,11 +120,13 @@ class DashboardView extends StatelessWidget {
 
             Row(
               children: [
-                Buttons("View Ideas" , (){
-                  context.go('/drPendingIdeas');
-                } ),
+                Buttons("View Ideas", () {
+                  context.push('/drPendingIdeas');
+                }),
                 const SizedBox(width: 12),
-                Buttons("Add Ideas" , (){}),
+                Buttons("Add Ideas", () {
+                  context.push('/addIdea');
+                }),
               ],
             ),
 
@@ -143,14 +161,16 @@ Widget _projectcard(String projectType, String number) {
             projectType,
             style: TextStyle(
                 color: Colors.cyan, fontSize: 14, fontWeight: FontWeight.bold),
-          )
+          ),
+
         ],
       ),
     ),
   );
 }
 
-Widget _projects(String status, String name, String date, List<String> team) {
+Widget _projects(String status, String name, String date, List<String> team,
+    BuildContext context,) {
   return Container(
     width: 320,
     height: 150,
@@ -183,9 +203,25 @@ Widget _projects(String status, String name, String date, List<String> team) {
           children: [
             Text("Date: $date", style: const TextStyle(color: Colors.grey)),
             Spacer(),
-            TextButton(onPressed: () {}, child: Text("View" , style: TextStyle(
-                color: Colors.cyan
-            ),) ,),
+            TextButton(
+              onPressed: () {
+                  final project = ProjectDR(
+                    name: name,
+                    status: status,
+                    date: date,
+                    team: team,
+                    description: "This project helps track health data for users.",
+                  );
+                  context.push('/ideaDetails', extra: project);
+
+              },
+              child: const Text(
+                "View",
+                style: TextStyle(color: Colors.cyan),
+              ),
+            ),
+
+
           ],
         ),
       ],
@@ -194,7 +230,7 @@ Widget _projects(String status, String name, String date, List<String> team) {
   );
 }
 
-Widget Buttons(String text ,VoidCallback onTap) {
+Widget Buttons(String text, VoidCallback onTap) {
   return Expanded(
     child: GestureDetector(
       onTap: onTap,

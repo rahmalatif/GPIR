@@ -33,9 +33,14 @@ class DoctorNavBar extends StatelessWidget {
             case 0:
               context.go('/doctorDashboard');
               break;
-            case 1:
-              context.go('/chat');
+            case 1 :
+              context.go('/doctorProjects');
+            case 2:
+              context.go('/doctorChat');
               break;
+            case 3:
+              context.go('/doctorProfile');
+
           }
         },
         items: const [

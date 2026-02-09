@@ -23,27 +23,33 @@ class ChooseSupervisorView extends StatefulWidget {
 class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
   int? selectedIndex;
 
-  final List<Doctor> doctors =  [
+  final List<Doctor> doctors = [
     Doctor(
+      id: "1",
       name: "Dr. Ahmed Ibrahim",
       track: "Backend",
       slots: 5,
       status: SupervisorStatus.available,
       image: "assets/png/man.png",
+      email: "ahmed@gmail.com",
     ),
     Doctor(
+      id: "2",
       name: "Dr. Lamiaa",
       track: "Backend",
       slots: 0,
       status: SupervisorStatus.full,
       image: "assets/png/women.png",
+      email: "lamiaa@gmail.com",
     ),
     Doctor(
+      id: "3",
       name: "Dr. Abdelfattah",
       track: "AI & ML",
       slots: 1,
       status: SupervisorStatus.almostFull,
       image: "assets/png/man.png",
+      email: "abdelfattah@gmail.com",
     ),
   ];
 

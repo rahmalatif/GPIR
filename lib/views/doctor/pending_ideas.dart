@@ -1,7 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/model/DR_project.dart';
 
-class PendingIdeasView extends StatelessWidget {
+class PendingIdeasView extends StatefulWidget {
   const PendingIdeasView({super.key});
+
+  @override
+  State<PendingIdeasView> createState() => _PendingIdeasViewState();
+}
+
+class _PendingIdeasViewState extends State<PendingIdeasView> {
+
+  final List<ProjectDR> projects = [
+    ProjectDR(
+      name: "Smart Attendance System",
+      status: "Pending",
+      date: "2024",
+      team: ["Ahmed", "Sara", "Omar"],
+      description:
+      "A mobile app that uses QR codes to record student attendance automatically.",
+    ),
+    ProjectDR(
+      name: "Health Tracker App",
+      status: "Accepted",
+      date: "2024",
+      team: ["Laila", "Youssef"],
+      description:
+      "An app to monitor daily health activity and progress.",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -9,175 +36,112 @@ class PendingIdeasView extends StatelessWidget {
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
-        title: Center(
-          child: Text(
-            "Pending Ideas",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
-          ),
+        title: const Text(
+          "Pending Ideas",
+          style: TextStyle(color: Colors.white, fontSize: 22),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(18),
         child: Column(
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                filled: true,
-                fillColor: const Color(0xFF1A1D2E),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
+
+            _searchBox(),
+
+            const SizedBox(height: 20),
+
             Expanded(
-              child: ListView(
-                children: [
-                  _projects(
-                    "Pending",
-                    "Smart Attendance System",
-                    "2024",
-                    ["Ahmed", "Sara", "Omar"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                  _projects(
-                    "Pending",
-                    "Smart Attendance System",
-                    "2024",
-                    ["Ahmed", "Sara", "Omar"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    "A mobile app for QR-based student attendance system",
-                  ),
-                ],
+              child: ListView.builder(
+                itemCount: projects.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _projectCard(projects[index], context),
+                  );
+                },
               ),
-            )
+            ),
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.cyan,
         onPressed: () {},
-        label: const Text(
-          "Add Idea",
-          style: TextStyle(color: Colors.black),
-        ),
+        label: const Text("Add Idea",
+            style: TextStyle(color: Colors.black)),
         icon: const Icon(Icons.add, color: Colors.black),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
-}
 
-Widget _projects(String status, String name, String date, List<String> team, String description) {
+  Widget _searchBox() {
+    return TextField(
+      decoration: InputDecoration(
+        hintText: 'Search',
+        hintStyle: const TextStyle(color: Colors.grey),
+        prefixIcon: const Icon(Icons.search, color: Colors.grey),
+        filled: true,
+        fillColor: const Color(0xFF1A1D2E),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+}
+Widget _projectCard(ProjectDR project, BuildContext context) {
   return Container(
-    width: 320,
-    height: 160,
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
-        color: const Color(0xFF1A1D2E),
-        borderRadius: BorderRadius.circular(18),
-        border: Border(
-          top: BorderSide(color: Colors.grey),
-        )),
+      color: const Color(0xFF1A1D2E),
+      borderRadius: BorderRadius.circular(18),
+    ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Text(name, style: TextStyle(color: Colors.white)),
-            Spacer(),
+            Text(project.name,
+                style: const TextStyle(color: Colors.white)),
+            const Spacer(),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: status == "Pending" ? Colors.orange : Colors.green,
+                color: project.status == "Pending"
+                    ? Colors.orange
+                    : Colors.green,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(status, style: const TextStyle(color: Colors.white)),
+              child: Text(project.status,
+                  style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),
         const SizedBox(height: 6),
         Row(
           children: [
-            Text(team.join(", "), style: const TextStyle(color: Colors.grey)),
-            SizedBox(
-              width: 15,
-            ),
-            Text("Date: $date", style: const TextStyle(color: Colors.grey)),
+            Text(project.team.join(", "),
+                style: const TextStyle(color: Colors.grey)),
+            const SizedBox(width: 15),
+            Text("Date: ${project.date}",
+                style: const TextStyle(color: Colors.grey)),
           ],
         ),
-        Text(
-          description,
-          style: TextStyle(fontSize: 10, color: Colors.grey),
-        ),
+        Text(project.description,
+            style: const TextStyle(fontSize: 10, color: Colors.grey)),
         Row(
           children: [
-            Spacer(),
+            const Spacer(),
             TextButton(
-              onPressed: () {},
-              child: Text(
-                "View",
-                style: TextStyle(color: Colors.cyan),
-              ),
+              onPressed: () {
+                context.go('/ideaDetails', extra: project);
+              },
+              child: const Text("View",
+                  style: TextStyle(color: Colors.cyan)),
             ),
           ],
         ),

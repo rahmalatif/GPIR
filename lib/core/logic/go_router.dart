@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/doctor/add_idea.dart';
+import 'package:graduation_project_recommender/views/doctor/chat.dart';
 import 'package:graduation_project_recommender/views/doctor/dashboard.dart';
 import 'package:graduation_project_recommender/views/doctor/pending_ideas.dart';
+import 'package:graduation_project_recommender/views/doctor/project_details.dart';
+import 'package:graduation_project_recommender/views/doctor/projects.dart';
+import 'package:graduation_project_recommender/views/doctor/reject_idea.dart';
 
 import 'package:graduation_project_recommender/views/splash.dart';
 import 'package:graduation_project_recommender/views/login.dart';
@@ -20,11 +25,13 @@ import 'package:graduation_project_recommender/views/student/confirm_submission.
 import 'package:graduation_project_recommender/views/model/project.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 
+import '../../views/doctor/profile.dart';
+import '../../views/model/DR_project.dart';
 import '../design/dr_nav_bar.dart';
 import '../design/nav_Bar.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: '/doctorDashboard',
   routes: [
 
     GoRoute(
@@ -112,8 +119,22 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => PendingIdeasView(),
     ),
 
+    GoRoute(
+      path: '/ideaDetails',
+      builder: (context, state) {
+        final project = state.extra as ProjectDR;
+        return ProjectDetailsView(project: project);
+      },
+    ),
+    GoRoute(
+      path: '/rejectIdea',
+      builder: (context, state) => RejectIdeaView(),
+    ),
 
-
+    GoRoute(
+        path: '/addIdea',
+        builder: (context, state) => const AddIdeaView()
+    ),
 
     //Doctor
     ShellRoute(
@@ -127,23 +148,21 @@ final GoRouter appRouter = GoRouter(
 
         GoRoute(
           path: '/doctorProjects',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text("Doctor Projects")),
-          ),
+          builder: (context, state) => const ProjectsView()
         ),
 
         GoRoute(
           path: '/doctorChat',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text("Doctor Chat")),
-          ),
+          builder: (context, state) =>const ChatView(),
         ),
 
         GoRoute(
           path: '/doctorProfile',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text("Doctor Profile")),
-          ),
+          builder: (context, state) {
+            final doctor = state.extra as Doctor?;
+          return DoctorProfileView(doctor: doctor);
+          }
+
         ),
       ],
     ),
