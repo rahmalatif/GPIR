@@ -10,7 +10,6 @@ class PendingIdeasView extends StatefulWidget {
 }
 
 class _PendingIdeasViewState extends State<PendingIdeasView> {
-
   final List<ProjectDR> projects = [
     ProjectDR(
       name: "Smart Attendance System",
@@ -18,15 +17,14 @@ class _PendingIdeasViewState extends State<PendingIdeasView> {
       date: "2024",
       team: ["Ahmed", "Sara", "Omar"],
       description:
-      "A mobile app that uses QR codes to record student attendance automatically.",
+          "A mobile app that uses QR codes to record student attendance automatically.",
     ),
     ProjectDR(
       name: "Health Tracker App",
       status: "Accepted",
       date: "2024",
       team: ["Laila", "Youssef"],
-      description:
-      "An app to monitor daily health activity and progress.",
+      description: "An app to monitor daily health activity and progress.",
     ),
   ];
 
@@ -45,11 +43,7 @@ class _PendingIdeasViewState extends State<PendingIdeasView> {
         padding: const EdgeInsets.all(18),
         child: Column(
           children: [
-
-            _searchBox(),
-
-            const SizedBox(height: 20),
-
+            SizedBox(height: 30),
             Expanded(
               child: ListView.builder(
                 itemCount: projects.length,
@@ -64,34 +58,10 @@ class _PendingIdeasViewState extends State<PendingIdeasView> {
           ],
         ),
       ),
-
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.cyan,
-        onPressed: () {},
-        label: const Text("Add Idea",
-            style: TextStyle(color: Colors.black)),
-        icon: const Icon(Icons.add, color: Colors.black),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
-  }
-
-  Widget _searchBox() {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Search',
-        hintStyle: const TextStyle(color: Colors.grey),
-        prefixIcon: const Icon(Icons.search, color: Colors.grey),
-        filled: true,
-        fillColor: const Color(0xFF1A1D2E),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-      ),
     );
   }
 }
+
 Widget _projectCard(ProjectDR project, BuildContext context) {
   return Container(
     padding: const EdgeInsets.all(18),
@@ -102,46 +72,64 @@ Widget _projectCard(ProjectDR project, BuildContext context) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+
         Row(
           children: [
-            Text(project.name,
-                style: const TextStyle(color: Colors.white)),
+            Text(
+              project.name,
+              style: const TextStyle(color: Colors.white),
+            ),
             const Spacer(),
             Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: project.status == "Pending"
                     ? Colors.orange
                     : Colors.green,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(project.status,
-                  style: const TextStyle(color: Colors.white)),
+              child: Text(
+                project.status,
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
+
         const SizedBox(height: 6),
+
         Row(
           children: [
-            Text(project.team.join(", "),
-                style: const TextStyle(color: Colors.grey)),
+            Text(
+              project.team.join(", "),
+              style: const TextStyle(color: Colors.grey),
+            ),
             const SizedBox(width: 15),
-            Text("Date: ${project.date}",
-                style: const TextStyle(color: Colors.grey)),
+            Text(
+              "Date: ${project.date}",
+              style: const TextStyle(color: Colors.grey),
+            ),
           ],
         ),
-        Text(project.description,
-            style: const TextStyle(fontSize: 10, color: Colors.grey)),
+
+        const SizedBox(height: 6),
+
+        Text(
+          project.description,
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        ),
+
         Row(
           children: [
             const Spacer(),
             TextButton(
               onPressed: () {
-                context.go('/ideaDetails', extra: project);
+                context.push('/adminIdeasDetails', extra: project);
               },
-              child: const Text("View",
-                  style: TextStyle(color: Colors.cyan)),
+              child: const Text(
+                "View",
+                style: TextStyle(color: Colors.cyan),
+              ),
             ),
           ],
         ),

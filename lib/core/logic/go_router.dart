@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea.dart';
 import 'package:graduation_project_recommender/views/doctor/chat.dart';
-import 'package:graduation_project_recommender/views/doctor/dashboard.dart';
+import 'package:graduation_project_recommender/views/doctor/doctor_dashboard.dart';
 import 'package:graduation_project_recommender/views/doctor/pending_ideas.dart';
 import 'package:graduation_project_recommender/views/doctor/project_details.dart';
 import 'package:graduation_project_recommender/views/doctor/projects.dart';
@@ -25,15 +25,20 @@ import 'package:graduation_project_recommender/views/student/confirm_submission.
 import 'package:graduation_project_recommender/views/model/project.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 
+import '../../views/admin/admin_dashboard.dart';
+import '../../views/admin/idea_details.dart';
+import '../../views/admin/pending_projects.dart';
+import '../../views/admin/project_id.dart';
 import '../../views/doctor/profile.dart';
 import '../../views/model/DR_project.dart';
+import '../../views/model/admin_project.dart';
+import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
 import '../design/nav_Bar.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/doctorDashboard',
+  initialLocation: '/AdminDashboard',
   routes: [
-
     GoRoute(
       path: '/splash',
       builder: (context, state) => const SplashView(),
@@ -107,11 +112,6 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-
-
-
-
-
     //doctor
 
     GoRoute(
@@ -131,39 +131,67 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => RejectIdeaView(),
     ),
 
+    GoRoute(path: '/addIdea', builder: (context, state) => const AddIdeaView()),
+
+   //Admin
+
     GoRoute(
-        path: '/addIdea',
-        builder: (context, state) => const AddIdeaView()
+      path: '/adminPendingIdeas',
+      builder: (context, state) => const PendingProjectsView(),
+    ),
+
+    GoRoute(
+      path: '/adminIdeasDetails',
+      builder: (context, state) {
+        final project = state.extra as AdminProject;
+        return AdminIdeaDetailsView(project: project);
+      },
+    ),
+    GoRoute(
+      path: '/projectId',
+      builder: (context, state) => const ProjectIdView(),
+    ),
+
+
+
+
+
+
+
+    //AppBar shellRoute
+
+    //Admin
+    ShellRoute(
+      builder: (context, state, child) => AdminNavBar(child: child),
+      routes: [
+        GoRoute(
+          path: '/AdminDashboard',
+          builder: (context, state) => const AdminDashboardView(),
+        ),
+      ],
     ),
 
     //Doctor
     ShellRoute(
       builder: (context, state, child) => DoctorNavBar(child: child),
       routes: [
-
         GoRoute(
           path: '/doctorDashboard',
           builder: (context, state) => const DashboardView(),
         ),
-
         GoRoute(
-          path: '/doctorProjects',
-          builder: (context, state) => const ProjectsView()
-        ),
-
+            path: '/doctorProjects',
+            builder: (context, state) => const ProjectsView()),
         GoRoute(
           path: '/doctorChat',
-          builder: (context, state) =>const ChatView(),
+          builder: (context, state) => const ChatView(),
         ),
-
         GoRoute(
-          path: '/doctorProfile',
-          builder: (context, state) {
-            final doctor = state.extra as Doctor?;
-          return DoctorProfileView(doctor: doctor);
-          }
-
-        ),
+            path: '/doctorProfile',
+            builder: (context, state) {
+              final doctor = state.extra as Doctor?;
+              return DoctorProfileView(doctor: doctor);
+            }),
       ],
     ),
 
@@ -171,17 +199,14 @@ final GoRouter appRouter = GoRouter(
     ShellRoute(
       builder: (context, state, child) => StudentNavBar(child: child),
       routes: [
-
         GoRoute(
           path: '/studentDashboard',
           builder: (context, state) => const StudentDashboardView(),
         ),
-
         GoRoute(
           path: '/studentChat',
           builder: (context, state) => const StudentChatView(),
         ),
-
         GoRoute(
           path: '/studentProfile',
           builder: (context, state) => const Scaffold(
@@ -190,8 +215,5 @@ final GoRouter appRouter = GoRouter(
         ),
       ],
     ),
-
   ],
 );
-
-

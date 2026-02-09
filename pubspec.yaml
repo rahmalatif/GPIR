@@ -43,6 +43,7 @@ flutter:
       - assets/png/women.png
       - assets/png/man.png
       - assets/png/ai.png
+      - assets/png/project_icon.png
 
   #   - images/a_dot_ham.jpeg
 
