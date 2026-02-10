@@ -106,7 +106,9 @@ class StudentDashboardView extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                context.push('/projectAssigned');
+                              },
                               child: Text(
                                 "Accepted",
                                 style: TextStyle(

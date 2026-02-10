@@ -10,8 +10,7 @@ class AdminIdeaDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Scaffold(
+    return  Scaffold(
         backgroundColor: const Color(0xFF0D0F1A),
         appBar: AppBar(
           backgroundColor: const Color(0xFF0D0F1A),
@@ -90,7 +89,6 @@ class AdminIdeaDetailsView extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 

@@ -7,6 +7,7 @@ class ProjectIdea {
   final List teamMembers;
   final List<String> requiredTracks;
 
+
   ProjectIdea({
     required this.name,
     required this.description,

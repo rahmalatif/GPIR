@@ -141,9 +141,6 @@ class _ProjectIdViewState extends State<ProjectIdView> {
                   onPressed: isValid
                       ? () async {
                     showSuccess(context);
-
-                    await Future.delayed(const Duration(seconds: 2));
-
                     if (!context.mounted) return;
                     context.go('/AdminDashboard');
                   }

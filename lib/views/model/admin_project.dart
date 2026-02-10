@@ -1,4 +1,5 @@
 class AdminProject {
+  final String id;
   final String name;
   final String status;
   final String date;
@@ -10,5 +11,6 @@ class AdminProject {
       required this.status,
       required this.date,
       required this.team,
-      required this.description});
+      required this.description,
+      required this.id,});
 }

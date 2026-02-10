@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/admin/admin_profile.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea.dart';
 import 'package:graduation_project_recommender/views/doctor/chat.dart';
 import 'package:graduation_project_recommender/views/doctor/doctor_dashboard.dart';
@@ -7,6 +8,14 @@ import 'package:graduation_project_recommender/views/doctor/pending_ideas.dart';
 import 'package:graduation_project_recommender/views/doctor/project_details.dart';
 import 'package:graduation_project_recommender/views/doctor/projects.dart';
 import 'package:graduation_project_recommender/views/doctor/reject_idea.dart';
+import 'package:graduation_project_recommender/views/library/add_new_project.dart';
+import 'package:graduation_project_recommender/views/library/all_project.dart';
+import 'package:graduation_project_recommender/views/library/library_dashboard.dart';
+import 'package:graduation_project_recommender/views/library/library_profile.dart';
+import 'package:graduation_project_recommender/views/library/library_project_details.dart';
+import 'package:graduation_project_recommender/views/model/admin.dart';
+import 'package:graduation_project_recommender/views/model/library.dart';
+import 'package:graduation_project_recommender/views/model/student.dart';
 
 import 'package:graduation_project_recommender/views/splash.dart';
 import 'package:graduation_project_recommender/views/login.dart';
@@ -24,20 +33,27 @@ import 'package:graduation_project_recommender/views/student/confirm_submission.
 
 import 'package:graduation_project_recommender/views/model/project.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
+import 'package:graduation_project_recommender/views/student/student_project_details.dart';
 
 import '../../views/admin/admin_dashboard.dart';
+import '../../views/admin/all_projects.dart';
+import '../../views/admin/approved_projects.dart';
 import '../../views/admin/idea_details.dart';
 import '../../views/admin/pending_projects.dart';
 import '../../views/admin/project_id.dart';
 import '../../views/doctor/profile.dart';
 import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
+import '../../views/model/library_project.dart';
+import '../../views/student/project_assigned.dart';
+import '../../views/student/st_profile.dart';
 import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
+import '../design/library_nav_bar.dart';
 import '../design/nav_Bar.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/AdminDashboard',
+  initialLocation: '/roleSelection',
   routes: [
     GoRoute(
       path: '/splash',
@@ -72,6 +88,7 @@ final GoRouter appRouter = GoRouter(
       path: '/haveIdea',
       builder: (context, state) => const HaveIdeaView(),
     ),
+
 
     GoRoute(
       path: '/similarityCheck',
@@ -112,6 +129,13 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
+    GoRoute(
+      path: '/projectAssigned',
+      builder: (context, state) => const ProjectAssignedView(projectId: '233',),
+    ),
+
+
+
     //doctor
 
     GoRoute(
@@ -131,9 +155,9 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => RejectIdeaView(),
     ),
 
-    GoRoute(path: '/addIdea', builder: (context, state) => const AddIdeaView()),
+    GoRoute(path: '/addIdea', builder: (context, state) => AddIdeaView()),
 
-   //Admin
+    //Admin
 
     GoRoute(
       path: '/adminPendingIdeas',
@@ -147,18 +171,61 @@ final GoRouter appRouter = GoRouter(
         return AdminIdeaDetailsView(project: project);
       },
     ),
+
     GoRoute(
       path: '/projectId',
       builder: (context, state) => const ProjectIdView(),
     ),
 
+    GoRoute(
+      path: '/adminApprovedProjects',
+      builder: (context, state) => const AdminApprovedProjectsView(),
+    ),
 
-
-
-
-
+    //Library
+    GoRoute(
+      path: '/libraryProjectDetails',
+      builder: (context, state) {
+        final library = state.extra as LibraryProject;
+        return LibraryProjectDetails(project: library);
+      },
+    ),
 
     //AppBar shellRoute
+
+    //Library
+    ShellRoute(
+      builder: (context, state, child) => LibraryNavBar(child: child),
+      routes: [
+        GoRoute(
+          path: '/libraryDashboard',
+          builder: (context, state) => const LibraryDashboardView(),
+        ),
+        GoRoute(
+          path: '/libraryAddProject',
+          builder: (context, state) => const AddNewProjectView(),
+        ),
+        GoRoute(
+          path: '/libraryAllProject',
+          builder: (context, state) => const AllProjectsView(),
+        ),
+        GoRoute(
+          path: '/libraryProfile',
+          builder: (context, state) {
+            final library = state.extra as Library?;
+
+            return LibraryProfileView(
+              library: library ??
+                  Library(
+                    id: "LIB01",
+                    name: "Main Library",
+                    email: "library@test.com",
+                  ),
+            );
+          },
+        ),
+      ],
+    ),
 
     //Admin
     ShellRoute(
@@ -167,6 +234,25 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/AdminDashboard',
           builder: (context, state) => const AdminDashboardView(),
+        ),
+        GoRoute(
+          path: '/adminAllProjectsId',
+          builder: (context, state) => const AdminAllProjectsIdView(),
+        ),
+        GoRoute(
+          path: '/adminProfile',
+          builder: (context, state) {
+            final admin = state.extra as Admin?;
+
+            return AdminProfileView(
+              admin: admin ??
+                  Admin(
+                    id: "ADM001",
+                    name: "Mr. Osama",
+                    email: "admin@test.com",
+                  ),
+            );
+          },
         ),
       ],
     ),
@@ -208,10 +294,35 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) => const StudentChatView(),
         ),
         GoRoute(
+            path: '/studentProject',
+            builder: (context, state) {
+              final project = state.extra as ProjectIdea?;
+              return StudentProjectDetailsView(
+                project: project ??
+                    ProjectIdea(
+                      description: "",
+                      name: '',
+                      specializations: '',
+                      features: '',
+                      technologies: '',
+                      teamMembers: [],
+                      requiredTracks: [],
+                    ),
+              );
+            }),
+        GoRoute(
           path: '/studentProfile',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text("Student Profile")),
-          ),
+          builder: (context, state) {
+            final student = state.extra as Student?;
+
+            return StudentProfileView(
+              student: student ??
+                  Student(
+                    id: "STD01",
+                    name: "Student Name",
+                  ),
+            );
+          },
         ),
       ],
     ),

@@ -50,7 +50,11 @@ class AdminDashboardView extends StatelessWidget {
                 project(
                   title: "Approved\nProjects",
                   icon: Icons.check_circle_outline,
-                  onTap: () {},
+                  onTap: () {
+                    context.push(
+                      '/adminApprovedProjects'
+                    );
+                  },
                 ),
               ],
             ),
@@ -58,7 +62,9 @@ class AdminDashboardView extends StatelessWidget {
             const SizedBox(height: 20),
 
         GestureDetector(
-          onTap: (){},
+          onTap: (){
+            context.push('/adminAllProjectsId');
+          },
           child: Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(

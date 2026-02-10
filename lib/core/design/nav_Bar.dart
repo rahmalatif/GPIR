@@ -10,7 +10,9 @@ class StudentNavBar extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
 
     if (location.startsWith('/studentDashboard')) return 0;
-    if (location.startsWith('/chat')) return 1;
+    if (location.startsWith('/studentChat')) return 1;
+    if (location.startsWith('/studentProject')) return 2;
+    if (location.startsWith('/studentProfile')) return 3;
 
     return 0;
   }
@@ -32,8 +34,13 @@ class StudentNavBar extends StatelessWidget {
               context.go('/studentDashboard');
               break;
             case 1:
-              context.go('/chat');
+              context.go('/studentChat');
               break;
+            case 2:
+              context.go('/studentProject');
+              break;
+            case 3:
+              context.go('/studentProfile');
           }
         },
         items: const [

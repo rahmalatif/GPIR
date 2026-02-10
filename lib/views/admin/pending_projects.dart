@@ -11,20 +11,22 @@ class PendingProjectsView extends StatefulWidget {
 }
 
 class _PendingProjectsViewState extends State<PendingProjectsView> {
-  final List<AdminProject> projects = [
+  final List<AdminProject> Projects = [
     AdminProject(
+      id: "CS-2025-01",
       name: "Smart Attendance System",
-      status: "Pending",
-      date: "2024",
+      status: "Approved",
+      date: "2025",
       team: ["Ahmed", "Sara", "Omar"],
-      description: "A mobile app that uses QR codes to record...",
+      description: "QR based attendance system",
     ),
     AdminProject(
+      id: "CS-2024-07",
       name: "Health Tracker App",
-      status: "Accepted",
+      status: "Approved",
       date: "2024",
       team: ["Laila", "Youssef"],
-      description: "An app to monitor daily health...",
+      description: "Daily health monitoring app",
     ),
   ];
 
@@ -42,11 +44,11 @@ class _PendingProjectsViewState extends State<PendingProjectsView> {
       body: Padding(
         padding: const EdgeInsets.all(18),
         child: ListView.builder(
-          itemCount: projects.length,
+          itemCount: Projects.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _projectCard(projects[index], context),
+              child: _projectCard(Projects[index], context),
             );
           },
         ),

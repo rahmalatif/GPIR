@@ -1,20 +1,20 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../views/model/admin.dart';
+import '../../views/model/library.dart';
 
-class AdminNavBar extends StatelessWidget {
+class LibraryNavBar extends StatelessWidget {
   final Widget child;
 
-  const AdminNavBar({super.key, required this.child});
+  const LibraryNavBar({super.key, required this.child});
 
   int _getIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
 
-    if (location.startsWith('/adminDashboard')) return 0;
-    if (location.startsWith('/adminAllProjectsId')) return 1;
-    if (location.startsWith('/adminProfile')) return 2;
+    if (location.startsWith('/libraryDashboard')) return 0;
+    if (location.startsWith('/libraryAddProject')) return 1;
+    if (location.startsWith('/libraryAllProject')) return 2;
+    if (location.startsWith('/libraryProfile')) return 3;
 
     return 0;
   }
@@ -30,32 +30,25 @@ class AdminNavBar extends StatelessWidget {
         currentIndex: currentIndex,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black54,
-        selectedIconTheme: const IconThemeData(color: Colors.white),
-        unselectedIconTheme: const IconThemeData(color: Colors.black54),
-
-        selectedLabelStyle: const TextStyle(color: Colors.white),
-        unselectedLabelStyle: const TextStyle(color: Colors.black54),
-
         onTap: (index) {
           switch (index) {
             case 0:
-              context.go('/adminDashboard');
+              context.go('/libraryDashboard');
               break;
             case 1 :
-              context.go('/adminAllProjectsId');
-              break;
-
+              context.go('/libraryAddProject');
             case 2:
+              context.go('/libraryAllProject');
+              break;
+            case 3:
               context.go(
-                '/adminProfile',
-                extra: Admin(
-                  id: "ADM001",
-                  name: "Mr. Osama",
-                  email: "admin@test.com",
+                '/libraryProfile',
+                extra: Library(
+                  id: "LIB001",
+                  name: "Naglaa",
+                  email: "library@test.com",
                 ),
               );
-              break;
-
 
 
           }
@@ -66,8 +59,12 @@ class AdminNavBar extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.padding_rounded),
+            icon: Icon(Icons.add),
             label: 'Projects',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.padding_rounded),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
