@@ -67,16 +67,19 @@ class ProjectDetailsView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const RejectIdeaView()),
+                      onTap: ()  {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("You have Accepted the idea successfully"),
+                            backgroundColor: Colors.green,
+                          ),
                         );
-                        if (result != null && result["status"] == "Rejected") {
-                          Navigator.pop(context, "Rejected");
-                        }
+                       context.go(
+                          '/doctorDashboard',
+                        );
+
                       },
+
                       child: Container(
                         height: 48,
                         decoration: BoxDecoration(

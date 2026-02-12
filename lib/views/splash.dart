@@ -14,13 +14,16 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
 
   @override
+  @override
   void initState() {
     super.initState();
 
-    Timer( Duration(seconds: 5), () {
-      context.go( '/roleSelection');
+    Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      context.go('/roleSelection');
     });
   }
+
 
   void _navigateOnTap() {
    context.go( '/roleSelection');

@@ -6,11 +6,12 @@ class AdminProject {
   final List<String> team;
   final String description;
 
-  AdminProject(
-      {required this.name,
-      required this.status,
-      required this.date,
-      required this.team,
-      required this.description,
-      required this.id,});
+  AdminProject({
+    required this.name,
+    required this.status,
+    required this.date,
+    required this.team,
+    required this.description,
+    required this.id,
+  });
 }

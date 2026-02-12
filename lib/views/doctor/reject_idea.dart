@@ -75,23 +75,20 @@ class _RejectIdeaViewState extends State<RejectIdeaView> {
              Spacer(),
 
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 if (reasonController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Please enter rejection reason"),
-                      backgroundColor: Colors.red,
-                    ),
+                    const SnackBar(content: Text("Please enter rejection reason"), backgroundColor: Colors.red),
                   );
                   return;
                 }
-                context.push(
-                  '/doctorDashboard'
-                );
+
+                context.go('/doctorDashboard');
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text("You have rejected the idea successfully"),
-                    backgroundColor: Colors.cyan,
+                    backgroundColor: Colors.red,
                   ),
                 );
               },

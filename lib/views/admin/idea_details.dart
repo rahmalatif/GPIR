@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/model/DR_project.dart';
 
 import '../model/admin_project.dart';
 

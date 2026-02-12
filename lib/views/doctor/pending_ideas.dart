@@ -124,7 +124,7 @@ Widget _projectCard(ProjectDR project, BuildContext context) {
             const Spacer(),
             TextButton(
               onPressed: () {
-                context.push('/adminIdeasDetails', extra: project);
+                context.push('/ideaDetails', extra: project);
               },
               child: const Text(
                 "View",

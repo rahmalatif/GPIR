@@ -45,7 +45,10 @@ import '../../views/doctor/profile.dart';
 import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
 import '../../views/model/library_project.dart';
+import '../../views/model/team.dart';
+import '../../views/student/edit_team.dart';
 import '../../views/student/project_assigned.dart';
+import '../../views/student/recommended_projects.dart';
 import '../../views/student/st_profile.dart';
 import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
@@ -53,7 +56,7 @@ import '../design/library_nav_bar.dart';
 import '../design/nav_Bar.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/roleSelection',
+  initialLocation: '/splash',
   routes: [
     GoRoute(
       path: '/splash',
@@ -73,22 +76,21 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
+
+
     //student
-    GoRoute(
-      path: '/studentChat',
-      builder: (context, state) => const StudentChatView(),
-    ),
 
     GoRoute(
       path: '/aiRecommend',
-      builder: (context, state) => const AiRecommendView(),
+      builder: (context, state) {
+        return AiRecommendView();
+      },
     ),
 
     GoRoute(
       path: '/haveIdea',
       builder: (context, state) => const HaveIdeaView(),
     ),
-
 
     GoRoute(
       path: '/similarityCheck',
@@ -130,9 +132,25 @@ final GoRouter appRouter = GoRouter(
     ),
 
     GoRoute(
-      path: '/projectAssigned',
-      builder: (context, state) => const ProjectAssignedView(projectId: '233',),
+      path: '/projectRecommendation',
+      builder: (context, state) {
+        final projectIdea = state.extra as ProjectIdea;
+
+        return ProjectsRecommendationView(
+          projectIdea: projectIdea,
+          tracks: projectIdea.requiredTracks,
+        );
+      },
     ),
+
+    GoRoute(
+      path: '/projectAssigned',
+      builder: (context, state) => const ProjectAssignedView(
+        projectId: '233',
+      ),
+    ),
+
+
 
 
 
@@ -150,12 +168,15 @@ final GoRouter appRouter = GoRouter(
         return ProjectDetailsView(project: project);
       },
     ),
+
     GoRoute(
       path: '/rejectIdea',
       builder: (context, state) => RejectIdeaView(),
     ),
 
-    GoRoute(path: '/addIdea', builder: (context, state) => AddIdeaView()),
+    GoRoute(
+        path: '/addIdea',
+        builder: (context, state) => AddIdeaView()),
 
     //Admin
 
@@ -291,8 +312,19 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/studentChat',
-          builder: (context, state) => const StudentChatView(),
+          builder: (context, state) => const ChatsView(),
         ),
+        GoRoute(
+          path: '/editTeam',
+          builder: (context, state) {
+
+            final team = state.extra as List<TeamMember>;
+            return EditTeamView(members: team);
+          },
+        ),
+
+
+
         GoRoute(
             path: '/studentProject',
             builder: (context, state) {

@@ -7,9 +7,7 @@ class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
   String greeting() {
-    final hour = DateTime
-        .now()
-        .hour;
+    final hour = DateTime.now().hour;
     if (hour < 12) return 'Good Morning,\nDr. Ahmed Ibrahim';
     if (hour < 17) return 'Good Afternoon,\nDr. Ahmed Ibrahim';
     return 'Good Evening,\nDr. Ahmed Ibrahim';
@@ -35,11 +33,11 @@ class DashboardView extends StatelessWidget {
             ),
             Row(
               children: [
-                _projectcard("Pending projects", "7"),
+                _projectcard("Pending projects", "7", context),
                 SizedBox(
                   width: 12,
                 ),
-                _projectcard("Accepted", '3')
+                _projectcard("Accepted", '3' , context),
               ],
             ),
             SizedBox(
@@ -86,7 +84,10 @@ class DashboardView extends StatelessWidget {
                     "Accepted",
                     "Health Tracker App",
                     "2024",
-                    ["Laila", "Youssef",],
+                    [
+                      "Laila",
+                      "Youssef",
+                    ],
                     context,
                   ),
                   SizedBox(height: 12),
@@ -116,8 +117,9 @@ class DashboardView extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 30,),
-
+            SizedBox(
+              height: 30,
+            ),
             Row(
               children: [
                 Buttons("View Ideas", () {
@@ -129,7 +131,6 @@ class DashboardView extends StatelessWidget {
                 }),
               ],
             ),
-
           ],
         ),
       ),
@@ -137,40 +138,53 @@ class DashboardView extends StatelessWidget {
   }
 }
 
-Widget _projectcard(String projectType, String number) {
+Widget _projectcard(String projectType, String number , BuildContext context) {
   return Expanded(
-    child: Container(
-      height: 100,
-      width: 100,
-      padding: EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Color(0xFF1A1D2E),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        children: [
-          Text(
-            number,
-            style: TextStyle(
-                color: Colors.cyan, fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            projectType,
-            style: TextStyle(
-                color: Colors.cyan, fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-
-        ],
+    child: GestureDetector(
+      onTap: () {
+        context.push('/doctorProjects');
+      },
+      child: Container(
+        height: 100,
+        width: 100,
+        padding: EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: Color(0xFF1A1D2E),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Column(
+          children: [
+            Text(
+              number,
+              style: TextStyle(
+                  color: Colors.cyan,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              projectType,
+              style: TextStyle(
+                  color: Colors.cyan,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     ),
   );
 }
 
-Widget _projects(String status, String name, String date, List<String> team,
-    BuildContext context,) {
+Widget _projects(
+  String status,
+  String name,
+  String date,
+  List<String> team,
+  BuildContext context,
+) {
   return Container(
     width: 320,
     height: 150,
@@ -198,35 +212,31 @@ Widget _projects(String status, String name, String date, List<String> team,
         ),
         const SizedBox(height: 6),
         Text(team.join(", "), style: const TextStyle(color: Colors.grey)),
-
         Row(
           children: [
             Text("Date: $date", style: const TextStyle(color: Colors.grey)),
             Spacer(),
             TextButton(
               onPressed: () {
-                  final project = ProjectDR(
-                    name: name,
-                    status: status,
-                    date: date,
-                    team: team,
-                    description: "This project helps track health data for users.",
-                  );
-                  context.push('/ideaDetails', extra: project);
-
+                final project = ProjectDR(
+                  name: name,
+                  status: status,
+                  date: date,
+                  team: team,
+                  description:
+                      "This project helps track health data for users.",
+                );
+                context.push('/ideaDetails', extra: project);
               },
               child: const Text(
                 "View",
                 style: TextStyle(color: Colors.cyan),
               ),
             ),
-
-
           ],
         ),
       ],
     ),
-
   );
 }
 
