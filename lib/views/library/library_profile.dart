@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../model/library.dart';
 
@@ -49,7 +51,14 @@ final Library library;
 
             _infoItem("ID", library.id),
             const SizedBox(height: 16),
-            _infoItem("Email", library.email )
+            _infoItem("Email", library.email ),
+            SizedBox(height: 15,),
+            IconButton(onPressed: ()async{
+              await FirebaseAuth.instance.signOut();
+              context.go('/roleSelection');
+
+            },
+                icon: Icon(Icons.logout , color: Colors.white,))
           ],
         ),
       ),

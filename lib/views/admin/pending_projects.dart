@@ -40,6 +40,11 @@ class _PendingProjectsViewState extends State<PendingProjectsView> {
           "Pending Ideas",
           style: TextStyle(color: Colors.white, fontSize: 22),
         ),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              context.pop();
+            }),
       ),
       body: Padding(
         padding: const EdgeInsets.all(18),

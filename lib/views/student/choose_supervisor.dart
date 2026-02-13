@@ -56,19 +56,20 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
   @override
   Widget build(BuildContext context) {
     widget.projectIdea;
-
-
-
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
         elevation: 0,
-        leading: const BackButton(color: Colors.white),
         title: const Text(
           "Choose Supervisor",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              context.go('/projectRecommendation' ,  extra: ProjectIdea,);
+            }),
       ),
       body: Column(
         children: [

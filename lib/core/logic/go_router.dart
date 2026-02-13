@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/views/admin/admin_profile.dart';
@@ -16,11 +18,9 @@ import 'package:graduation_project_recommender/views/library/library_project_det
 import 'package:graduation_project_recommender/views/model/admin.dart';
 import 'package:graduation_project_recommender/views/model/library.dart';
 import 'package:graduation_project_recommender/views/model/student.dart';
-
 import 'package:graduation_project_recommender/views/splash.dart';
 import 'package:graduation_project_recommender/views/login.dart';
 import 'package:graduation_project_recommender/views/role_selection.dart';
-
 import 'package:graduation_project_recommender/views/student/dashboard.dart';
 import 'package:graduation_project_recommender/views/student/chats.dart';
 import 'package:graduation_project_recommender/views/student/student_chat.dart';
@@ -30,11 +30,9 @@ import 'package:graduation_project_recommender/views/student/similarity_check.da
 import 'package:graduation_project_recommender/views/student/choose_supervisor.dart';
 import 'package:graduation_project_recommender/views/student/send_idea_to_dr.dart';
 import 'package:graduation_project_recommender/views/student/confirm_submission.dart';
-
 import 'package:graduation_project_recommender/views/model/project.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/student/student_project_details.dart';
-
 import '../../views/admin/admin_dashboard.dart';
 import '../../views/admin/all_projects.dart';
 import '../../views/admin/approved_projects.dart';
@@ -46,6 +44,7 @@ import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
 import '../../views/model/library_project.dart';
 import '../../views/model/team.dart';
+import '../../views/register.dart';
 import '../../views/student/edit_team.dart';
 import '../../views/student/project_assigned.dart';
 import '../../views/student/recommended_projects.dart';
@@ -54,9 +53,48 @@ import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
 import '../design/library_nav_bar.dart';
 import '../design/nav_Bar.dart';
+import 'go_router_refresh_stream.dart';
+
+final db = FirebaseDatabase.instance.ref("users");
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: '/roleSelection',
+
+  refreshListenable:
+  GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
+
+  redirect: (context, state) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final path = state.uri.path;
+
+    print("Redirect Path: $path, User: ${user?.uid}");
+
+    if (user == null) {
+      if (path == '/login' || path == '/register' || path == '/roleSelection') return null;
+      return '/roleSelection';
+    }
+
+    final snapshot = await db.child(user.uid).get();
+
+    if (!snapshot.exists) {
+      print("No data found for user in Database");
+      return null;
+    }
+
+    final role = snapshot.child("role").value.toString().toLowerCase();
+    print("User Role Detected: $role");
+
+    if (path == '/roleSelection' || path == '/login' || path == '/') {
+      if (role == 'admin') return '/AdminDashboard';
+      if (role == 'doctor') return '/doctorDashboard';
+      if (role == 'library') return '/libraryDashboard';
+      if (role == 'student') return '/studentDashboard';
+    }
+
+    return null;
+  },
+
+
   routes: [
     GoRoute(
       path: '/splash',
@@ -75,8 +113,13 @@ final GoRouter appRouter = GoRouter(
         return LoginView(role: role);
       },
     ),
-
-
+    GoRoute(
+      path: '/register',
+      builder: (context, state) {
+        final role = state.extra as String;
+        return RegisterView(role: role);
+      },
+    ),
 
     //student
 
@@ -145,13 +188,15 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: '/projectAssigned',
-      builder: (context, state) => const ProjectAssignedView(
-        projectId: '233',
-      ),
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+
+        return ProjectAssignedView(
+          projectId: data["projectId"],
+          status: data["status"],
+        );
+      },
     ),
-
-
-
 
 
     //doctor
@@ -174,9 +219,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => RejectIdeaView(),
     ),
 
-    GoRoute(
-        path: '/addIdea',
-        builder: (context, state) => AddIdeaView()),
+    GoRoute(path: '/addIdea', builder: (context, state) => AddIdeaView()),
 
     //Admin
 
@@ -317,14 +360,10 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/editTeam',
           builder: (context, state) {
-
             final team = state.extra as List<TeamMember>;
             return EditTeamView(members: team);
           },
         ),
-
-
-
         GoRoute(
             path: '/studentProject',
             builder: (context, state) {
@@ -360,3 +399,23 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+
+void routeByRole(BuildContext context, String role) {
+  switch (role.toLowerCase()) {
+    case 'admin':
+      context.go('/AdminDashboard');
+      break;
+    case 'doctor':
+      context.go('/doctorDashboard');
+      break;
+    case 'library':
+      context.go('/libraryDashboard');
+      break;
+    case 'student':
+      context.go('/studentDashboard');
+      break;
+    default:
+      context.go('/roleSelection');
+      break;
+  }
+}

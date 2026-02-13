@@ -122,7 +122,13 @@ class _StudentDashboardViewState extends State<StudentDashboardView> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () => context.push('/projectAssigned'),
+                    onPressed: () => context.push(
+                      '/projectAssigned',
+                      extra: {
+                        "status": "accepted",
+                        "projectId": "PRJ-1001",
+                      },
+                    ),
                     child: const Text("Accepted",
                         style: TextStyle(color: Colors.white)),
                   )

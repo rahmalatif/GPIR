@@ -25,6 +25,11 @@ class ProjectsRecommendationView extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              context.pop();
+            }),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),

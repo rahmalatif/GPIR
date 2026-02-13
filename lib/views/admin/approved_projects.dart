@@ -38,6 +38,11 @@ class _AdminApprovedProjectsViewState extends State<AdminApprovedProjectsView> {
         title: const Text("Approved Projects" , style: TextStyle(
           color: Colors.white,
         ),),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              context.pop();
+            }),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(18),

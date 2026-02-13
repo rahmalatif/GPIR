@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AdminAllProjectsIdView extends StatelessWidget {
   const AdminAllProjectsIdView({super.key});
@@ -28,6 +29,11 @@ class AdminAllProjectsIdView extends StatelessWidget {
           "All Projects with ID",
           style: TextStyle(color: Colors.white),
         ),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              context.pop();
+            }),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(18),

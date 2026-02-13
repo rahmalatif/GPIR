@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "177169958652",
+    "project_id": "gp-idearecommender",
+    "storage_bucket": "gp-idearecommender.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177169958652:android:61f8080926ec4e80df7979",
+        "android_client_info": {
+          "package_name": "com.example.graduation_project_recommender"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhvADgzxrqNG6OL-96lIwWPjBmmRGJEic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -50,7 +50,11 @@ class _AiRecommendViewState extends State<AiRecommendView> {
             ),
           ),
         ),
-      ),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              context.go('/studentDashboard');
+            }),      ),
 
       body: SingleChildScrollView(
         child: Padding(

@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../model/admin.dart';
 
 class AdminProfileView extends StatelessWidget {
   const AdminProfileView({super.key, required this.admin});
+
   final Admin admin;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,8 +19,6 @@ class AdminProfileView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 40),
-
-
             Center(
               child: CircleAvatar(
                 radius: 50,
@@ -28,10 +30,7 @@ class AdminProfileView extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
-
             Center(
               child: Text(
                 admin.name,
@@ -42,21 +41,27 @@ class AdminProfileView extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 4),
-
-
-
             const SizedBox(height: 30),
-
             _infoItem("ID", admin.id),
             _infoItem("Email", admin.email),
-
-
+            SizedBox(
+              height: 15,
+            ),
+            IconButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  context.go('/roleSelection');
+                },
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ))
           ],
         ),
       ),
-    );  }
+    );
+  }
 
   Widget _infoItem(String label, String value) {
     return Column(
@@ -81,5 +86,4 @@ class AdminProfileView extends StatelessWidget {
       ],
     );
   }
-
 }

@@ -4,8 +4,13 @@ import 'package:go_router/go_router.dart';
 
 class ProjectAssignedView extends StatelessWidget {
   final String projectId;
+  final String status;
 
-  const ProjectAssignedView({super.key, required this.projectId});
+  const ProjectAssignedView({
+    super.key,
+    required this.projectId,
+    required this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +33,20 @@ class ProjectAssignedView extends StatelessWidget {
             ZoomIn(
               duration: const Duration(milliseconds: 700),
               curve: Curves.elasticOut,
-              child: const Icon(
-                Icons.celebration_rounded,
+              child: Icon(
+                getStatusIcon(),
                 size: 90,
-                color: Color(0xff4FC3F7),
+                color: getStatusColor(),
               ),
             ),
 
             const SizedBox(height: 20),
+
             FadeInUp(
               duration: const Duration(milliseconds: 600),
-              child: const Text(
-                "Success",
-                style: TextStyle(
+              child: Text(
+                getStatusTitle(),
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -50,28 +56,28 @@ class ProjectAssignedView extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-
             FadeInUp(
               delay: const Duration(milliseconds: 200),
-              child: const Text(
-                "The project has been assigned ID",
-                style: TextStyle(color: Colors.grey),
+              child: Text(
+                getStatusMessage(),
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
 
             const SizedBox(height: 20),
 
-            BounceIn(
-              delay: const Duration(milliseconds: 400),
-              child: Text(
-                projectId,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+            if (status == 'accepted')
+              BounceIn(
+                delay: const Duration(milliseconds: 400),
+                child: Text(
+                  projectId,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
 
             const Spacer(),
 
@@ -103,11 +109,70 @@ class ProjectAssignedView extends StatelessWidget {
     );
   }
 
+
+  IconData getStatusIcon() {
+    switch (status) {
+      case 'accepted':
+        return Icons.celebration_rounded;
+      case 'pending':
+        return Icons.hourglass_top_rounded;
+      case 'rejected':
+        return Icons.cancel_rounded;
+      default:
+        return Icons.help_outline;
+    }
+  }
+
+  Color getStatusColor() {
+    switch (status) {
+      case 'accepted':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'rejected':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String getStatusTitle() {
+    switch (status) {
+      case 'accepted':
+        return "Success";
+      case 'pending':
+        return "Waiting";
+      case 'rejected':
+        return "Rejected";
+      default:
+        return "Unknown";
+    }
+  }
+
+  String getStatusMessage() {
+    switch (status) {
+      case 'accepted':
+        return "Your project has been accepted";
+      case 'pending':
+        return "Your project is under review";
+      case 'rejected':
+        return "Your project was rejected";
+      default:
+        return "Status not available";
+    }
+  }
+
+  Future<String> getStatusMessages() async {
+    if (status == 'accepted') return "The project has been assigned ID";
+    if (status == 'pending') return "Your project is under review";
+    return "Your project was not accepted";
+  }
+
   Widget _statusHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        Text(
+      children: [
+        const Text(
           "Project Status",
           style: TextStyle(
             color: Colors.white,
@@ -116,9 +181,9 @@ class ProjectAssignedView extends StatelessWidget {
           ),
         ),
         Chip(
-          label: Text("Accepted"),
-          backgroundColor: Colors.green,
-          labelStyle: TextStyle(color: Colors.white),
+          label: Text(status.toUpperCase()),
+          backgroundColor: getStatusColor(),
+          labelStyle: const TextStyle(color: Colors.white),
         ),
       ],
     );

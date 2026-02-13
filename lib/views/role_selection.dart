@@ -38,16 +38,14 @@ class RoleSelectionView extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            _selectButton(context, "🎓 Student", "Student"),
-            const SizedBox(height: 20),
+            _selectButton(context, "🎓 Student", "student"),
+            const SizedBox(height: 30),
+            _selectButton(context, "👨‍🏫 Doctor", "doctor"),
+            const SizedBox(height: 30),
+            _selectButton(context, "🧾 Admin", "admin"),
+            const SizedBox(height: 30),
+            _selectButton(context, "📚 Library", "library"),
 
-            _selectButton(context, "👨‍🏫 Doctor", "Doctor"),
-            const SizedBox(height: 20),
-
-            _selectButton(context, "🧾 Admin", "Admin"),
-            const SizedBox(height: 20),
-
-            _selectButton(context, "📚 Library", "Library"),
           ],
         ),
       ),
@@ -66,12 +64,10 @@ Widget _selectButton(BuildContext context, String role, String argument) {
     ),
     onPressed: () {
       context.go(
-
         '/login',
         extra: argument,
       );
 
-    //  print("ROLE IS: $role");
     },
     child: Text(
       role,

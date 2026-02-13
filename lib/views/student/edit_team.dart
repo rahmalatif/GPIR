@@ -15,8 +15,7 @@ class _EditTeamViewState extends State<EditTeamView> {
   final _formKey = GlobalKey<FormState>();
   late List<TeamMember> members;
 
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController roleController = TextEditingController();
+  final nameController = TextEditingController();
 
   @override
   void initState() {
@@ -29,61 +28,72 @@ class _EditTeamViewState extends State<EditTeamView> {
 
     setState(() {
       members.add(
-        TeamMember(
-          name: nameController.text.trim(),
-          track: '',
-        ),
+        TeamMember(name: nameController.text.trim(), track: ''),
       );
     });
 
     nameController.clear();
-    roleController.clear();
-
     showSnack("Member added ✅");
   }
 
   void editMember(int index) {
-    final editName = TextEditingController(text: members[index].name);
+    final editController =
+    TextEditingController(text: members[index].name);
 
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Color(0xff1D1D2E),
-        title: Text("Edit Member", style: TextStyle(color: Colors.white)),
-        content: buildField(editName, "Name"),
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xff1D1D2E),
+        title: const Text(
+          "Edit Member",
+          style: TextStyle(color: Colors.white),
+        ),
+        content: TextFormField(
+          controller: editController,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: "Name",
+            filled: true,
+            fillColor: const Color(0xff2A2A3D),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () {
-              if (editName.text.trim().isEmpty) return;
+              Navigator.pop(dialogContext);
+            },
+            child: const Text("Cancel",
+                style: TextStyle(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () {
+              final newName = editController.text.trim();
+              if (newName.isEmpty) return;
 
               setState(() {
-                members[index] = TeamMember(
-                  name: editName.text.trim(),
-                  track: members[index].track,
-                );
+                members[index] = TeamMember(name: newName, track:  '');
               });
 
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
               showSnack("Member updated ✏️");
             },
-            child: Text(
+            child: const Text(
               "Save",
-              style: TextStyle(
-                color: Color(0xff4699A8),
-                fontSize: 16,
-              ),
+              style: TextStyle(color: Color(0xff4699A8)),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
   void deleteMember(int index) {
-    setState(() {
-      members.removeAt(index);
-    });
-
+    setState(() => members.removeAt(index));
     showSnack("Member deleted 🗑️");
   }
 
@@ -91,49 +101,21 @@ class _EditTeamViewState extends State<EditTeamView> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: Color(0xff4699A8),
+        backgroundColor: const Color(0xff4699A8),
       ),
     );
   }
 
-  Widget buildField(TextEditingController controller, String hint) {
-    return TextField(
-      controller: controller,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey),
-        filled: true,
-        fillColor: Color(0xff2A2A3D),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-
-  Widget buildValidatedField({
-    required TextEditingController controller,
-    required String hint,
-  }) {
+  Widget buildValidatedField() {
     return TextFormField(
-      controller: controller,
-      style: TextStyle(color: Colors.white),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return "Required field";
-        }
-        if (value.length < 3) {
-          return "Min 3 characters";
-        }
-        return null;
-      },
+      controller: nameController,
+      style: const TextStyle(color: Colors.white),
+      validator: (v) =>
+      v == null || v.trim().isEmpty ? "Required field" : null,
       decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey),
+        hintText: "New member name",
         filled: true,
-        fillColor: Color(0xff1D1D2E),
+        fillColor: const Color(0xff1D1D2E),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
@@ -145,22 +127,16 @@ class _EditTeamViewState extends State<EditTeamView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0D0F1A),
+      backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
-        backgroundColor: Color(0xFF0D0F1A),
-        title: Text(
-          "Edit Team",
-          style: TextStyle(color: Colors.white),
-        ),
+        backgroundColor: const Color(0xFF0D0F1A),
+        title: const Text("Edit Team",
+            style: TextStyle(color: Colors.white)),
         actions: [
           TextButton(
-            onPressed: () {
-              context.pop(members);
-            },
-            child: Text(
-              "Save",
-              style: TextStyle(color: Color(0xff4699A8), fontSize: 16),
-            ),
+            onPressed: () => context.pop(members),
+            child: const Text("Save",
+                style: TextStyle(color: Color(0xff4699A8))),
           )
         ],
       ),
@@ -171,26 +147,28 @@ class _EditTeamViewState extends State<EditTeamView> {
             Expanded(
               child: ListView.builder(
                 itemCount: members.length,
-                itemBuilder: (context, index) {
-                  final member = members[index];
-
+                itemBuilder: (_, i) {
                   return Card(
-                    color: Color(0xff1D1D2E),
-                    margin: EdgeInsets.only(bottom: 10),
+                    color: const Color(0xff1D1D2E),
+                    margin: const EdgeInsets.only(bottom: 10),
                     child: ListTile(
                       title: Text(
-                        member.name,
-                        style: TextStyle(color: Colors.white),
+                        members[i].name,
+                        style: const TextStyle(color: Colors.white),
                       ),
-
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit, color: Color(0xff4699A8)),
-                            onPressed: () => editMember(index),
+                            icon: const Icon(Icons.edit,
+                                color: Color(0xff4699A8)),
+                            onPressed: () => editMember(i),
                           ),
-
+                          IconButton(
+                            icon: const Icon(Icons.delete,
+                                color: Colors.red),
+                            onPressed: () => deleteMember(i),
+                          ),
                         ],
                       ),
                     ),
@@ -200,21 +178,19 @@ class _EditTeamViewState extends State<EditTeamView> {
             ),
             Form(
               key: _formKey,
-              child: buildValidatedField(
-                controller: nameController,
-                hint: "New member name",
-              ),
+              child: buildValidatedField(),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: addMember,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff4699A8),
-                  padding: EdgeInsets.symmetric(vertical: 12),
+                  backgroundColor: const Color(0xff4699A8),
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: Text("Add Member"),
+                child: const Text("Add Member"),
               ),
             ),
           ],

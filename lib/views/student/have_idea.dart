@@ -43,9 +43,10 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
         backgroundColor: const Color(0xFF0D0F1A),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => context.pop(),
-        ),
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+           context.go('/studentDashboard');
+            }),
       ),
       body: SingleChildScrollView(
         child: Form(
