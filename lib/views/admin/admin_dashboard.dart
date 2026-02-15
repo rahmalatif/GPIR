@@ -15,6 +15,18 @@ class AdminDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0D0F1A),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.push('/adminNotifications');
+            },
+            icon: const Icon(Icons.notifications),
+          ),
+
+        ],
+      ),
       backgroundColor: const Color(0xFF0D0F1A),
       body: Padding(
         padding: const EdgeInsets.all(20),

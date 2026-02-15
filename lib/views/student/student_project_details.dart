@@ -26,10 +26,6 @@ class StudentProjectDetailsView extends StatelessWidget {
 
             const SizedBox(height: 14),
 
-            _descriptionCard(project.description),
-
-            const SizedBox(height: 20),
-
             _sectionTitle("Supervisor"),
             //_person(project.doctor),
 

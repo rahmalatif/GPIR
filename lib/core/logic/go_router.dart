@@ -6,6 +6,7 @@ import 'package:graduation_project_recommender/views/admin/admin_profile.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea.dart';
 import 'package:graduation_project_recommender/views/doctor/chat.dart';
 import 'package:graduation_project_recommender/views/doctor/doctor_dashboard.dart';
+import 'package:graduation_project_recommender/views/doctor/doctor_notifications.dart';
 import 'package:graduation_project_recommender/views/doctor/pending_ideas.dart';
 import 'package:graduation_project_recommender/views/doctor/project_details.dart';
 import 'package:graduation_project_recommender/views/doctor/projects.dart';
@@ -34,6 +35,7 @@ import 'package:graduation_project_recommender/views/model/project.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/student/student_project_details.dart';
 import '../../views/admin/admin_dashboard.dart';
+import '../../views/admin/admin_notifications.dart';
 import '../../views/admin/all_projects.dart';
 import '../../views/admin/approved_projects.dart';
 import '../../views/admin/idea_details.dart';
@@ -49,6 +51,7 @@ import '../../views/student/edit_team.dart';
 import '../../views/student/project_assigned.dart';
 import '../../views/student/recommended_projects.dart';
 import '../../views/student/st_profile.dart';
+import '../../views/student/student_notifications.dart';
 import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
 import '../design/library_nav_bar.dart';
@@ -58,11 +61,9 @@ import 'go_router_refresh_stream.dart';
 final db = FirebaseDatabase.instance.ref("users");
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/roleSelection',
-
+  initialLocation: '/splash',
   refreshListenable:
-  GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
-
+      GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
   redirect: (context, state) async {
     final user = FirebaseAuth.instance.currentUser;
     final path = state.uri.path;
@@ -70,7 +71,8 @@ final GoRouter appRouter = GoRouter(
     print("Redirect Path: $path, User: ${user?.uid}");
 
     if (user == null) {
-      if (path == '/login' || path == '/register' || path == '/roleSelection') return null;
+      if (path == '/login' || path == '/register' || path == '/roleSelection')
+        return null;
       return '/roleSelection';
     }
 
@@ -93,8 +95,6 @@ final GoRouter appRouter = GoRouter(
 
     return null;
   },
-
-
   routes: [
     GoRoute(
       path: '/splash',
@@ -121,7 +121,7 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-    //student
+//student
 
     GoRoute(
       path: '/aiRecommend',
@@ -199,7 +199,8 @@ final GoRouter appRouter = GoRouter(
     ),
 
 
-    //doctor
+
+//doctor
 
     GoRoute(
       path: '/drPendingIdeas',
@@ -209,8 +210,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/ideaDetails',
       builder: (context, state) {
-        final project = state.extra as ProjectDR;
-        return ProjectDetailsView(project: project);
+        final extra = state.extra;
+
+        if (extra is ProjectDR) {
+          return ProjectDetailsView(
+            project: extra,
+            projectId: '',
+          );
+        }
+
+        return ProjectDetailsView(projectId: extra as String);
       },
     ),
 
@@ -218,10 +227,28 @@ final GoRouter appRouter = GoRouter(
       path: '/rejectIdea',
       builder: (context, state) => RejectIdeaView(),
     ),
+    GoRoute(
+      path: '/studentNotifications',
+      builder: (context, state) => const StudentNotificationsView(),
+    ),
+    GoRoute(
+      path: '/adminNotifications',
+      builder: (context, state) => const AdminNotificationsView(),
+    ),
+
+
 
     GoRoute(path: '/addIdea', builder: (context, state) => AddIdeaView()),
 
-    //Admin
+    GoRoute(
+      path: '/doctorNotifications',
+      builder: (context, state) {
+        final doctorId = state.extra as String;
+        return DoctorNotificationsView(doctorId: doctorId);
+      },
+    ),
+
+//Admin
 
     GoRoute(
       path: '/adminPendingIdeas',
@@ -236,17 +263,34 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
+
     GoRoute(
       path: '/projectId',
-      builder: (context, state) => const ProjectIdView(),
+      builder: (context, state) {
+
+        final data = state.extra;
+
+        if (data == null || data is! Map<String, dynamic>) {
+          return const Scaffold(
+            body: Center(child: Text("Missing project data")),
+          );
+        }
+
+        return ProjectIdView(
+          projectId: data["projectId"],
+          studentId: data["studentId"],
+        );
+      },
     ),
+
+
 
     GoRoute(
       path: '/adminApprovedProjects',
       builder: (context, state) => const AdminApprovedProjectsView(),
     ),
 
-    //Library
+//Library
     GoRoute(
       path: '/libraryProjectDetails',
       builder: (context, state) {
@@ -255,9 +299,9 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-    //AppBar shellRoute
+//AppBar shellRoute
 
-    //Library
+//Library
     ShellRoute(
       builder: (context, state, child) => LibraryNavBar(child: child),
       routes: [
@@ -291,7 +335,7 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
 
-    //Admin
+//Admin
     ShellRoute(
       builder: (context, state, child) => AdminNavBar(child: child),
       routes: [
@@ -321,27 +365,30 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
 
-    //Doctor
+//Doctor
     ShellRoute(
       builder: (context, state, child) => DoctorNavBar(child: child),
       routes: [
         GoRoute(
           path: '/doctorDashboard',
-          builder: (context, state) => const DashboardView(),
+          builder: (context, state) {
+            return const DashboardView();
+          },
         ),
         GoRoute(
-            path: '/doctorProjects',
-            builder: (context, state) => const ProjectsView()),
+          path: '/doctorProjects',
+          builder: (context, state) => const ProjectsView(),
+        ),
         GoRoute(
           path: '/doctorChat',
           builder: (context, state) => const ChatView(),
         ),
         GoRoute(
-            path: '/doctorProfile',
-            builder: (context, state) {
-              final doctor = state.extra as Doctor?;
-              return DoctorProfileView(doctor: doctor);
-            }),
+          path: '/doctorProfile',
+          builder: (context, state) {
+            return DoctorProfileView();
+          },
+        ),
       ],
     ),
 
@@ -371,13 +418,13 @@ final GoRouter appRouter = GoRouter(
               return StudentProjectDetailsView(
                 project: project ??
                     ProjectIdea(
-                      description: "",
                       name: '',
                       specializations: '',
                       features: '',
                       technologies: '',
                       teamMembers: [],
                       requiredTracks: [],
+                      introduction: '',
                     ),
               );
             }),

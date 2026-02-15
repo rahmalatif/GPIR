@@ -25,7 +25,8 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
 
   final List<Doctor> doctors = [
     Doctor(
-      id: "1",
+      uid: 'wclDUPKYl0dEr8upoa8Zwj5YZA93',
+      apiId: '1',
       name: "Dr. Ahmed Ibrahim",
       track: "Backend",
       slots: 5,
@@ -33,8 +34,9 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
       image: "assets/png/man.png",
       email: "ahmed@gmail.com",
     ),
+
     Doctor(
-      id: "2",
+      uid: '2', apiId: '2',
       name: "Dr. Lamiaa",
       track: "Backend",
       slots: 0,
@@ -43,7 +45,8 @@ class _ChooseSupervisorViewState extends State<ChooseSupervisorView> {
       email: "lamiaa@gmail.com",
     ),
     Doctor(
-      id: "3",
+      uid: 'AxWYsA5Z03M2qWHj7SZ8M6vI6Ug2',
+      apiId: '3',
       name: "Dr. Abdelfattah",
       track: "AI & ML",
       slots: 1,

@@ -17,14 +17,14 @@ class _PendingIdeasViewState extends State<PendingIdeasView> {
       date: "2024",
       team: ["Ahmed", "Sara", "Omar"],
       description:
-          "A mobile app that uses QR codes to record student attendance automatically.",
+          "A mobile app that uses QR codes to record student attendance automatically.", introduction: '', features: [],
     ),
     ProjectDR(
       name: "Health Tracker App",
       status: "Accepted",
       date: "2024",
       team: ["Laila", "Youssef"],
-      description: "An app to monitor daily health activity and progress.",
+      description: "An app to monitor daily health activity and progress.", introduction: '', features: [],
     ),
   ];
 

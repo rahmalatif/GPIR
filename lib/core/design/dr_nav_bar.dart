@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,48 +20,38 @@ class DoctorNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = _getIndex(context);
-
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: const Color(0xff4699A8),
-        currentIndex: currentIndex,
+        currentIndex: _getIndex(context),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black54,
+
         onTap: (index) {
           switch (index) {
             case 0:
               context.go('/doctorDashboard');
               break;
-            case 1 :
+            case 1:
               context.go('/doctorProjects');
+              break;
             case 2:
               context.go('/doctorChat');
               break;
             case 3:
               context.go('/doctorProfile');
-
+              break;
           }
         },
+
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.padding_rounded),
-            label: 'Projects',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Projects'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
+
         type: BottomNavigationBarType.fixed,
       ),
     );

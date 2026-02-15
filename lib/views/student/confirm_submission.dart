@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../services/notification_service.dart';
 import '../model/doctor.dart';
 import '../model/project.dart';
 
@@ -11,7 +14,8 @@ class ConfirmSubmissionView extends StatelessWidget {
   const ConfirmSubmissionView({
     super.key,
     required this.doctor,
-    required this.projectIdea, required List teamMembers,
+    required this.projectIdea,
+    required List teamMembers,
   });
 
   @override
@@ -42,9 +46,7 @@ class ConfirmSubmissionView extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 20),
-
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -65,36 +67,26 @@ class ConfirmSubmissionView extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-
-                  Row(
-                    children: [
-                      const Text(
-                        "Team Members",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-
-                  const SizedBox(width: 30),
-
-                  Column(
-
-                    children: projectIdea.teamMembers.map((member) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(
-                          "• $member",
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-]
-                  ),
+                  Row(children: [
+                    const Text(
+                      "Team Members",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(width: 30),
+                    Column(
+                      children: projectIdea.teamMembers.map((member) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Text(
+                            "• $member",
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ]),
                   const SizedBox(height: 20),
-
-
                   Row(
                     children: [
                       const Text(
@@ -108,10 +100,7 @@ class ConfirmSubmissionView extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 8),
-
-
                   const Row(
                     children: [
                       Text(
@@ -128,13 +117,38 @@ class ConfirmSubmissionView extends StatelessWidget {
                 ],
               ),
             ),
-
             const Spacer(),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  print("DOCTOR UID = ${doctor.uid}");
+
+                  final projectDoc = await FirebaseFirestore.instance
+                      .collection("projects")
+                      .add({
+                    "name": projectIdea.name,
+                    "problem": projectIdea.specializations,
+                    "Introduction": projectIdea.introduction,
+                    //"features": projectIdea.featuresList ?? [],
+                    "teamMembers": projectIdea.teamMembers,
+                    "doctorId": doctor.uid,
+                    "studentId": FirebaseAuth.instance.currentUser!.uid,
+                    "status": "pending",
+                    "createdAt": FieldValue.serverTimestamp(),
+                  });
+
+
+                  await NotificationService.send(
+                    userId: doctor.uid,
+                    title: "New Project Request",
+                    body: "A student submitted a project idea",
+                    type: "project_request",
+                    projectId: projectDoc.id,
+                  );
+
+
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("Project submitted successfully ✅"),
@@ -160,8 +174,6 @@ class ConfirmSubmissionView extends StatelessWidget {
                 ),
               ),
             ),
-
-
           ],
         ),
       ),

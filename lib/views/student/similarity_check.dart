@@ -1,8 +1,7 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../services/new_idea_services.dart';
 import '../model/project.dart';
 
 class SimilarityCheckView extends StatefulWidget {
@@ -19,25 +18,37 @@ class SimilarityCheckView extends StatefulWidget {
 
 class _SimilarityCheckViewState extends State<SimilarityCheckView> {
 
+  final IdeaServices _ideaService = IdeaServices();
+
   double similarityPercent = 0;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    fetchSimilarity();
+  }
 
-    Future.delayed(const Duration(seconds: 3), () {
+  Future<void> fetchSimilarity() async {
+    try {
+      final result =
+      await _ideaService.checkSimilarity(widget.projectIdea);
+
       setState(() {
-        similarityPercent = 70;
+        similarityPercent = result;
         isLoading = false;
       });
 
-      if (similarityPercent >= 60) {
-        Future.delayed(const Duration(seconds: 10), () {
+      if (result >= 80) {
+        Future.delayed(const Duration(seconds: 5), () {
           context.go('/studentDashboard');
         });
       }
-    });
+
+    } catch (e) {
+      setState(() => isLoading = false);
+      debugPrint("Similarity error: $e");
+    }
   }
 
   Widget buildResultUI() {
@@ -59,7 +70,7 @@ class _SimilarityCheckViewState extends State<SimilarityCheckView> {
       );
     }
 
-    if (similarityPercent == 0) {
+    if (similarityPercent <= 0.01) {
       return const Text(
         "✅ Not Found Before",
         style: TextStyle(fontSize: 30, color: Colors.white),
@@ -74,7 +85,7 @@ class _SimilarityCheckViewState extends State<SimilarityCheckView> {
           child: CircularProgressIndicator(
             value: similarityPercent / 100,
             strokeWidth: 12,
-            color: similarityPercent >= 60
+            color: similarityPercent >= 80
                 ? Colors.red
                 : Colors.green,
           ),
@@ -94,11 +105,11 @@ class _SimilarityCheckViewState extends State<SimilarityCheckView> {
         const SizedBox(height: 10),
 
         Text(
-          similarityPercent >= 60
+          similarityPercent >= 80
               ? "❌ High similarity — Project rejected"
               : "✅ Low similarity — You can submit",
           style: TextStyle(
-            color: similarityPercent >= 60
+            color: similarityPercent >= 80
                 ? Colors.red
                 : Colors.green,
             fontSize: 16,
@@ -137,7 +148,7 @@ class _SimilarityCheckViewState extends State<SimilarityCheckView> {
 
             Container(
               width: 350,
-              height: 130,
+              height: 170,
               decoration: BoxDecoration(
                 color: const Color(0xff4699A8),
                 borderRadius: BorderRadius.circular(16),
@@ -156,11 +167,11 @@ class _SimilarityCheckViewState extends State<SimilarityCheckView> {
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      widget.projectIdea.description,
-                      textAlign: TextAlign.center,
+                      widget.projectIdea.introduction,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 22,
                         color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],

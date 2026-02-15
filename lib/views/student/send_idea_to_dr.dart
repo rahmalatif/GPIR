@@ -20,7 +20,7 @@ class SendIdeaToDrView extends StatefulWidget {
 
 class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
   late TextEditingController nameController;
-  late TextEditingController descriptionController;
+  late TextEditingController introController;
 
   bool isEditing = false;
   bool showingSnack = false;
@@ -33,13 +33,13 @@ class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
     super.initState();
     nameController =
         TextEditingController(text: widget.projectIdea.name);
-    descriptionController =
-        TextEditingController(text: widget.projectIdea.description);
+    introController =
+        TextEditingController(text: widget.projectIdea.introduction);
 
     loadDraft();
 
     nameController.addListener(_autoSave);
-    descriptionController.addListener(_autoSave);
+    introController.addListener(_autoSave);
   }
 
   void _autoSave() {
@@ -67,14 +67,14 @@ class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
     final prefs = await SharedPreferences.getInstance();
     nameController.text =
         prefs.getString(draftNameKey) ?? nameController.text;
-    descriptionController.text =
-        prefs.getString(draftDescKey) ?? descriptionController.text;
+    introController.text =
+        prefs.getString(draftDescKey) ?? introController.text;
   }
 
   Future<void> saveDraft() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(draftNameKey, nameController.text);
-    await prefs.setString(draftDescKey, descriptionController.text);
+    await prefs.setString(draftDescKey, introController.text);
   }
 
   Future<void> clearDraft() async {
@@ -86,7 +86,7 @@ class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
   @override
   void dispose() {
     nameController.dispose();
-    descriptionController.dispose();
+    introController.dispose();
     super.dispose();
   }
 
@@ -143,7 +143,7 @@ class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
 
                   isEditing
                       ? TextField(
-                    controller: descriptionController,
+                    controller: introController,
                     maxLines: 3,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
@@ -152,7 +152,7 @@ class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
                     ),
                   )
                       : Text(
-                    descriptionController.text,
+                    introController.text,
                     style: const TextStyle(
                         color: Colors.grey, fontSize: 12),
                   ),
@@ -214,12 +214,13 @@ class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
 
                   final editedIdea = ProjectIdea(
                     name: nameController.text,
-                    description: descriptionController.text,
+                 //   description: descriptionController.text,
                     specializations: widget.projectIdea.specializations,
                     features: widget.projectIdea.features,
                     technologies: widget.projectIdea.technologies,
                     teamMembers: widget.projectIdea.teamMembers,
                     requiredTracks: widget.projectIdea.requiredTracks,
+                    introduction: '',
                   );
 
                   context.go('/confirmSubmission', extra: {

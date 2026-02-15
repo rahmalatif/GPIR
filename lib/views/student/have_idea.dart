@@ -13,7 +13,7 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController descController = TextEditingController();
+  final TextEditingController introController = TextEditingController();
   final TextEditingController specController = TextEditingController();
   final TextEditingController featuresController = TextEditingController();
   final TextEditingController techController = TextEditingController();
@@ -24,7 +24,7 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
   @override
   void dispose() {
     nameController.dispose();
-    descController.dispose();
+    introController.dispose();
     specController.dispose();
     featuresController.dispose();
     techController.dispose();
@@ -45,7 +45,7 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-           context.go('/studentDashboard');
+              context.go('/studentDashboard');
             }),
       ),
       body: SingleChildScrollView(
@@ -73,15 +73,12 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
                 ),
               ),
               const SizedBox(height: 20),
-
               _InputText("Project Name", nameController),
-              _InputText("Project Description", descController),
+              _InputText("Project Introduction", introController),
               _InputText("Project Specializations", specController),
               _InputText("Project Features", featuresController),
-              _InputText("Project Technologies", techController),
-
+              _InputText("Project Tool", techController),
               const SizedBox(height: 20),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -107,7 +104,7 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
                             setState(() {
                               teamMemberControllers = List.generate(
                                 count,
-                                    (_) => TextEditingController(),
+                                (_) => TextEditingController(),
                               );
                             });
                           },
@@ -136,19 +133,15 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
                   ],
                 ),
               ),
-
               Column(
-                children:
-                List.generate(teamMemberControllers.length, (index) {
+                children: List.generate(teamMemberControllers.length, (index) {
                   return _InputText(
                     "Team Member ${index + 1} Name",
                     teamMemberControllers[index],
                   );
                 }),
               ),
-
               const SizedBox(height: 30),
-
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -168,12 +161,12 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
 
                       final projectIdea = ProjectIdea(
                         name: nameController.text.trim(),
-                        description: descController.text.trim(),
                         specializations: specController.text.trim(),
                         features: featuresController.text.trim(),
                         technologies: techController.text.trim(),
                         teamMembers: teamMembers,
                         requiredTracks: [],
+                        introduction: introController.text.trim(),
                       );
 
                       context.go(
@@ -192,7 +185,6 @@ class _HaveIdeaViewState extends State<HaveIdeaView> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
             ],
           ),
@@ -233,12 +225,12 @@ Widget _InputText(String label, TextEditingController controller) {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide:
-                  const BorderSide(color: Color(0xff4699A8), width: 2),
+                      const BorderSide(color: Color(0xff4699A8), width: 2),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide:
-                  const BorderSide(color: Color(0xff4699A8), width: 2),
+                      const BorderSide(color: Color(0xff4699A8), width: 2),
                 ),
               ),
               style: const TextStyle(color: Colors.white),

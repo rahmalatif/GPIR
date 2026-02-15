@@ -23,21 +23,21 @@ class _ProjectsViewState extends State<ProjectsView>
       description: "QR & face based attendance system",
       date: "14 April 2025",
       status: "Pending",
-      team: ["Rahma"],
+      team: ["Rahma"], introduction: '', features: [],
     ),
     ProjectDR(
       name: "Health Tracker",
       description: "Track daily health data",
       date: "10 April 2025",
       status: "Accepted",
-      team: ["Laila", "Youssef"],
+      team: ["Laila", "Youssef"], introduction: '', features: [],
     ),
     ProjectDR(
       name: "AI Tutor",
       description: "Smart learning assistant",
       date: "5 April 2025",
       status: "Rejected",
-      team: ["Omar"],
+      team: ["Omar"], introduction: '', features: [],
     ),
   ];
 

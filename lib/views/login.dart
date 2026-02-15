@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/auth_service.dart';
@@ -22,6 +23,7 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    setupNotifications();
   }
 
   @override
@@ -30,6 +32,16 @@ class _LoginViewState extends State<LoginView> {
     passwordController.dispose();
     super.dispose();
   }
+  Future<void> setupNotifications() async {
+    final messaging = FirebaseMessaging.instance;
+
+    await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
 
 
 

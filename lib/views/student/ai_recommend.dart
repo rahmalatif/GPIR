@@ -54,8 +54,8 @@ class _AiRecommendViewState extends State<AiRecommendView> {
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
               context.go('/studentDashboard');
-            }),      ),
-
+            }),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -79,7 +79,8 @@ class _AiRecommendViewState extends State<AiRecommendView> {
               //team size
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: Colors.cyanAccent),
@@ -155,7 +156,8 @@ class _AiRecommendViewState extends State<AiRecommendView> {
                           style: const TextStyle(color: Colors.grey),
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.redAccent),
+                          icon:
+                              const Icon(Icons.delete, color: Colors.redAccent),
                           onPressed: () {
                             setState(() {
                               Team.removeAt(index);
@@ -210,19 +212,18 @@ class _AiRecommendViewState extends State<AiRecommendView> {
 
                           final projectIdea = ProjectIdea(
                             name: "AI  Project",
-                            description: "Project idea",
                             specializations: getSelectedTracks().join(", "),
                             features: "To be defined",
                             technologies: getSelectedTracks().join(" , "),
                             teamMembers: Team.map((e) => e.name).toList(),
                             requiredTracks: getSelectedTracks(),
+                            introduction: '',
                           );
 
                           context.push(
                             '/projectRecommendation',
                             extra: projectIdea,
                           );
-
                         },
                         child: const Text("Search"),
                       ),

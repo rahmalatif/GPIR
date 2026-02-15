@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ProjectIdView extends StatefulWidget {
-  const ProjectIdView({super.key});
+  final String projectId;
+  final String studentId;
+  const ProjectIdView({super.key, required this.projectId, required this.studentId});
 
   @override
   State<ProjectIdView> createState() => _ProjectIdViewState();
@@ -140,11 +143,39 @@ class _ProjectIdViewState extends State<ProjectIdView> {
                 child: ElevatedButton(
                   onPressed: isValid
                       ? () async {
+                    final id = idController.text.trim();
+
+                    await FirebaseFirestore.instance
+                        .collection("projects")
+                        .doc(widget.projectId)
+                        .update({
+                      "assignedId": id,
+                      "status": "accepted",
+                    });
+
+                    await FirebaseFirestore.instance
+                        .collection("notifications")
+                        .add({
+                      "userId": widget.studentId,
+                      "title": "Project Accepted 🎉",
+                      "body": "Your project has been assigned ID: $id",
+                      "type": "admin_assignment",
+                      "assignedId": id,
+                      "projectId": widget.projectId,
+                      "status": "accepted",
+                      "seen": false,
+                      "createdAt": Timestamp.now(),
+                    });
+
                     showSuccess(context);
+
                     if (!context.mounted) return;
+
                     context.go('/AdminDashboard');
                   }
                       : null,
+
+
 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF4FB3C2),

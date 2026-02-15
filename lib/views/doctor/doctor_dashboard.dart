@@ -1,144 +1,146 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/model/doctor.dart';
+
+import '../model/DR_project.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/views/model/doctor.dart';
 
 import '../model/DR_project.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
-  String greeting() {
+  String greeting(String name) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good Morning,\nDr. Ahmed Ibrahim';
-    if (hour < 17) return 'Good Afternoon,\nDr. Ahmed Ibrahim';
-    return 'Good Evening,\nDr. Ahmed Ibrahim';
+    if (hour < 12) return 'Good Morning,\nDr. $name';
+    if (hour < 17) return 'Good Afternoon,\nDr. $name';
+    return 'Good Evening,\nDr. $name';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0D0F1A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF0D0F1A),
-        title: Text(
-          greeting(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 30,
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    return FutureBuilder(
+      future: FirebaseDatabase.instance.ref("users/$uid").get(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final data = snapshot.data!.value as Map;
+        final doctor = Doctor.fromJson(
+          Map<String, dynamic>.from(data),
+          uid,
+        );
+
+        return Scaffold(
+          backgroundColor: const Color(0xFF0D0F1A),
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF0D0F1A),
+            title: Text(
+              greeting(doctor.name),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w600),
             ),
-            Row(
-              children: [
-                _projectcard("Pending projects", "7", context),
-                SizedBox(
-                  width: 12,
-                ),
-                _projectcard("Accepted", '3' , context),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                filled: true,
-                fillColor: const Color(0xFF1A1D2E),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
-                ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  context.go(
+                    '/doctorNotifications',
+                    extra: doctor.uid,
+                  );
+                },
+                icon: const Icon(Icons.notifications),
               ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Text(
-              "Recent Ideas",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 12),
-            Expanded(
-              child: ListView(
-                children: [
-                  _projects(
-                    "Pending",
-                    "Smart Attendance System",
-                    "2024",
-                    ["Ahmed", "Sara", "Omar"],
-                    context,
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    _projectcard("Pending projects", "7", context),
+                    const SizedBox(width: 12),
+                    _projectcard("Accepted", "3", context),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    filled: true,
+                    fillColor: const Color(0xFF1A1D2E),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    [
-                      "Laila",
-                      "Youssef",
+                ),
+                const SizedBox(height: 30),
+                const Text(
+                  "Recent Ideas",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      _projects(
+                        "Pending",
+                        "Smart Attendance System",
+                        "2024",
+                        ["Ahmed", "Sara", "Omar"],
+                        context,
+                      ),
+                      const SizedBox(height: 12),
+                      _projects(
+                        "Accepted",
+                        "Health Tracker App",
+                        "2024",
+                        ["Laila", "Youssef"],
+                        context,
+                      ),
                     ],
-                    context,
                   ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Smart Attendance System",
-                    "2024",
-                    ["Ahmed", "Sara", "Omar"],
-                    context,
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    context,
-                  ),
-                  SizedBox(height: 12),
-                  _projects(
-                    "Accepted",
-                    "Health Tracker App",
-                    "2024",
-                    ["Laila", "Youssef"],
-                    context,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              children: [
-                Buttons("View Ideas", () {
-                  context.push('/drPendingIdeas');
-                }),
-                const SizedBox(width: 12),
-                Buttons("Add Ideas", () {
-                  context.push('/addIdea');
-                }),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    Buttons("View Ideas", () {
+                      context.push('/drPendingIdeas');
+                    }),
+                    const SizedBox(width: 12),
+                    Buttons("Add Ideas", () {
+                      context.push('/addIdea');
+                    }),
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
 
-Widget _projectcard(String projectType, String number , BuildContext context) {
+Widget _projectcard(String projectType, String number, BuildContext context) {
   return Expanded(
     child: GestureDetector(
       onTap: () {
@@ -225,6 +227,8 @@ Widget _projects(
                   team: team,
                   description:
                       "This project helps track health data for users.",
+                  introduction: '',
+                  features: [],
                 );
                 context.push('/ideaDetails', extra: project);
               },

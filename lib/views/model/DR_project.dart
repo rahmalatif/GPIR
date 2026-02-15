@@ -4,7 +4,8 @@ class ProjectDR {
   final String date;
   final List<String> team;
   final String description;
-
+  final String introduction;
+  final List<String> features;
 
   ProjectDR({
     required this.name,
@@ -12,5 +13,7 @@ class ProjectDR {
     required this.date,
     required this.team,
     required this.description,
+    required this.introduction,
+    required this.features,
   });
 }
