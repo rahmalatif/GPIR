@@ -159,6 +159,8 @@ class _SimilarityCheckViewState extends State<SimilarityCheckView> {
                   children: [
                     Text(
                       widget.projectIdea.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 22,
                         color: Colors.black,
@@ -168,7 +170,10 @@ class _SimilarityCheckViewState extends State<SimilarityCheckView> {
                     const SizedBox(height: 15),
                     Text(
                       widget.projectIdea.introduction,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
+
                         fontSize: 22,
                         color: Colors.black,
                         fontWeight: FontWeight.bold,

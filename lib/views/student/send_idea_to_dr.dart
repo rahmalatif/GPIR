@@ -220,7 +220,7 @@ class _SendIdeaToDrViewState extends State<SendIdeaToDrView> {
                     technologies: widget.projectIdea.technologies,
                     teamMembers: widget.projectIdea.teamMembers,
                     requiredTracks: widget.projectIdea.requiredTracks,
-                    introduction: '',
+                    introduction: widget.projectIdea.introduction,
                   );
 
                   context.go('/confirmSubmission', extra: {

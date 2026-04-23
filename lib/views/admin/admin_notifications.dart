@@ -60,7 +60,7 @@ class AdminNotificationsView extends StatelessWidget {
                   final adminProject = AdminProject(
                     id: projectId,
                     name: data["name"],
-                    description: data["Introduction"],
+                    description: data["introduction"] ?? "",
                     team: List<String>.from(data["teamMembers"] ?? []),
                     status: 'accepted',
                     date: '',
@@ -99,9 +99,10 @@ class AdminNotificationsView extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        n["body"],
+                        n["body"] ?? "",
                         style: const TextStyle(color: Colors.grey),
                       ),
+
                     ],
                   ),
                 ),

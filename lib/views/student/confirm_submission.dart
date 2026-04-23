@@ -122,15 +122,16 @@ class ConfirmSubmissionView extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
+                  print("CONFIRM INTRO = ${projectIdea.introduction}");
                   print("DOCTOR UID = ${doctor.uid}");
+                  print(projectIdea.introduction);
 
                   final projectDoc = await FirebaseFirestore.instance
                       .collection("projects")
                       .add({
                     "name": projectIdea.name,
                     "problem": projectIdea.specializations,
-                    "Introduction": projectIdea.introduction,
-                    //"features": projectIdea.featuresList ?? [],
+                    "introduction": projectIdea.introduction,
                     "teamMembers": projectIdea.teamMembers,
                     "doctorId": doctor.uid,
                     "studentId": FirebaseAuth.instance.currentUser!.uid,
@@ -138,16 +139,18 @@ class ConfirmSubmissionView extends StatelessWidget {
                     "createdAt": FieldValue.serverTimestamp(),
                   });
 
-
-                  await NotificationService.send(
-                    userId: doctor.uid,
-                    title: "New Project Request",
-                    body: "A student submitted a project idea",
-                    type: "project_request",
-                    projectId: projectDoc.id,
-                  );
-
-
+                  await FirebaseFirestore.instance
+                      .collection("notifications")
+                      .add({
+                    "userId": doctor.uid,
+                    "title": "New Project Idea 📚",
+                    "body": projectIdea.introduction,
+                    "projectName": projectIdea.name,
+                    "projectId": projectDoc.id,
+                    "type": "new_project",
+                    "seen": false,
+                    "createdAt": Timestamp.now(),
+                  });
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

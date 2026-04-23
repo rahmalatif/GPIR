@@ -3,9 +3,9 @@ import '../model/library_project.dart';
 import '../model/project.dart';
 
 class StudentProjectDetailsView extends StatelessWidget {
-  final ProjectIdea project;
+  final String projectId;
 
-  const StudentProjectDetailsView({super.key, required this.project});
+  const StudentProjectDetailsView({super.key, required this.projectId});
 
   @override
   Widget build(BuildContext context) {

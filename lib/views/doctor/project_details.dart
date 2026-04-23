@@ -49,11 +49,7 @@ class ProjectDetailsView extends StatelessWidget {
               _section("Description", project!.description),
               const SizedBox(height: 12),
               _section("Introduction", project!.introduction),
-
               const SizedBox(height: 12),
-
-              _featuresSection(project!.features),
-
               _teamSection(project!.team),
               const SizedBox(height: 30),
               if (status.contains("pending"))
@@ -144,9 +140,9 @@ class ProjectDetailsView extends StatelessWidget {
                   const SizedBox(height: 12),
                   _section("Introduction", data["introduction"] ?? ""),
                   const SizedBox(height: 12),
-                  _featuresSection(
-                    List<String>.from(data["features"] ?? []),
-                  ),
+
+
+
                   const SizedBox(height: 12),
                   _teamSection(
                     List<String>.from(data["teamMembers"] ?? []),

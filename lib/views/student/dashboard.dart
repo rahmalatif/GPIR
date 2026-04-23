@@ -116,8 +116,9 @@ class _StudentDashboardViewState extends State<StudentDashboardView> {
         final projectDoc = snapshot.data!.docs.first;
         final data = projectDoc.data() as Map<String, dynamic>;
 
-        final status = data["status"];
-        final supervisor = data["supervisor"] ?? "Unknown";
+        final status = data["status"] ?? "------";
+
+        final supervisor = data["supervisor"] ?? "Unknown yet";
         final assignedId = data["assignedId"];
 
         return Center(

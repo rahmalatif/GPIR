@@ -1,4 +1,3 @@
-import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationService {
@@ -18,15 +17,15 @@ class NotificationService {
       "type": type,
       "projectId": projectId,
       "seen": false,
-      "createdAt": DateTime.now(),
+      "createdAt": Timestamp.now(),
     });
   }
 
   static Stream<QuerySnapshot> stream(String userId) {
-    return FirebaseFirestore.instance
+    return _db
         .collection("notifications")
         .where("userId", isEqualTo: userId)
+        .orderBy("createdAt", descending: true)
         .snapshots();
   }
-
 }

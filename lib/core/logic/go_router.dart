@@ -412,22 +412,27 @@ final GoRouter appRouter = GoRouter(
           },
         ),
         GoRoute(
-            path: '/studentProject',
-            builder: (context, state) {
-              final project = state.extra as ProjectIdea?;
-              return StudentProjectDetailsView(
-                project: project ??
-                    ProjectIdea(
-                      name: '',
-                      specializations: '',
-                      features: '',
-                      technologies: '',
-                      teamMembers: [],
-                      requiredTracks: [],
-                      introduction: '',
-                    ),
+          path: '/studentProject',
+          builder: (context, state) {
+            final projectId = state.extra;
+
+            if (projectId == null) {
+              return const Scaffold(
+                body: Center(
+                  child: Text(
+                    "No project selected",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               );
-            }),
+            }
+
+            return StudentProjectDetailsView(
+              projectId: projectId as String,
+            );
+          },
+        ),
+
         GoRoute(
           path: '/studentProfile',
           builder: (context, state) {
