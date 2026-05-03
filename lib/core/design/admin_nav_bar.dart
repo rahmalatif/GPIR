@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../views/model/admin.dart';
+import '../../views/model/user_model.dart';
+
+
 
 class AdminNavBar extends StatelessWidget {
   final Widget child;
@@ -48,10 +50,11 @@ class AdminNavBar extends StatelessWidget {
             case 2:
               context.go(
                 '/adminProfile',
-                extra: Admin(
+                extra: UserModel(
                   id: "ADM001",
                   name: "Mr. Osama",
                   email: "admin@test.com",
+                  role: 'admin',
                 ),
               );
               break;

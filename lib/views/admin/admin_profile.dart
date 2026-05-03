@@ -1,13 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../model/admin.dart';
+import '../model/user_model.dart';
 
 class AdminProfileView extends StatelessWidget {
   const AdminProfileView({super.key, required this.admin});
 
-  final Admin admin;
+  final UserModel admin;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,6 @@ class AdminProfileView extends StatelessWidget {
             ),
             IconButton(
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
                   context.go('/roleSelection');
                 },
                 icon: Icon(

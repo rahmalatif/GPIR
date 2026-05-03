@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +9,6 @@ class AdminNotificationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final adminId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
@@ -21,7 +19,7 @@ class AdminNotificationsView extends StatelessWidget {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection("notifications")
-            .where("userId", isEqualTo: adminId)
+          //  .where("userId", isEqualTo: adminId)
             .orderBy("createdAt", descending: true)
             .snapshots(),
         builder: (context, snapshot) {

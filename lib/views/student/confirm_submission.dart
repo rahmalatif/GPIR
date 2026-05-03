@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -134,7 +133,7 @@ class ConfirmSubmissionView extends StatelessWidget {
                     "introduction": projectIdea.introduction,
                     "teamMembers": projectIdea.teamMembers,
                     "doctorId": doctor.uid,
-                    "studentId": FirebaseAuth.instance.currentUser!.uid,
+                //    "studentId": FirebaseAuth.instance.currentUser!.uid,
                     "status": "pending",
                     "createdAt": FieldValue.serverTimestamp(),
                   });

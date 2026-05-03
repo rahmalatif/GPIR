@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -54,7 +53,7 @@ final Library library;
             _infoItem("Email", library.email ),
             SizedBox(height: 15,),
             IconButton(onPressed: ()async{
-              await FirebaseAuth.instance.signOut();
+            //  await FirebaseAuth.instance.signOut();
               context.go('/roleSelection');
 
             },

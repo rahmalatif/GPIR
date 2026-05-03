@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,7 +7,7 @@ class StudentNotificationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+   // final uid = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
@@ -23,7 +22,7 @@ class StudentNotificationsView extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection("notifications")
-            .where("userId", isEqualTo: uid)
+        //    .where("userId", isEqualTo: uid)
             .orderBy("createdAt", descending: true)
             .snapshots(),
         builder: (context, snapshot) {

@@ -1,33 +1,55 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'dart:convert';
+import '../core/logic/api_service.dart';
+import '../views/model/user_model.dart';
+
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final DatabaseReference _db = FirebaseDatabase.instance.ref("users");
 
-  Future<void> register(String email, String password, String role) async {
-    final userCredential = await _auth.createUserWithEmailAndPassword(
+  static Future<UserModel> register({
+    required String name,
+    required String email,
+    required String password,
+    required String role,
+  }) async {
+    final response = await ApiService.register(
+      name: name,
       email: email,
       password: password,
+      role: role,
     );
 
-    await _db.child(userCredential.user!.uid).set({
-      "email": email,
-      "role": role,
-    });
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 201) {
+      return UserModel.fromJson(data["user"]);
+    } else {
+      throw Exception(data["message"] ?? "Register failed");
+    }
   }
 
-  Future<User?> login(String email, String password) async {
-    final userCredential = await _auth.signInWithEmailAndPassword(
-      email: email.trim(),
-      password: password.trim(),
+
+
+  static Future<UserModel> login({
+    required String password,
+    required String role,
+    String? email,
+    int? id,
+  }) async {
+
+    final response = await ApiService.login(
+      password: password,
+      role: role,
+      email: email,
+      id: id,
     );
-    return userCredential.user;
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return UserModel.fromJson(data["user"]);
+    } else {
+      throw Exception(data["message"] ?? "Login failed");
+    }
   }
 
-
-  Future<String> getUserRole(String uid) async {
-    final snapshot = await _db.child(uid).get();
-    return snapshot.child("role").value.toString();
-  }
 }

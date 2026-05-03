@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/services/auth_service.dart';
@@ -58,7 +57,7 @@ class StudentProfileView extends StatelessWidget {
             SizedBox(height: 30,),
 
             IconButton(onPressed: ()async{
-              await FirebaseAuth.instance.signOut();
+
               context.go('/roleSelection');
 
             },
