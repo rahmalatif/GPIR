@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../model/team.dart';
+import '../similarity/have_idea_mobile.dart';
 
 class AiRecommendMobile extends StatefulWidget {
   const AiRecommendMobile({super.key});
@@ -18,7 +19,7 @@ class _AiRecommendMobileState
   static List<TeamMember> team = [];
 
   List<String> getSelectedTracks() {
-    return team.map((member) => member.track).toList();
+    return team.map((member) => member.sp).toList();
   }
 
   final TextEditingController nameController =
@@ -422,4 +423,4 @@ Widget _teamButton({
       ),
     ),
   );
-}
+}*/

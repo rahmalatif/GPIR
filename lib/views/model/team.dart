@@ -1,9 +1,29 @@
-class TeamMember {
-  final String name;
-  final String track;
+class TeamMemberData {
 
-  TeamMember({
-    required this.name,
-    required this.track,
+  final String id;
+
+  final int collegeCode;
+
+  final String specialization;
+
+  TeamMemberData({
+
+    required this.id,
+
+    required this.collegeCode,
+
+    required this.specialization,
   });
+
+  Map<String, dynamic> toJson() {
+
+    return {
+
+      "id": id,
+
+      "collegeCode": collegeCode,
+
+      "specialization": specialization,
+    };
+  }
 }

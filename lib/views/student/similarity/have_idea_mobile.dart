@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../model/project.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../services/idea_service.dart';
+import '../../model/project_idea.dart';
 
 class HaveIdeaMobileView extends StatefulWidget {
+
   const HaveIdeaMobileView({super.key});
 
   @override
@@ -12,35 +16,43 @@ class HaveIdeaMobileView extends StatefulWidget {
 
 class _HaveIdeaMobileViewState
     extends State<HaveIdeaMobileView> {
-  final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController nameController =
+  final _formKey =
+  GlobalKey<FormState>();
+
+  final TextEditingController
+  nameController =
   TextEditingController();
 
-  final TextEditingController introController =
+  final TextEditingController
+  introController =
   TextEditingController();
 
-  final TextEditingController specController =
+  final TextEditingController
+  specController =
   TextEditingController();
 
-  final TextEditingController featuresController =
+  final TextEditingController
+  techController =
   TextEditingController();
 
-  final TextEditingController techController =
-  TextEditingController();
-
-  final TextEditingController teamCountController =
+  final TextEditingController
+  teamCountController =
   TextEditingController();
 
   List<TeamMember> teamMembers = [];
 
   @override
   void dispose() {
+
     nameController.dispose();
+
     introController.dispose();
+
     specController.dispose();
-    featuresController.dispose();
+
     techController.dispose();
+
     teamCountController.dispose();
 
     for (var member in teamMembers) {
@@ -51,6 +63,7 @@ class _HaveIdeaMobileViewState
   }
 
   void generateTeamFields(int count) {
+
     for (var member in teamMembers) {
       member.dispose();
     }
@@ -61,14 +74,21 @@ class _HaveIdeaMobileViewState
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0F1A),
+
+      backgroundColor:
+      const Color(0xFF0D0F1A),
 
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0D0F1A),
+
+        backgroundColor:
+        const Color(0xFF0D0F1A),
+
         elevation: 0,
 
         leading: IconButton(
+
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
@@ -80,22 +100,29 @@ class _HaveIdeaMobileViewState
       ),
 
       body: SingleChildScrollView(
+
         child: Form(
+
           key: _formKey,
 
           child: Column(
+
             crossAxisAlignment:
             CrossAxisAlignment.start,
 
             children: [
+
               const Padding(
+
                 padding: EdgeInsets.only(
                   left: 38,
                   top: 18,
                 ),
 
                 child: Text(
+
                   "Submit Your Idea",
+
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
@@ -106,12 +133,15 @@ class _HaveIdeaMobileViewState
               ),
 
               const Padding(
+
                 padding: EdgeInsets.only(
                   left: 58,
                 ),
 
                 child: Text(
+
                   "Enter Details about your Graduation project",
+
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -144,21 +174,27 @@ class _HaveIdeaMobileViewState
               const SizedBox(height: 20),
 
               Padding(
+
                 padding:
                 const EdgeInsets.all(8),
 
                 child: Column(
+
                   crossAxisAlignment:
                   CrossAxisAlignment.start,
 
                   children: [
+
                     const Padding(
+
                       padding: EdgeInsets.only(
                         left: 18,
                       ),
 
                       child: Text(
+
                         "Number of Team Members",
+
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -169,11 +205,14 @@ class _HaveIdeaMobileViewState
                     const SizedBox(height: 3),
 
                     Center(
+
                       child: SizedBox(
+
                         width: 350,
                         height: 50,
 
                         child: TextFormField(
+
                           controller:
                           teamCountController,
 
@@ -181,20 +220,24 @@ class _HaveIdeaMobileViewState
                           TextInputType.number,
 
                           onChanged: (value) {
+
                             final count =
                                 int.tryParse(
                                     value) ??
                                     0;
 
                             setState(() {
+
                               generateTeamFields(
                                   count);
                             });
                           },
 
                           validator: (value) {
+
                             if (value == null ||
                                 value.isEmpty) {
+
                               return "Number of team members is required";
                             }
 
@@ -206,9 +249,10 @@ class _HaveIdeaMobileViewState
                               return "Invalid number";
                             }
 
-                            if (count < 3 ||
-                                count > 6) {
-                              return "Team size must be between 3 and 6";
+                            if (count < 2 ||
+                                count > 5) {
+
+                              return "Team size must be between 2 and 5";
                             }
 
                             return null;
@@ -216,8 +260,10 @@ class _HaveIdeaMobileViewState
 
                           decoration:
                           InputDecoration(
+
                             enabledBorder:
                             OutlineInputBorder(
+
                               borderRadius:
                               BorderRadius
                                   .circular(
@@ -233,6 +279,7 @@ class _HaveIdeaMobileViewState
 
                             focusedBorder:
                             OutlineInputBorder(
+
                               borderRadius:
                               BorderRadius
                                   .circular(
@@ -258,10 +305,14 @@ class _HaveIdeaMobileViewState
               ),
 
               Column(
+
                 children: List.generate(
                   teamMembers.length,
+
                       (index) {
+
                     return Padding(
+
                       padding:
                       const EdgeInsets
                           .symmetric(
@@ -270,68 +321,34 @@ class _HaveIdeaMobileViewState
                       ),
 
                       child: Row(
+
                         children: [
+
                           Expanded(
+
                             child:
                             _InputTextInline(
-                              "Name",
-                              teamMembers[
-                              index]
-                                  .nameController,
+
+                              "College Code",
+
+                              teamMembers[index]
+                                  .collegeCodeController,
                             ),
                           ),
 
-                          const SizedBox(
-                              width: 10),
+                          const SizedBox(width: 10),
 
                           Expanded(
+
                             child:
                             _InputTextInline(
+
                               "Specialization",
-                              teamMembers[
-                              index]
+
+                              teamMembers[index]
                                   .specializationController,
                             ),
                           ),
-
-                          const SizedBox(
-                              width: 10),
-
-                          Column(
-                            children: [
-                              Checkbox(
-                                value:
-                                teamMembers[
-                                index]
-                                    .isLeader,
-
-                                onChanged:
-                                    (value) {
-                                  setState(() {
-                                    for (var m
-                                    in teamMembers) {
-                                      m.isLeader =
-                                      false;
-                                    }
-
-                                    teamMembers[
-                                    index]
-                                        .isLeader = true;
-                                  });
-                                },
-                              ),
-
-                              const Text(
-                                "Leader",
-                                style:
-                                TextStyle(
-                                  color: Colors
-                                      .white,
-                                  fontSize: 12,
-                                ),
-                              )
-                            ],
-                          )
                         ],
                       ),
                     );
@@ -342,9 +359,12 @@ class _HaveIdeaMobileViewState
               const SizedBox(height: 20),
 
               Center(
+
                 child: ElevatedButton(
+
                   style:
                   ElevatedButton.styleFrom(
+
                     backgroundColor:
                     const Color(
                         0xff4699A8),
@@ -357,52 +377,199 @@ class _HaveIdeaMobileViewState
                     ),
                   ),
 
-                  onPressed: () {
-                    if (!_formKey
-                        .currentState!
+                  onPressed: () async {
+
+                    if (!_formKey.currentState!
                         .validate()) {
                       return;
                     }
 
-                    if (!teamMembers.any(
-                            (m) =>
-                        m.isLeader)) {
-                      ScaffoldMessenger.of(
-                          context)
-                          .showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Please select a Team Leader",
+                    try {
+
+                      final prefs =
+                      await SharedPreferences
+                          .getInstance();
+
+                      final currentCollegeCode =
+                      prefs.getInt(
+                          'collegeCode');
+
+                      final currentStudentId =
+                      prefs.getString(
+                          'studentId');
+
+                      print(
+                          "CURRENT COLLEGE CODE: $currentCollegeCode");
+
+                      print(
+                          "CURRENT STUDENT ID: $currentStudentId");
+
+                      if (currentCollegeCode == null ||
+                          currentStudentId == null) {
+
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(
+
+                          const SnackBar(
+
+                            content: Text(
+                              "Login data not found",
+                            ),
                           ),
+                        );
+
+                        return;
+                      }
+
+                      final exists =
+                      teamMembers.any(
+
+                            (m) =>
+
+                        int.parse(
+                          m.collegeCodeController
+                              .text
+                              .trim(),
+                        )
+
+                            == currentCollegeCode,
+                      );
+
+                      if (!exists) {
+
+                        ScaffoldMessenger.of(
+                            context)
+                            .showSnackBar(
+
+                          const SnackBar(
+
+                            content: Text(
+                              "You must add yourself as a team member",
+                            ),
+                          ),
+                        );
+
+                        return;
+                      }
+
+                      final idea = ProjectIdea(
+
+                        title:
+                        nameController.text
+                            .trim(),
+
+                        description:
+                        introController.text
+                            .trim(),
+
+                        tools:
+                        techController.text
+                            .split(',')
+                            .map((e) =>
+                            e.trim())
+                            .toList(),
+
+                        specialization:
+                        specController.text
+                            .split(',')
+                            .map((e) =>
+                            e.trim())
+                            .toList(),
+
+                        doctorId:
+                        "69f8791a5f9ca3ce23568b60",
+
+                        taId:
+                        "69f7c63b77d75c63a665e53c",
+
+                        year:
+                        DateTime.now().year,
+
+                        team: TeamData(
+
+                          leaderId:
+                          currentStudentId,
+
+                          members: [
+
+                            TeamMemberData(
+
+                              id:
+                              currentStudentId,
+
+                              collegeCode:
+                              currentCollegeCode,
+
+                              specialization:
+                              specController.text
+                                  .trim(),
+                            ),
+
+                            ...teamMembers.map((member) {
+
+                              return TeamMemberData(
+
+                                id: "",
+
+                                collegeCode: int.parse(
+
+                                  member
+                                      .collegeCodeController
+                                      .text
+                                      .trim(),
+                                ),
+
+                                specialization:
+
+                                member
+                                    .specializationController
+                                    .text
+                                    .trim(),
+                              );
+
+                            }).toList(),
+                          ],
                         ),
                       );
 
-                      return;
+                      print(idea.toJson());
+
+                      final result =
+
+                      await IdeaServices()
+                          .checkSimilarity(
+                          idea);
+
+                      print(
+                          "SIMILARITY RESPONSE: $result");
+
+                      context.go(
+
+                        '/similarityCheck',
+
+                        extra: idea,
+                      );
+
+                    } catch (e) {
+
+                      print(e);
+
+                      ScaffoldMessenger.of(
+                          context)
+                          .showSnackBar(
+
+                        SnackBar(
+                          content:
+                          Text("Error: $e"),
+                        ),
+                      );
                     }
-
-                    final projectIdea =
-                    ProjectIdea(
-                      name: nameController
-                          .text
-                          .trim(),
-
-                      introduction:
-                      introController
-                          .text
-                          .trim(),
-
-                      technologies: [],
-                      specializations: [],
-                    );
-
-                    context.go(
-                      '/similarityCheck',
-                      extra: projectIdea,
-                    );
                   },
 
                   child: const Text(
+
                     "Check Similarity",
+
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -426,13 +593,18 @@ Widget _InputTextInline(
     String label,
     TextEditingController controller,
     ) {
+
   return Column(
+
     crossAxisAlignment:
     CrossAxisAlignment.start,
 
     children: [
+
       Text(
+
         label,
+
         style: const TextStyle(
           fontSize: 14,
           color: Colors.white,
@@ -442,11 +614,19 @@ Widget _InputTextInline(
       const SizedBox(height: 5),
 
       TextFormField(
+
         controller: controller,
 
+        keyboardType:
+        label == "College Code"
+            ? TextInputType.number
+            : TextInputType.text,
+
         validator: (value) {
+
           if (value == null ||
               value.trim().isEmpty) {
+
             return "Required";
           }
 
@@ -458,6 +638,7 @@ Widget _InputTextInline(
         ),
 
         decoration: InputDecoration(
+
           contentPadding:
           const EdgeInsets.symmetric(
             horizontal: 10,
@@ -465,6 +646,7 @@ Widget _InputTextInline(
 
           enabledBorder:
           OutlineInputBorder(
+
             borderRadius:
             BorderRadius.circular(10),
 
@@ -476,6 +658,7 @@ Widget _InputTextInline(
 
           focusedBorder:
           OutlineInputBorder(
+
             borderRadius:
             BorderRadius.circular(10),
 
@@ -494,22 +677,29 @@ Widget _InputText(
     String label,
     TextEditingController controller,
     ) {
+
   return Padding(
+
     padding: const EdgeInsets.all(8),
 
     child: Column(
+
       crossAxisAlignment:
       CrossAxisAlignment.start,
 
       children: [
+
         Padding(
+
           padding:
           const EdgeInsets.only(
             left: 18,
           ),
 
           child: Text(
+
             label,
+
             style: const TextStyle(
               fontSize: 18,
               color: Colors.white,
@@ -520,16 +710,21 @@ Widget _InputText(
         const SizedBox(height: 3),
 
         Center(
+
           child: SizedBox(
+
             width: 350,
             height: 50,
 
             child: TextFormField(
+
               controller: controller,
 
               validator: (value) {
+
                 if (value == null ||
                     value.trim().isEmpty) {
+
                   return "$label is required";
                 }
 
@@ -537,6 +732,7 @@ Widget _InputText(
               },
 
               decoration: InputDecoration(
+
                 errorStyle:
                 const TextStyle(
                   color: Colors.red,
@@ -544,6 +740,7 @@ Widget _InputText(
 
                 enabledBorder:
                 OutlineInputBorder(
+
                   borderRadius:
                   BorderRadius
                       .circular(10),
@@ -558,6 +755,7 @@ Widget _InputText(
 
                 focusedBorder:
                 OutlineInputBorder(
+
                   borderRadius:
                   BorderRadius
                       .circular(10),
@@ -583,28 +781,19 @@ Widget _InputText(
 }
 
 class TeamMember {
-  TextEditingController nameController =
+
+  TextEditingController
+  collegeCodeController =
   TextEditingController();
 
   TextEditingController
   specializationController =
   TextEditingController();
 
-  bool isLeader = false;
-
-  Map<String, dynamic> toJson() {
-    return {
-      "name":
-      nameController.text.trim(),
-      "specialization":
-      specializationController.text
-          .trim(),
-      "isLeader": isLeader,
-    };
-  }
-
   void dispose() {
-    nameController.dispose();
+
+    collegeCodeController.dispose();
+
     specializationController.dispose();
   }
 }

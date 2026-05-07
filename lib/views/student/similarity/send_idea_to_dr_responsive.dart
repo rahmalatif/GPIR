@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 
 import '../../../core/design/responsive_layout.dart';
 import '../../model/doctor.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 import 'send_idea_to_dr_mobile.dart';
 import 'send_idea_to_dr_web.dart';
 
@@ -33,3 +33,5 @@ class SendIdeaToDrResponsive
     );
   }
 }
+
+ */

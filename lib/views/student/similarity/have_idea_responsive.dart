@@ -14,7 +14,8 @@ class HaveIdeaResponsive
   Widget build(BuildContext context) {
     return const ResponsiveLayout(
       mobile: HaveIdeaMobileView(),
-      web: HaveIdeaWebView(),
+      web: HaveIdeaMobileView(),
+    //  web: HaveIdeaWebView(),
     );
   }
 }

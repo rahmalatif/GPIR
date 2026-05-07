@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graduation_project_recommender/views/student/recommendation/projects_recommendation_mobile.dart';
 import '../../../core/design/responsive_layout.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 import 'projects_recommendation_web.dart';
 
 class ProjectsRecommendationResponsive

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/design/responsive_layout.dart';
 import '../../model/doctor.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 import 'confirm_submission_mobile.dart';
 import 'confirm_submission_web.dart';
 

@@ -14,7 +14,7 @@ class ApiService {
     required String role,
     String? email,
     int? id,
-    required int phonenumber,
+    required String phonenumber,
   }) async {
     String endpoint;
     Map<String, dynamic> body;

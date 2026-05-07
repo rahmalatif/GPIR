@@ -16,13 +16,7 @@ class StudentDashboardMobile extends StatefulWidget {
 
 class _StudentDashboardMobileState
     extends State<StudentDashboardMobile> {
-  List<TeamMember> members = [
-    TeamMember(name: "Rahma Ahmed", track: ''),
-    TeamMember(name: "Kenzy Mohamed", track: ''),
-    TeamMember(name: "AbdElrahman", track: ''),
-    TeamMember(name: "Omar Zakaria", track: ''),
-    TeamMember(name: "Mohamed Ibrahim", track: ''),
-  ];
+
 
   void haveAnIdeaOnTap() => context.go('/haveIdea');
 
@@ -195,7 +189,7 @@ class _StudentDashboardMobileState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
+       /*     const Padding(
               padding: EdgeInsets.all(8),
               child: Text(
                 "Team Members",
@@ -214,7 +208,7 @@ class _StudentDashboardMobileState
                 child: Row(
                   children: [
                     Text(
-                      m.name,
+                     " m.name",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -223,7 +217,7 @@ class _StudentDashboardMobileState
                   ],
                 ),
               ),
-            ),
+            ),*/
           ],
         ),
       ),

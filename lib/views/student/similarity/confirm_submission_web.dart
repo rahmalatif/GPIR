@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../model/doctor.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 
 class ConfirmSubmissionWebView
     extends StatelessWidget {
@@ -109,7 +109,7 @@ class ConfirmSubmissionWebView
                     children: [
                       Center(
                         child: Text(
-                          projectIdea.name,
+                          projectIdea.title,
 
                           style:
                           const TextStyle(
@@ -215,7 +215,7 @@ class ConfirmSubmissionWebView
                   child: ElevatedButton(
                     onPressed: () async {
                       print(
-                        "CONFIRM INTRO = ${projectIdea.introduction}",
+                        "CONFIRM INTRO = ${projectIdea.description}",
                       );
 
                       print(
@@ -229,15 +229,15 @@ class ConfirmSubmissionWebView
                           "projects")
                           .add({
                         "name":
-                        projectIdea.name,
+                        projectIdea.title,
 
                         "problem":
                         projectIdea
-                            .specializations,
+                            .specialization,
 
                         "introduction":
                         projectIdea
-                            .introduction,
+                            .description,
 
                         "doctorId":
                         doctor.uid,
@@ -263,10 +263,10 @@ class ConfirmSubmissionWebView
 
                         "body":
                         projectIdea
-                            .introduction,
+                            .description,
 
                         "projectName":
-                        projectIdea.name,
+                        projectIdea.title,
 
                         "projectId":
                         projectDoc.id,

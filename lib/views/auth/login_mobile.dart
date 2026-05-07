@@ -34,25 +34,28 @@ class _LoginViewState extends State<LoginMobileView> {
     super.dispose();
   }
 
-
-
   void navigateBasedOnRole(BuildContext context, UserModel user) {
     switch (user.role) {
       case 'student':
         context.go('/studentDashboard', extra: user);
         break;
+
       case 'doctor':
         context.go('/doctorDashboard', extra: user);
         break;
+
       case 'admin':
         context.go('/adminDashboard', extra: user);
         break;
+
       case 'library':
         context.go('/libraryDashboard', extra: user);
         break;
+
       case 'teacher assistant':
         context.go('/taDashboard', extra: user);
         break;
+
       default:
         context.go('/login');
     }
@@ -70,10 +73,9 @@ class _LoginViewState extends State<LoginMobileView> {
   @override
   Widget build(BuildContext context) {
     final isStudent = widget.role == "student";
-
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
-      body: SingleChildScrollView(
+      body:  SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
@@ -89,7 +91,10 @@ class _LoginViewState extends State<LoginMobileView> {
 
               Text(
                 "Login as ${widget.role}",
-                style: const TextStyle(fontSize: 24, color: Colors.white),
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
               ),
 
               const SizedBox(height: 30),
@@ -122,61 +127,67 @@ class _LoginViewState extends State<LoginMobileView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                  onPressed: () async {
-                    final input = emailController.text.trim();
-                    final password = passwordController.text.trim();
+                onPressed: () async {
+                  final input = emailController.text.trim();
+                  final password = passwordController.text.trim();
 
+                  if (input.isEmpty || password.isEmpty) {
+                    showError("Please fill all fields");
+                    return;
+                  }
 
-                    if (input.isEmpty || password.isEmpty) {
-                      showError("Please fill all fields");
-                      return;
-                    }
+                  if (!isStudent && !input.contains("@")) {
+                    showError("Please enter a valid email");
+                    return;
+                  }
 
-                    if (!isStudent && !input.contains("@")) {
-                      showError("Please enter a valid email");
-                      return;
-                    }
+                  final parsedId =
+                  isStudent ? int.tryParse(input) : null;
 
-                    final parsedId = isStudent ? int.tryParse(input) : null;
+                  if (isStudent && parsedId == null) {
+                    showError("ID must be a number");
+                    return;
+                  }
 
-                    if (isStudent && parsedId == null) {
-                      showError("ID must be a number");
-                      return;
-                    }
+                  setState(() {
+                    isLoading = true;
+                  });
 
-                    setState(() {
-                      isLoading = true;
-                    });
+                  try {
+                    final result = await AuthService.login(
+                      role: widget.role,
+                      password: password,
+                      email: isStudent ? null : input,
+                      id: parsedId,
+                    );
 
-                    try {
-                      final result = await AuthService.login(
-                        role: widget.role,
-                        password: password,
-                        email: isStudent ? null : input,
-                        id: parsedId,
+                    if (widget.role == "student") {
+                      context.go(
+                        '/studentDashboard',
+                        extra: result,
                       );
-
-
-                      if (widget.role == "student") {
-                        context.go('/studentDashboard', extra: result);
-                      } else {
-                        final user = result as UserModel;
-                        navigateBasedOnRole(context, user);
-                      }
-
-                    } catch (e) {
-                      showError(e.toString().replaceAll("Exception: ", ""));
+                    } else {
+                      final user = result as UserModel;
+                      navigateBasedOnRole(context, user);
                     }
-                    print(AuthService.token);
+                  } catch (e) {
+                    showError(
+                      e.toString().replaceAll("Exception: ", ""),
+                    );
+                  }
 
-                    if (!mounted) return;
+                  print(AuthService.token);
 
-                    setState(() {
-                      isLoading = false;
-                    });
-                  },
+                  if (!mounted) return;
+
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
                 child: isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
+                    ? const CircularProgressIndicator(
+                  color: Colors.white,
+                )
                     : const Text(
                   "Login",
                   style: TextStyle(color: Colors.white),
@@ -197,6 +208,8 @@ class _LoginViewState extends State<LoginMobileView> {
                   style: TextStyle(color: Colors.white70),
                 ),
               ),
+
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -204,7 +217,6 @@ class _LoginViewState extends State<LoginMobileView> {
     );
   }
 }
-
 
 Widget _InputText(
     String label,
@@ -217,17 +229,23 @@ Widget _InputText(
     child: TextField(
       controller: controller,
       obscureText: isPassword,
-      keyboardType: keyboardType, // ✅ هنا
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: label,
         hintStyle: const TextStyle(color: Colors.white70),
+
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: Color(0xFF4699A8)),
+          borderSide: const BorderSide(
+            color: Color(0xFF4699A8),
+          ),
         ),
+
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: Colors.lightBlueAccent),
+          borderSide: const BorderSide(
+            color: Colors.lightBlueAccent,
+          ),
         ),
       ),
       style: const TextStyle(color: Colors.white),

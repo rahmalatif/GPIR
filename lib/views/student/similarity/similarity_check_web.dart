@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:graduation_project_recommender/services/idea_service.dart';
 
 import '../../../services/new_project_service.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 
 class SimilarityCheckWebView
     extends StatefulWidget {
@@ -21,8 +22,6 @@ class SimilarityCheckWebView
 
 class _SimilarityCheckWebViewState
     extends State<SimilarityCheckWebView> {
-  final NewProjectService _ideaService =
-  NewProjectService();
 
   double similarityPercent = 0;
 
@@ -54,14 +53,11 @@ class _SimilarityCheckWebViewState
   Future<void> fetchSimilarity() async {
     try {
       final result =
-      await NewProjectService
-          .checkSimilarity(
-        widget.projectIdea,
-      );
+      await IdeaServices;
 
       setState(() {
-        similarityPercent =
-            result.similarity.toDouble();
+        similarityPercent =100;
+           // result.similarity.toDouble();
 
         isLoading = false;
       });

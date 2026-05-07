@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../model/team.dart';
+import '../similarity/have_idea_mobile.dart';
 
 class AiRecommendWeb extends StatefulWidget {
   const AiRecommendWeb({super.key});
@@ -15,11 +16,11 @@ class _AiRecommendWebState
     extends State<AiRecommendWeb> {
   int teamSize = 3;
 
-  static List<TeamMember> team = [];
+ /* static List<TeamMember> team = [];
 
   List<String> getSelectedTracks() {
     return team.map((member) => member.track).toList();
-  }
+  }*/
 
   final TextEditingController nameController =
   TextEditingController();
@@ -213,7 +214,7 @@ class _AiRecommendWebState
 
                             return ListTile(
                               title: Text(
-                                member.name,
+                                member.n,
                                 style:
                                 const TextStyle(
                                   color:
@@ -488,4 +489,4 @@ Widget _teamButton({
       ),
     ),
   );
-}
+}*/

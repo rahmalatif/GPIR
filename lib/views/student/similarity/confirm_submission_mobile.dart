@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../model/doctor.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 
 class ConfirmSubmissionMobileView extends StatelessWidget {
   final Doctor doctor;
@@ -82,7 +82,7 @@ class ConfirmSubmissionMobileView extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      projectIdea.name,
+                      projectIdea.title,
 
                       style: const TextStyle(
                         fontSize: 22,
@@ -166,7 +166,7 @@ class ConfirmSubmissionMobileView extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   print(
-                    "CONFIRM INTRO = ${projectIdea.introduction}",
+                    "CONFIRM INTRO = ${projectIdea.description}",
                   );
 
                   print(
@@ -179,13 +179,13 @@ class ConfirmSubmissionMobileView extends StatelessWidget {
                       .collection(
                       "projects")
                       .add({
-                    "name": projectIdea.name,
+                    "name": projectIdea.title,
 
                     "problem":
-                    projectIdea.specializations,
+                    projectIdea.specialization,
 
                     "introduction":
-                    projectIdea.introduction,
+                    projectIdea.description,
 
                     "doctorId":
                     doctor.uid,
@@ -207,10 +207,10 @@ class ConfirmSubmissionMobileView extends StatelessWidget {
                     "New Project Idea 📚",
 
                     "body":
-                    projectIdea.introduction,
+                    projectIdea.description,
 
                     "projectName":
-                    projectIdea.name,
+                    projectIdea.title,
 
                     "projectId":
                     projectDoc.id,

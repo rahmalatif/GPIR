@@ -1,67 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/model/project_idea.dart';
+import 'package:graduation_project_recommender/views/model/teacher_assistant.dart';
 
-import '../../../core/design/app_image.dart';
-import 'choose_supervisor_mobile.dart';
+import 'choose_ta_mobile.dart';
 
-class ChooseSupervisorWebView
-    extends StatefulWidget {
+class ChooseTAWebView extends StatefulWidget {
   final ProjectIdea projectIdea;
 
-  const ChooseSupervisorWebView({
+  const ChooseTAWebView({
     super.key,
     required this.projectIdea,
   });
 
   @override
-  State<ChooseSupervisorWebView>
-  createState() =>
-      _ChooseSupervisorWebViewState();
+  State<ChooseTAWebView> createState() =>
+      _ChooseTAWebViewState();
 }
 
-class _ChooseSupervisorWebViewState
-    extends State<ChooseSupervisorWebView> {
+class _ChooseTAWebViewState
+    extends State<ChooseTAWebView> {
   int? selectedIndex;
 
-  final List<Doctor> doctors = [
-    Doctor(
-      uid: 'wclDUPKYl0dEr8upoa8Zwj5YZA93',
-      apiId: '1',
-      name: "Dr. Ahmed Ibrahim",
-      track: "Backend",
-      slots: 5,
-      status: SupervisorStatus.available,
-      image: "assets/png/man.png",
-      email: "ahmed@gmail.com",
-    ),
-    Doctor(
-      uid: '2',
-      apiId: '2',
-      name: "Dr. Lamiaa",
-      track: "Backend",
-      slots: 0,
-      status: SupervisorStatus.full,
-      image: "assets/png/women.png",
-      email: "lamiaa@gmail.com",
-    ),
-    Doctor(
-      uid: 'AxWYsA5Z03M2qWHj7SZ8M6vI6Ug2',
-      apiId: '3',
-      name: "Dr. Abdelfattah",
+  final List<TeacherAssistant> teachers = [
+    TeacherAssistant(
+      name: "Eng. Noha Ali",
       track: "AI & ML",
-      slots: 1,
-      status: SupervisorStatus.almostFull,
-      image: "assets/png/man.png",
-      email: "abdelfattah@gmail.com",
+      email: '',
+    ),
+
+    TeacherAssistant(
+      name: "Eng. Ahmed",
+      track: "Game Development",
+      email: '',
+    ),
+
+    TeacherAssistant(
+      name: "Eng. Alaa Abouelella",
+      track: "Embedded",
+      email: '',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0F1A),
+      backgroundColor:
+      const Color(0xFF0D0F1A),
 
       body: Center(
         child: SizedBox(
@@ -78,6 +63,7 @@ class _ChooseSupervisorWebViewState
                       Icons.arrow_back,
                       color: Colors.white,
                     ),
+
                     onPressed: () {
                       context.pop();
                     },
@@ -86,10 +72,11 @@ class _ChooseSupervisorWebViewState
                   const SizedBox(width: 10),
 
                   const Text(
-                    "Choose Supervisor",
+                    "Choose TA",
+
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 30,
                       fontWeight:
                       FontWeight.bold,
                     ),
@@ -100,7 +87,8 @@ class _ChooseSupervisorWebViewState
               const SizedBox(height: 20),
 
               const Text(
-                "Select the supervisor for your Idea",
+                "Select the TA for your Idea",
+
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 16,
@@ -111,24 +99,21 @@ class _ChooseSupervisorWebViewState
 
               Expanded(
                 child: ListView.builder(
-                  itemCount: doctors.length,
+                  itemCount: teachers.length,
+
                   itemBuilder:
                       (context, index) {
-                    final doctor =
-                    doctors[index];
+                    final teacher =
+                    teachers[index];
 
-                    return DoctorContainer(
-                      doctor: doctor,
+                    return TeacherContainer(
+                      teacher: teacher,
+
                       isSelected:
                       selectedIndex ==
                           index,
-                      onTap: () {
-                        if (doctor.status ==
-                            SupervisorStatus
-                                .full) {
-                          return;
-                        }
 
+                      onTap: () {
                         setState(() {
                           selectedIndex =
                               index;
@@ -151,8 +136,9 @@ class _ChooseSupervisorWebViewState
                           .showSnackBar(
                         const SnackBar(
                           content: Text(
-                            "Please select a supervisor",
+                            "Please select a TA",
                           ),
+
                           backgroundColor:
                           Colors.red,
                         ),
@@ -163,33 +149,31 @@ class _ChooseSupervisorWebViewState
 
                     context.go(
                       '/sendIdeaToDr',
+
                       extra: {
                         'projectIdea':
-                        widget.projectIdea,
-                        'doctor': doctors[
+                        widget
+                            .projectIdea,
+
+                        'teacher':
+                        teachers[
                         selectedIndex!],
                       },
                     );
                   },
 
                   style:
-                  ElevatedButton.styleFrom(
+                  ElevatedButton
+                      .styleFrom(
                     backgroundColor:
                     const Color(
                         0xFF0D0F1A),
 
-                    side: const BorderSide(
-                      color:
-                      Color(0xff4699A8),
+                    side:
+                    const BorderSide(
+                      color: Color(
+                          0xff4699A8),
                       width: 2,
-                    ),
-
-                    shape:
-                    RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius
-                          .circular(
-                          12),
                     ),
 
                     padding:
@@ -197,10 +181,18 @@ class _ChooseSupervisorWebViewState
                         .symmetric(
                       vertical: 18,
                     ),
+
+                    shape:
+                    RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.circular(
+                          12),
+                    ),
                   ),
 
                   child: const Text(
                     "Select",
+
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight:

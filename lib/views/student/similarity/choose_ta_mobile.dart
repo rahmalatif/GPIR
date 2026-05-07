@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:graduation_project_recommender/views/model/project.dart';
+import 'package:graduation_project_recommender/views/model/project_idea.dart';
 import 'package:graduation_project_recommender/views/model/teacher_assistant.dart';
 
 class ChooseTAMobileView extends StatefulWidget {

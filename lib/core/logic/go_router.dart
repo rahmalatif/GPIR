@@ -27,7 +27,7 @@ import 'package:graduation_project_recommender/views/student/similarity/similari
 import 'package:graduation_project_recommender/views/student/similarity/choose_supervisor_mobile.dart';
 import 'package:graduation_project_recommender/views/student/similarity/send_idea_to_dr_mobile.dart';
 import 'package:graduation_project_recommender/views/student/similarity/confirm_submission_mobile.dart';
-import 'package:graduation_project_recommender/views/model/project.dart';
+import 'package:graduation_project_recommender/views/model/project_idea.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/student/dashboard/student_project_details.dart';
 
@@ -113,16 +113,16 @@ final GoRouter appRouter = GoRouter(
         final projectIdea = state.extra as ProjectIdea;
 
         return ProjectsRecommendationResponsive(
-          tracks: projectIdea.specializations,
-          projectIdea: projectIdea,
+
+          projectIdea: projectIdea, tracks: [],
         );
       },
     ),
 
-    GoRoute(
+  /*  GoRoute(
       path: '/aiRecommend',
       builder: (context, state) => const AiRecommendResponsive(),
-    ),
+    ),*/
     GoRoute(
       path: '/haveIdea',
       builder: (context, state) => const HaveIdeaResponsive(),
@@ -172,7 +172,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-    GoRoute(
+ /*   GoRoute(
       path: '/sendIdeaToDr',
       builder: (context, state) {
         final data = state.extra as Map;
@@ -182,7 +182,7 @@ final GoRouter appRouter = GoRouter(
           projectIdea: data['projectIdea'],
         );
       },
-    ),
+    ),*/
 
     GoRoute(
       path: '/confirmSubmission',

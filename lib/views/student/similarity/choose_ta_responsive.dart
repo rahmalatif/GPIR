@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/design/responsive_layout.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 import 'choose_ta_mobile.dart';
 import 'choose_ta_web.dart';
 
-class ChooseTAResponsive
-    extends StatelessWidget {
+class ChooseTAResponsive extends StatelessWidget {
   final ProjectIdea projectIdea;
 
   const ChooseTAResponsive({
@@ -20,10 +19,7 @@ class ChooseTAResponsive
       mobile: ChooseTAMobileView(
         projectIdea: projectIdea,
       ),
-
-      web: ChooseTAWebView(
-        projectIdea: projectIdea,
-      ),
+      web: ChooseTAWebView(projectIdea: projectIdea),
     );
   }
 }

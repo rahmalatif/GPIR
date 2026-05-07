@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/design/responsive_layout.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 import 'similarity_check_mobile.dart';
 import 'similarity_check_web.dart';
 

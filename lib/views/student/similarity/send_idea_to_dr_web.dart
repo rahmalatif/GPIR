@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/doctor.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 
 class SendIdeaToDrWebView
     extends StatefulWidget {
@@ -31,21 +31,21 @@ class _SendIdeaToDrWebViewState
   bool showingSnack = false;
 
   String get draftNameKey =>
-      "draft_name_${widget.projectIdea.name}";
+      "draft_name_${widget.projectIdea.title}";
 
   String get draftDescKey =>
-      "draft_desc_${widget.projectIdea.name}";
+      "draft_desc_${widget.projectIdea.description}";
 
   @override
   void initState() {
     super.initState();
 
     nameController = TextEditingController(
-      text: widget.projectIdea.name,
+      text: widget.projectIdea.title,
     );
 
     introController = TextEditingController(
-      text: widget.projectIdea.introduction,
+      text: widget.projectIdea.description,
     );
 
     loadDraft();
@@ -399,24 +399,8 @@ class _SendIdeaToDrWebViewState
                       await clearDraft();
 
                       final editedIdea =
-                      ProjectIdea(
-                        name:
-                        nameController
-                            .text,
+                      ProjectIdea(title: '', description: '', tools: [], specialization: [], doctorId: '', taId: '', year: 2026
 
-                        specializations:
-                        widget
-                            .projectIdea
-                            .specializations,
-
-                        technologies:
-                        widget
-                            .projectIdea
-                            .technologies,
-
-                        introduction:
-                        introController
-                            .text,
                       );
 
                       context.go(
@@ -488,3 +472,5 @@ class _SendIdeaToDrWebViewState
     );
   }
 }
+
+ */

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../model/library_project.dart';
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 
 class StudentProjectDetailsView extends StatelessWidget {
   final String projectId;

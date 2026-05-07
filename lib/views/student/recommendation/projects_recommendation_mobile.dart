@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../model/project.dart';
+import '../../model/project_idea.dart';
 
 class ProjectsRecommendationMobileView
     extends StatelessWidget {
