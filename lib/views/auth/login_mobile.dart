@@ -34,6 +34,8 @@ class _LoginViewState extends State<LoginMobileView> {
     super.dispose();
   }
 
+
+
   void navigateBasedOnRole(BuildContext context, UserModel user) {
     switch (user.role) {
       case 'student':
@@ -120,45 +122,59 @@ class _LoginViewState extends State<LoginMobileView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () async {
-                  final input = emailController.text.trim();
-                  final password = passwordController.text.trim();
+                  onPressed: () async {
+                    final input = emailController.text.trim();
+                    final password = passwordController.text.trim();
 
-                  // 🔥 validation
-                  if (input.isEmpty || password.isEmpty) {
-                    showError("Please fill all fields");
-                    return;
-                  }
 
-                  if (!isStudent && !input.contains("@")) {
-                    showError("Please enter a valid email");
-                    return;
-                  }
+                    if (input.isEmpty || password.isEmpty) {
+                      showError("Please fill all fields");
+                      return;
+                    }
 
-                  setState(() {
-                    isLoading = true;
-                  });
+                    if (!isStudent && !input.contains("@")) {
+                      showError("Please enter a valid email");
+                      return;
+                    }
 
-                  try {
-                    final user = await AuthService.login(
-                      role: widget.role,
-                      password: password,
-                      email: isStudent ? null : input,
-                      id: isStudent ? int.parse(input) : null,
-                    );
+                    final parsedId = isStudent ? int.tryParse(input) : null;
 
-                    navigateBasedOnRole(context, user);
+                    if (isStudent && parsedId == null) {
+                      showError("ID must be a number");
+                      return;
+                    }
 
-                  } catch (e) {
-                    showError(e.toString().replaceAll("Exception: ", ""));
-                  }
+                    setState(() {
+                      isLoading = true;
+                    });
 
-                  if (!mounted) return;
+                    try {
+                      final result = await AuthService.login(
+                        role: widget.role,
+                        password: password,
+                        email: isStudent ? null : input,
+                        id: parsedId,
+                      );
 
-                  setState(() {
-                    isLoading = false;
-                  });
-                },
+
+                      if (widget.role == "student") {
+                        context.go('/studentDashboard', extra: result);
+                      } else {
+                        final user = result as UserModel;
+                        navigateBasedOnRole(context, user);
+                      }
+
+                    } catch (e) {
+                      showError(e.toString().replaceAll("Exception: ", ""));
+                    }
+                    print(AuthService.token);
+
+                    if (!mounted) return;
+
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
                 child: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
@@ -189,7 +205,7 @@ class _LoginViewState extends State<LoginMobileView> {
   }
 }
 
-// 🔥 updated input widget
+
 Widget _InputText(
     String label,
     bool isPassword,

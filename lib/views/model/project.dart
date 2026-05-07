@@ -1,22 +1,15 @@
 class ProjectIdea {
   final String name;
-  final String specializations;
-  final String features;
-  final String technologies;
   final String introduction;
-  final List teamMembers;
-  final List<String> requiredTracks;
+  final List<String> technologies;
+  final List<String> specializations;
 
 
-  ProjectIdea( {
+  ProjectIdea({
     required this.name,
-    required this.specializations,
-    required this.features,
-    required this.technologies,
-    required this.teamMembers,
-    required this.requiredTracks,
     required this.introduction,
+    required this.technologies,
+    required this.specializations,
+
   });
-
-
 }

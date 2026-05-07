@@ -14,39 +14,36 @@ class RoleSelectionMobileView extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 60),
-
               AppImage(
                 image: "assets/png/logo.png",
                 height: 184,
                 width: 184,
               ),
-
               const SizedBox(height: 20),
-
               const Text(
                 "Welcome",
                 style: TextStyle(
-                    fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white
-                ),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
-
               const SizedBox(height: 10),
-
               const Text(
                 "Please select your role",
                 style: TextStyle(fontSize: 20, color: Colors.white70),
               ),
-
               const SizedBox(height: 30),
-
               _selectButton(context, "🎓 Student", "student"),
               const SizedBox(height: 30),
-              _selectButton(context, "👨‍🏫 Doctor", "doctor"),
+              _selectButton(context, "💼 Doctor", "doctor"),
               const SizedBox(height: 30),
               _selectButton(context, "🧾 Admin", "admin"),
               const SizedBox(height: 30),
               _selectButton(context, "📚 Library", "library"),
-
+              const SizedBox(
+                height: 30,
+              ),
+              _selectButton(context, "🧑‍🏫 Teacher Assistant", "Teacher Assistant"),
             ],
           ),
         ),
@@ -69,13 +66,10 @@ Widget _selectButton(BuildContext context, String role, String argument) {
         '/login',
         extra: argument,
       );
-
     },
     child: Text(
       role,
       style: const TextStyle(fontSize: 18, color: Colors.black),
-
     ),
-
   );
 }
