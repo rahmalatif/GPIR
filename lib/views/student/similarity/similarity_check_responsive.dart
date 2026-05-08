@@ -19,7 +19,9 @@ class SimilarityCheckResponsive
     return ResponsiveLayout(
       mobile:
       SimilarityCheckMobileView(
-         result: {},
+         result: {
+           
+         }, projectIdea: projectIdea,
       ),
 
       web: SimilarityCheckWebView(

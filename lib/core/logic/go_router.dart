@@ -131,30 +131,55 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/similarityCheck',
       builder: (context, state) {
-        final result = state.extra as Map<String, dynamic>;
+
+        final data = state.extra as Map<String, dynamic>;
 
         return SimilarityCheckMobileView(
-          result: result,
+          result: data['result'],
+          projectIdea: data['projectIdea'],
         );
       },
     ),
+
+
     GoRoute(
+
       path: '/chooseTA',
+
       builder: (context, state) {
-        final projectIdea = state.extra as ProjectIdea;
+
+        final data =
+        state.extra
+        as Map<String, dynamic>;
 
         return ChooseTAResponsive(
-          projectIdea: projectIdea,
+
+          projectIdea:
+          data['projectIdea'],
+
+          doctor:
+          data['doctor'],
         );
       },
     ),
+
+
     GoRoute(
       path: '/chooseSupervisor',
       builder: (context, state) {
-        final projectIdea = state.extra as ProjectIdea;
+        final project = state.extra as ProjectIdea?;
 
+        if (project == null) {
+          return const Scaffold(
+            body: Center(
+              child: Text(
+                "No Data",
+              ),
+            ),
+          );
+        }
         return ChooseSupervisorResponsive(
-          projectIdea: projectIdea,
+          projectIdea: project,
         );
       },
     ),

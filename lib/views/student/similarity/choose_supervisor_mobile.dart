@@ -4,6 +4,7 @@ import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/model/project_idea.dart';
 
 import '../../../core/design/app_image.dart';
+import '../../../services/doctor_service.dart';
 
 class ChooseSupervisorMobileView extends StatefulWidget {
   final ProjectIdea projectIdea;
@@ -11,6 +12,7 @@ class ChooseSupervisorMobileView extends StatefulWidget {
   const ChooseSupervisorMobileView({
     super.key,
     required this.projectIdea,
+    required doctor,
   });
 
   @override
@@ -22,44 +24,29 @@ class _ChooseSupervisorMobileViewState
     extends State<ChooseSupervisorMobileView> {
   int? selectedIndex;
 
-  final List<Doctor> doctors = [
-    Doctor(
-      uid: 'wclDUPKYl0dEr8upoa8Zwj5YZA93',
-      apiId: '1',
-      name: "Dr. Ahmed Ibrahim",
-      track: "Backend",
-      slots: 5,
-      status: SupervisorStatus.available,
-      image: "assets/png/man.png",
-      email: "ahmed@gmail.com",
-    ),
-    Doctor(
-      uid: '2',
-      apiId: '2',
-      name: "Dr. Lamiaa",
-      track: "Backend",
-      slots: 0,
-      status: SupervisorStatus.full,
-      image: "assets/png/women.png",
-      email: "lamiaa@gmail.com",
-    ),
-    Doctor(
-      uid: 'AxWYsA5Z03M2qWHj7SZ8M6vI6Ug2',
-      apiId: '3',
-      name: "Dr. Abdelfattah",
-      track: "AI & ML",
-      slots: 1,
-      status: SupervisorStatus.almostFull,
-      image: "assets/png/man.png",
-      email: "abdelfattah@gmail.com",
-    ),
-  ];
+  List<dynamic> doctors = [];
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadDoctors();
+  }
+
+  Future<void> loadDoctors() async {
+    doctors = await DoctorService.getDoctors();
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
-
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
         elevation: 0,
@@ -80,11 +67,9 @@ class _ChooseSupervisorMobileViewState
           },
         ),
       ),
-
       body: Column(
         children: [
           const SizedBox(height: 16),
-
           const Text(
             "Select the supervisor for your Idea",
             style: TextStyle(
@@ -92,40 +77,35 @@ class _ChooseSupervisorMobileViewState
               fontSize: 12,
             ),
           ),
-
           const SizedBox(height: 20),
-
           Expanded(
-            child: ListView.builder(
-              itemCount: doctors.length,
-              itemBuilder: (context, index) {
-                final doctor = doctors[index];
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: doctors.length,
+                    itemBuilder: (context, index) {
+                      final doctor = doctors[index];
 
-                return DoctorContainer(
-                  doctor: doctor,
-                  isSelected: selectedIndex == index,
-                  onTap: () {
-                    if (doctor.status ==
-                        SupervisorStatus.full) {
-                      return;
-                    }
-
-                    setState(() {
-                      selectedIndex = index;
-                    });
-                  },
-                );
-              },
-            ),
+                      return DoctorContainer(
+                        doctor: doctor,
+                        isSelected: selectedIndex == index,
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                      );
+                    },
+                  ),
           ),
-
           SizedBox(
             width: 300,
             child: ElevatedButton(
               onPressed: () {
                 if (selectedIndex == null) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(
                         "Please select a supervisor",
@@ -138,31 +118,23 @@ class _ChooseSupervisorMobileViewState
                 }
 
                 context.go(
-                  '/sendIdeaToDr',
+                  '/chooseTA',
                   extra: {
-                    'projectIdea':
-                    widget.projectIdea,
-                    'doctor':
-                    doctors[selectedIndex!],
+                    'projectIdea': widget.projectIdea,
+                    'doctor': doctors[selectedIndex!],
                   },
                 );
               },
-
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                const Color(0xFF0D0F1A),
-
+                backgroundColor: const Color(0xFF0D0F1A),
                 side: const BorderSide(
                   color: Color(0xff4699A8),
                   width: 2,
                 ),
-
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-
               child: const Text(
                 "Select",
                 style: TextStyle(
@@ -173,7 +145,6 @@ class _ChooseSupervisorMobileViewState
               ),
             ),
           ),
-
           const SizedBox(height: 16),
         ],
       ),
@@ -182,7 +153,7 @@ class _ChooseSupervisorMobileViewState
 }
 
 class DoctorContainer extends StatelessWidget {
-  final Doctor doctor;
+  final dynamic doctor;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -197,83 +168,63 @@ class DoctorContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-
       child: Container(
         margin: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 6,
         ),
-
         padding: const EdgeInsets.all(12),
-
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xff4699A8)
-              .withOpacity(0.15)
+              ? const Color(0xff4699A8).withOpacity(0.15)
               : Colors.transparent,
-
           border: Border.all(
-            color: isSelected
-                ? const Color(0xff4699A8)
-                : Colors.white24,
+            color: isSelected ? const Color(0xff4699A8) : Colors.white24,
             width: isSelected ? 2 : 1,
           ),
-
-          borderRadius:
-          BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12),
         ),
-
         child: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 24,
-              backgroundColor:
-              Colors.transparent,
+              backgroundColor: Colors.transparent,
               child: AppImage(
-                image: doctor.image,
+                image: "assets/png/man.png",
               ),
             ),
-
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
-
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doctor.name,
+                    doctor['name'] ?? '',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
-                      fontWeight:
-                      FontWeight.w700,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-
                   const SizedBox(height: 4),
-
                   Text(
-                    doctor.track,
+                    doctor['specialization'] ?? 'No Specialization',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 10,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
-                  Row(
+                  /*      Row(
                     children: [
                       const Text(
-                        "Available slots:",
+
+               //   doctor['available_slots'],
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
                         ),
                       ),
-
                       Text(
                         " ${doctor.slots}",
                         style: const TextStyle(
@@ -282,37 +233,21 @@ class DoctorContainer extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
+                  ),*/
                 ],
               ),
             ),
-
             Container(
-              padding:
-              const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 8,
                 vertical: 4,
               ),
-
               decoration: BoxDecoration(
-                color:
-                _statusColor(doctor.status)
-                    .withOpacity(0.2),
-
-                borderRadius:
-                BorderRadius.circular(8),
+                color: Colors.green.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
               ),
-
-              child: Text(
-                _status(doctor.status),
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight:
-                  FontWeight.bold,
-                  color: _statusColor(
-                    doctor.status,
-                  ),
-                ),
+              child: const Text(
+                "Available",
               ),
             ),
           ],
@@ -321,8 +256,7 @@ class DoctorContainer extends StatelessWidget {
     );
   }
 
-  static String _status(
-      SupervisorStatus status) {
+  static String _status(SupervisorStatus status) {
     switch (status) {
       case SupervisorStatus.available:
         return "Available";
@@ -335,8 +269,7 @@ class DoctorContainer extends StatelessWidget {
     }
   }
 
-  static Color _statusColor(
-      SupervisorStatus status) {
+  static Color _statusColor(SupervisorStatus status) {
     switch (status) {
       case SupervisorStatus.available:
         return Colors.green;

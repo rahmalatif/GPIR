@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:graduation_project_recommender/views/model/project_idea.dart';
-import 'package:graduation_project_recommender/views/model/teacher_assistant.dart';
+
+import '../../../services/ta_service.dart';
+import '../../model/project_idea.dart';
 
 class ChooseTAMobileView extends StatefulWidget {
+
   final ProjectIdea projectIdea;
 
+  final dynamic doctor;
+
   const ChooseTAMobileView({
+
     super.key,
+
     required this.projectIdea,
+
+    required this.doctor,
   });
 
   @override
@@ -18,41 +26,49 @@ class ChooseTAMobileView extends StatefulWidget {
 
 class _ChooseTAMobileViewState
     extends State<ChooseTAMobileView> {
+
   int? selectedIndex;
 
-  final List<TeacherAssistant> teachers = [
-    TeacherAssistant(
-      name: "Eng. Noha Ali",
-      track: "AI & ML",
-      email: '',
-    ),
+  List<dynamic> tas = [];
 
-    TeacherAssistant(
-      name: "Eng. Ahmed",
-      track: "Game Development",
-      email: '',
-    ),
+  bool isLoading = true;
 
-    TeacherAssistant(
-      name: "Eng. Alaa Abouelella",
-      track: "Embedded",
-      email: '',
-    ),
-  ];
+  @override
+  void initState() {
+
+    super.initState();
+
+    loadTAs();
+  }
+
+  Future<void> loadTAs() async {
+
+    tas =
+    await TAService.getTAs();
+
+    setState(() {
+
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       backgroundColor:
       const Color(0xFF0D0F1A),
 
       appBar: AppBar(
+
         backgroundColor:
         const Color(0xFF0D0F1A),
 
         elevation: 0,
 
         title: const Text(
+
           "Choose TA",
 
           style: TextStyle(
@@ -62,22 +78,27 @@ class _ChooseTAMobileViewState
         ),
 
         leading: IconButton(
+
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
 
           onPressed: () {
+
             context.pop();
           },
         ),
       ),
 
       body: Column(
+
         children: [
+
           const SizedBox(height: 16),
 
           const Text(
+
             "Select the TA for your Idea",
 
             style: TextStyle(
@@ -89,25 +110,39 @@ class _ChooseTAMobileViewState
           const SizedBox(height: 20),
 
           Expanded(
-            child: ListView.builder(
-              itemCount: teachers.length,
+
+            child:
+
+            isLoading
+
+                ? const Center(
+              child:
+              CircularProgressIndicator(),
+            )
+
+                : ListView.builder(
+
+              itemCount:
+              tas.length,
 
               itemBuilder:
                   (context, index) {
-                final teacher =
-                teachers[index];
 
-                return TeacherContainer(
-                  teacher: teacher,
+                final ta =
+                tas[index];
+
+                return TAContainer(
+
+                  ta: ta,
 
                   isSelected:
-                  selectedIndex ==
-                      index,
+                  selectedIndex == index,
 
                   onTap: () {
+
                     setState(() {
-                      selectedIndex =
-                          index;
+
+                      selectedIndex = index;
                     });
                   },
                 );
@@ -116,16 +151,21 @@ class _ChooseTAMobileViewState
           ),
 
           SizedBox(
+
             width: 300,
 
             child: ElevatedButton(
+
               onPressed: () {
-                if (selectedIndex ==
-                    null) {
+
+                if (selectedIndex == null) {
+
                   ScaffoldMessenger.of(
-                      context)
-                      .showSnackBar(
+                    context,
+                  ).showSnackBar(
+
                     const SnackBar(
+
                       content: Text(
                         "Please select a TA",
                       ),
@@ -139,47 +179,56 @@ class _ChooseTAMobileViewState
                 }
 
                 context.go(
-                  '/sendIdeaToDr',
+
+                  '/confirmSubmission',
 
                   extra: {
+
                     'projectIdea':
                     widget.projectIdea,
 
-                    'teacher':
-                    teachers[
-                    selectedIndex!],
+                    'doctor':
+                    widget.doctor,
+
+                    'ta':
+                    tas[selectedIndex!],
                   },
                 );
               },
 
               style:
               ElevatedButton.styleFrom(
-                backgroundColor:
-                const Color(
-                    0xFF0D0F1A),
 
-                side:
-                const BorderSide(
+                backgroundColor:
+                const Color(0xFF0D0F1A),
+
+                side: const BorderSide(
+
                   color:
                   Color(0xff4699A8),
+
                   width: 2,
                 ),
 
                 shape:
                 RoundedRectangleBorder(
+
                   borderRadius:
-                  BorderRadius.circular(
-                      12),
+                  BorderRadius.circular(12),
                 ),
               ),
 
               child: const Text(
+
                 "Select",
 
                 style: TextStyle(
+
                   fontSize: 16,
+
                   fontWeight:
                   FontWeight.bold,
+
                   color: Colors.white,
                 ),
               ),
@@ -193,29 +242,38 @@ class _ChooseTAMobileViewState
   }
 }
 
-class TeacherContainer
+class TAContainer
     extends StatelessWidget {
-  final TeacherAssistant teacher;
+
+  final dynamic ta;
 
   final bool isSelected;
 
   final VoidCallback onTap;
 
-  const TeacherContainer({
+  const TAContainer({
+
     super.key,
-    required this.teacher,
+
+    required this.ta,
+
     required this.isSelected,
+
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
+
       onTap: onTap,
 
       child: Container(
+
         margin:
         const EdgeInsets.symmetric(
+
           horizontal: 16,
           vertical: 6,
         ),
@@ -224,16 +282,22 @@ class TeacherContainer
         const EdgeInsets.all(12),
 
         decoration: BoxDecoration(
+
           color: isSelected
+
               ? const Color(
               0xff4699A8)
               .withOpacity(.15)
+
               : Colors.transparent,
 
           border: Border.all(
+
             color: isSelected
+
                 ? const Color(
                 0xff4699A8)
+
                 : Colors.white24,
 
             width:
@@ -245,39 +309,61 @@ class TeacherContainer
         ),
 
         child: Row(
+
           children: [
+
+            const CircleAvatar(
+
+              radius: 24,
+
+              backgroundColor:
+              Colors.transparent,
+
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+              ),
+            ),
+
             const SizedBox(width: 12),
 
             Expanded(
+
               child: Column(
+
                 crossAxisAlignment:
-                CrossAxisAlignment
-                    .start,
+                CrossAxisAlignment.start,
 
                 children: [
+
                   Text(
-                    teacher.name,
+
+                    ta['name'],
 
                     style:
                     const TextStyle(
+
                       fontSize: 18,
-                      color:
-                      Colors.white,
+
+                      color: Colors.white,
+
                       fontWeight:
                       FontWeight.w700,
                     ),
                   ),
 
-                  const SizedBox(
-                      height: 4),
+                  const SizedBox(height: 4),
 
                   Text(
-                    teacher.track,
+
+                    ta['specialization'] ??
+                        '',
 
                     style:
                     const TextStyle(
-                      color:
-                      Colors.grey,
+
+                      color: Colors.grey,
+
                       fontSize: 10,
                     ),
                   ),
