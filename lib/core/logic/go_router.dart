@@ -113,13 +113,13 @@ final GoRouter appRouter = GoRouter(
         final projectIdea = state.extra as ProjectIdea;
 
         return ProjectsRecommendationResponsive(
-
-          projectIdea: projectIdea, tracks: [],
+          projectIdea: projectIdea,
+          tracks: [],
         );
       },
     ),
 
-  /*  GoRoute(
+    /*  GoRoute(
       path: '/aiRecommend',
       builder: (context, state) => const AiRecommendResponsive(),
     ),*/
@@ -131,10 +131,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/similarityCheck',
       builder: (context, state) {
-        final projectIdea = state.extra as ProjectIdea;
+        final result = state.extra as Map<String, dynamic>;
 
-        return SimilarityCheckResponsive(
-          projectIdea: projectIdea,
+        return SimilarityCheckMobileView(
+          result: result,
         );
       },
     ),
@@ -172,7 +172,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
- /*   GoRoute(
+    /*   GoRoute(
       path: '/sendIdeaToDr',
       builder: (context, state) {
         final data = state.extra as Map;
@@ -213,18 +213,15 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: '/drPendingIdeas',
-      builder: (context, state) =>
-      const PendingIdeasResponsive(),
+      builder: (context, state) => const PendingIdeasResponsive(),
     ),
     GoRoute(
       path: '/doctorProjects',
-      builder: (context, state) =>
-      const ProjectsResponsive(),
+      builder: (context, state) => const ProjectsResponsive(),
     ),
     GoRoute(
       path: '/rejectIdea',
-      builder: (context, state) =>
-      const RejectIdeaResponsive(),
+      builder: (context, state) => const RejectIdeaResponsive(),
     ),
     GoRoute(
       path: '/ideaDetails',
@@ -241,7 +238,6 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-
 
     GoRoute(
       path: '/addIdea',

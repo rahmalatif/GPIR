@@ -6,7 +6,7 @@ import '../../views/model/user_model.dart';
 
 class ApiService {
   static const String baseUrl =
-      "https://stipulatory-semidefensively-eveline.ngrok-free.dev";
+      "https://graduation-backend-orcin.vercel.app";
 
   static Future<http.Response> register({
     required String name,
@@ -49,7 +49,7 @@ class ApiService {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(body),
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
 
       print("REGISTER RESPONSE: ${response.body}");
 
@@ -97,14 +97,16 @@ class ApiService {
         },
         body: jsonEncode(body),
       )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
 
       print("LOGIN RESPONSE: ${response.body}");
 
       return response;
     } catch (e) {
       print("LOGIN ERROR: $e");
+
       throw Exception("Server not responding");
+
     }
   }
 

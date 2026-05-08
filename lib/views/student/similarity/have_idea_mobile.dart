@@ -6,7 +6,6 @@ import '../../../services/idea_service.dart';
 import '../../model/project_idea.dart';
 
 class HaveIdeaMobileView extends StatefulWidget {
-
   const HaveIdeaMobileView({super.key});
 
   @override
@@ -69,11 +68,15 @@ class _HaveIdeaMobileViewState
     }
 
     teamMembers =
-        List.generate(count, (_) => TeamMember());
+        List.generate(
+            count,
+                (_) => TeamMember());
   }
 
   @override
   Widget build(BuildContext context) {
+
+    print("HAVE IDEA SCREEN OPENED");
 
     return Scaffold(
 
@@ -95,7 +98,8 @@ class _HaveIdeaMobileViewState
           ),
 
           onPressed: () =>
-              context.go('/studentDashboard'),
+              context.go(
+                  '/studentDashboard'),
         ),
       ),
 
@@ -265,8 +269,7 @@ class _HaveIdeaMobileViewState
                             OutlineInputBorder(
 
                               borderRadius:
-                              BorderRadius
-                                  .circular(
+                              BorderRadius.circular(
                                   10),
 
                               borderSide:
@@ -281,8 +284,7 @@ class _HaveIdeaMobileViewState
                             OutlineInputBorder(
 
                               borderRadius:
-                              BorderRadius
-                                  .circular(
+                              BorderRadius.circular(
                                   10),
 
                               borderSide:
@@ -307,6 +309,7 @@ class _HaveIdeaMobileViewState
               Column(
 
                 children: List.generate(
+
                   teamMembers.length,
 
                       (index) {
@@ -379,10 +382,19 @@ class _HaveIdeaMobileViewState
 
                   onPressed: () async {
 
+                    print("BUTTON CLICKED");
+
                     if (!_formKey.currentState!
                         .validate()) {
+
+                      print(
+                          "VALIDATION FAILED");
+
                       return;
                     }
+
+                    print(
+                        "VALIDATION PASSED");
 
                     try {
 
@@ -394,20 +406,17 @@ class _HaveIdeaMobileViewState
                       prefs.getInt(
                           'collegeCode');
 
-                      final currentStudentId =
-                      prefs.getString(
-                          'studentId');
-
                       print(
                           "CURRENT COLLEGE CODE: $currentCollegeCode");
 
-                      print(
-                          "CURRENT STUDENT ID: $currentStudentId");
+                      if (currentCollegeCode ==
+                          null) {
 
-                      if (currentCollegeCode == null ||
-                          currentStudentId == null) {
+                        print(
+                            "NO COLLEGE CODE");
 
-                        ScaffoldMessenger.of(context)
+                        ScaffoldMessenger.of(
+                            context)
                             .showSnackBar(
 
                           const SnackBar(
@@ -432,8 +441,12 @@ class _HaveIdeaMobileViewState
                               .trim(),
                         )
 
-                            == currentCollegeCode,
+                            ==
+                            currentCollegeCode,
                       );
+
+                      print(
+                          "LEADER EXISTS: $exists");
 
                       if (!exists) {
 
@@ -444,7 +457,7 @@ class _HaveIdeaMobileViewState
                           const SnackBar(
 
                             content: Text(
-                              "You must add yourself as a team member",
+                              "Leader must be included in team members",
                             ),
                           ),
                         );
@@ -452,7 +465,8 @@ class _HaveIdeaMobileViewState
                         return;
                       }
 
-                      final idea = ProjectIdea(
+                      final idea =
+                      ProjectIdea(
 
                         title:
                         nameController.text
@@ -465,15 +479,13 @@ class _HaveIdeaMobileViewState
                         tools:
                         techController.text
                             .split(',')
-                            .map((e) =>
-                            e.trim())
+                            .map((e) => e.trim())
                             .toList(),
 
                         specialization:
                         specController.text
                             .split(',')
-                            .map((e) =>
-                            e.trim())
+                            .map((e) => e.trim())
                             .toList(),
 
                         doctorId:
@@ -487,58 +499,52 @@ class _HaveIdeaMobileViewState
 
                         team: TeamData(
 
-                          leaderId:
-                          currentStudentId,
+                          leaderCollegeCode:
+                          currentCollegeCode,
 
-                          members: [
+                          members:
 
-                            TeamMemberData(
+                          teamMembers.map(
+                                  (member) {
 
-                              id:
-                              currentStudentId,
+                                return TeamMemberData(
 
-                              collegeCode:
-                              currentCollegeCode,
+                                  collegeCode:
+                                  int.parse(
 
-                              specialization:
-                              specController.text
-                                  .trim(),
-                            ),
+                                    member
+                                        .collegeCodeController
+                                        .text
+                                        .trim(),
+                                  ),
 
-                            ...teamMembers.map((member) {
-
-                              return TeamMemberData(
-
-                                id: "",
-
-                                collegeCode: int.parse(
+                                  specialization:
 
                                   member
-                                      .collegeCodeController
+                                      .specializationController
                                       .text
                                       .trim(),
-                                ),
+                                );
 
-                                specialization:
-
-                                member
-                                    .specializationController
-                                    .text
-                                    .trim(),
-                              );
-
-                            }).toList(),
-                          ],
+                              }).toList(),
                         ),
                       );
 
-                      print(idea.toJson());
+                      print(
+                          "IDEA CREATED");
+
+                      print(
+                          idea.toJson());
+
+                      print("BEFORE API");
 
                       final result =
 
                       await IdeaServices()
                           .checkSimilarity(
                           idea);
+
+                      print("AFTER API");
 
                       print(
                           "SIMILARITY RESPONSE: $result");
@@ -547,12 +553,15 @@ class _HaveIdeaMobileViewState
 
                         '/similarityCheck',
 
-                        extra: idea,
+                        extra: result,
                       );
+
+                      print(
+                          "NAVIGATION DONE");
 
                     } catch (e) {
 
-                      print(e);
+                      print("ERROR: $e");
 
                       ScaffoldMessenger.of(
                           context)
@@ -650,7 +659,8 @@ Widget _InputTextInline(
             borderRadius:
             BorderRadius.circular(10),
 
-            borderSide: const BorderSide(
+            borderSide:
+            const BorderSide(
               color: Color(0xff4699A8),
               width: 2,
             ),
@@ -662,7 +672,8 @@ Widget _InputTextInline(
             borderRadius:
             BorderRadius.circular(10),
 
-            borderSide: const BorderSide(
+            borderSide:
+            const BorderSide(
               color: Color(0xff4699A8),
               width: 2,
             ),
@@ -680,7 +691,8 @@ Widget _InputText(
 
   return Padding(
 
-    padding: const EdgeInsets.all(8),
+    padding:
+    const EdgeInsets.all(8),
 
     child: Column(
 
@@ -731,7 +743,8 @@ Widget _InputText(
                 return null;
               },
 
-              decoration: InputDecoration(
+              decoration:
+              InputDecoration(
 
                 errorStyle:
                 const TextStyle(
@@ -742,8 +755,8 @@ Widget _InputText(
                 OutlineInputBorder(
 
                   borderRadius:
-                  BorderRadius
-                      .circular(10),
+                  BorderRadius.circular(
+                      10),
 
                   borderSide:
                   const BorderSide(
@@ -757,8 +770,8 @@ Widget _InputText(
                 OutlineInputBorder(
 
                   borderRadius:
-                  BorderRadius
-                      .circular(10),
+                  BorderRadius.circular(
+                      10),
 
                   borderSide:
                   const BorderSide(
