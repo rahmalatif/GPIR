@@ -4,18 +4,26 @@ import '../../../core/design/responsive_layout.dart';
 import 'have_idea_mobile.dart';
 import 'have_idea_web.dart';
 
-class HaveIdeaResponsive
-    extends StatelessWidget {
+class HaveIdeaResponsive extends StatelessWidget {
+  final dynamic recommendedIdea;
   const HaveIdeaResponsive({
-    super.key,
+    super.key, this.recommendedIdea,
   });
 
   @override
   Widget build(BuildContext context) {
-    return const ResponsiveLayout(
-      mobile: HaveIdeaMobileView(),
-      web: HaveIdeaMobileView(),
-    //  web: HaveIdeaWebView(),
+    return ResponsiveLayout(
+        mobile:
+        HaveIdeaMobileView(
+
+        recommendedIdea:
+        recommendedIdea,
+        ),
+      web: HaveIdeaMobileView(
+        recommendedIdea:
+        recommendedIdea,
+      ),
+      //  web: HaveIdeaWebView(),
     );
   }
 }

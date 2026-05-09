@@ -5,8 +5,7 @@ import '../../views/model/student.dart';
 import '../../views/model/user_model.dart';
 
 class ApiService {
-  static const String baseUrl =
-      "https://graduation-backend-orcin.vercel.app";
+  static const String baseUrl = "https://graduation-backend-orcin.vercel.app";
 
   static Future<http.Response> register({
     required String name,
@@ -25,7 +24,7 @@ class ApiService {
         "name": name,
         "collegeCode": id,
         "password": password,
-        "phone" : phonenumber
+        "phone": phonenumber
       };
     } else {
       endpoint = "/api/users/add";
@@ -45,10 +44,10 @@ class ApiService {
     try {
       final response = await http
           .post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(body),
-      )
+            url,
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode(body),
+          )
           .timeout(const Duration(seconds: 30));
 
       print("REGISTER RESPONSE: ${response.body}");
@@ -78,25 +77,25 @@ class ApiService {
 
     final body = role == "student"
         ? {
-      "collegeCode": id,
-      "password": password,
-    }
+            "collegeCode": id,
+            "password": password,
+          }
         : {
-      "email": email,
-      "password": password,
-    };
+            "email": email,
+            "password": password,
+          };
 
     print("LOGIN BODY: $body");
 
     try {
       final response = await http
           .post(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode(body),
-      )
+            url,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: jsonEncode(body),
+          )
           .timeout(const Duration(seconds: 30));
 
       print("LOGIN RESPONSE: ${response.body}");
@@ -106,16 +105,22 @@ class ApiService {
       print("LOGIN ERROR: $e");
 
       throw Exception("Server not responding");
-
     }
   }
 
   static Future<Map<String, dynamic>> addProject({
-    required String token,
     required Map<String, dynamic> projectData,
   }) async {
+    final token = AuthService.token;
+
+    print(
+      "PROJECT TOKEN: $token",
+    );
+
     final response = await http.post(
-      Uri.parse('$baseUrl/api/projects/add'),
+      Uri.parse(
+        '$baseUrl/api/projects/add',
+      ),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -123,10 +128,18 @@ class ApiService {
       body: jsonEncode(projectData),
     );
 
-    print("REQUEST BODY: $projectData");
-    print("STATUS CODE: ${response.statusCode}");
-    print("RESPONSE: ${response.body}");
+    print("REQUEST BODY: $projectData",
+    );
 
-    return jsonDecode(response.body);
+    print("STATUS CODE: ${response.statusCode}",
+    );
+
+    print(
+      "RESPONSE: ${response.body}",
+    );
+
+    return jsonDecode(
+      response.body,
+    );
   }
 }

@@ -57,6 +57,14 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
       "SIMILAR PROJECTS: "
       "$projects",
     );
+
+    if (similarityPercent >= 80) {
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted) {
+          context.go('/studentDashboard');
+        }
+      });
+    }
   }
 
   @override
@@ -202,7 +210,6 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                /// TITLE
                                 Text(
                                   project['title']?.toString() ??
                                       "Unknown Project",
@@ -215,7 +222,6 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
 
                                 const SizedBox(height: 12),
 
-                                /// DOCTOR
                                 Row(
                                   children: [
                                     const Icon(
@@ -238,7 +244,6 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
 
                                 const SizedBox(height: 8),
 
-                                /// YEAR
                                 Row(
                                   children: [
                                     const Icon(
@@ -259,32 +264,7 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
 
                                 const SizedBox(height: 12),
 
-                                /// BAR
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: LinearProgressIndicator(
-                                    minHeight: 10,
-                                    value: ((project['similarity'] ?? 0)
-                                                .toDouble())
-                                            .clamp(0, 100) /
-                                        100,
-                                    backgroundColor: Colors.white12,
-                                    color: Colors.red,
-                                  ),
-                                ),
 
-                                const SizedBox(height: 8),
-
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    "${project['similarity'] ?? 0}% match",
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -292,7 +272,6 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
                       },
                     ),
 
-                  /// EMPTY
                   if (projects.isEmpty)
                     const Text(
                       "No similar projects found",
@@ -304,7 +283,7 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
 
                   const SizedBox(height: 30),
 
-                  /// BUTTON
+
                   if (similarityPercent < 80)
                     SizedBox(
                       width: double.infinity,

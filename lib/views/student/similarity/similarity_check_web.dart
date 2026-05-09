@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/services/idea_service.dart';
-
-import '../../../services/new_project_service.dart';
 import '../../model/project_idea.dart';
 
 class SimilarityCheckWebView

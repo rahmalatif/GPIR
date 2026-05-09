@@ -1,39 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../model/project_idea.dart';
-
 class ProjectsRecommendationMobileView
     extends StatelessWidget {
-  final List<String> tracks;
-  final ProjectIdea projectIdea;
+
+  final List<dynamic> ideas;
 
   const ProjectsRecommendationMobileView({
+
     super.key,
-    required this.tracks,
-    required this.projectIdea,
+
+    required this.ideas,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       backgroundColor:
       const Color(0xFF0D0F1A),
-
       appBar: AppBar(
         backgroundColor:
         const Color(0xFF0D0F1A),
-
         title: const Text(
-          "Recommended Projects",
 
+          "Recommended Projects",
           style: TextStyle(
             color: Colors.white,
           ),
         ),
 
         centerTitle: true,
-
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -46,15 +44,38 @@ class ProjectsRecommendationMobileView
         ),
       ),
 
-      body: ListView.builder(
+      body:
+
+      ideas.isEmpty
+
+          ? const Center(
+
+        child: Text(
+
+          "No ideas found",
+
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      )
+
+          : ListView.builder(
+
         padding:
         const EdgeInsets.all(16),
 
-        itemCount: 5,
+        itemCount:
+        ideas.length,
 
-        itemBuilder: (context, index) {
+        itemBuilder:
+            (context, index) {
+
           return _projectCard(
+
             context,
+
+            ideas[index],
           );
         },
       ),
@@ -62,9 +83,14 @@ class ProjectsRecommendationMobileView
   }
 
   Widget _projectCard(
+
       BuildContext context,
+
+      dynamic idea,
       ) {
+
     return Container(
+
       margin:
       const EdgeInsets.only(
         bottom: 16,
@@ -74,6 +100,7 @@ class ProjectsRecommendationMobileView
       const EdgeInsets.all(16),
 
       decoration: BoxDecoration(
+
         color:
         const Color(0xFF12152A),
 
@@ -81,39 +108,58 @@ class ProjectsRecommendationMobileView
         BorderRadius.circular(16),
 
         border: Border.all(
-          color: Colors.cyanAccent
+
+          color:
+          Colors.cyanAccent
               .withOpacity(0.5),
         ),
       ),
 
       child: Column(
+
         crossAxisAlignment:
         CrossAxisAlignment.start,
 
         children: [
-          const Row(
+
+          Row(
+
             mainAxisAlignment:
             MainAxisAlignment
                 .spaceBetween,
 
             children: [
-              Text(
-                "Smart Attendance System",
 
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight:
-                  FontWeight.bold,
+              Expanded(
+
+                child: Text(
+
+                  idea['title']
+                      ?? "Unknown",
+
+                  style:
+                  const TextStyle(
+
+                    color:
+                    Colors.white,
+
+                    fontSize: 16,
+
+                    fontWeight:
+                    FontWeight.bold,
+                  ),
                 ),
               ),
 
-              Text(
-                "92% Match",
+              const Text(
+
+                "AI Idea",
 
                 style: TextStyle(
+
                   color:
                   Colors.cyanAccent,
+
                   fontSize: 12,
                 ),
               ),
@@ -122,11 +168,20 @@ class ProjectsRecommendationMobileView
 
           const SizedBox(height: 8),
 
-          const Text(
-            "A mobile app with QR-based attendance for students and instructors.",
+          Text(
 
-            style: TextStyle(
+            idea['description']
+                ?? "",
+
+            maxLines: 3,
+
+            overflow:
+            TextOverflow.ellipsis,
+
+            style: const TextStyle(
+
               color: Colors.grey,
+
               fontSize: 12,
             ),
           ),
@@ -134,14 +189,24 @@ class ProjectsRecommendationMobileView
           const SizedBox(height: 12),
 
           Wrap(
+
             spacing: 6,
+
             runSpacing: 6,
 
             children:
-            tracks.map((track) {
+
+            (idea['specialization']
+            as List<dynamic>? ??
+                [])
+
+                .map((track) {
+
               return Chip(
+
                 label: Text(
-                  track,
+
+                  track.toString(),
 
                   style:
                   const TextStyle(
@@ -164,13 +229,16 @@ class ProjectsRecommendationMobileView
           const SizedBox(height: 12),
 
           Align(
+
             alignment:
             Alignment.centerRight,
 
             child: ElevatedButton(
+
               style:
               ElevatedButton
                   .styleFrom(
+
                 backgroundColor:
                 Colors.cyanAccent,
 
@@ -179,6 +247,7 @@ class ProjectsRecommendationMobileView
 
                 shape:
                 RoundedRectangleBorder(
+
                   borderRadius:
                   BorderRadius.circular(
                       20),
@@ -186,10 +255,12 @@ class ProjectsRecommendationMobileView
               ),
 
               onPressed: () {
-                context.go(
-                  '/chooseSupervisor',
 
-                  extra: projectIdea,
+                context.go(
+
+                  '/haveIdea',
+
+                  extra: idea,
                 );
               },
 

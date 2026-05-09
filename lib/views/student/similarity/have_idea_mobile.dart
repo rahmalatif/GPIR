@@ -6,7 +6,9 @@ import '../../../services/idea_service.dart';
 import '../../model/project_idea.dart';
 
 class HaveIdeaMobileView extends StatefulWidget {
-  const HaveIdeaMobileView({super.key});
+  final dynamic recommendedIdea;
+
+  const HaveIdeaMobileView({super.key, this.recommendedIdea});
 
   @override
   State<HaveIdeaMobileView> createState() => _HaveIdeaMobileViewState();
@@ -16,33 +18,23 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
-
   final TextEditingController introController = TextEditingController();
-
   final TextEditingController specController = TextEditingController();
-
   final TextEditingController techController = TextEditingController();
-
   final TextEditingController teamCountController = TextEditingController();
-
   List<TeamMember> teamMembers = [];
 
   @override
   void dispose() {
     nameController.dispose();
-
     introController.dispose();
-
     specController.dispose();
-
     techController.dispose();
-
     teamCountController.dispose();
 
     for (var member in teamMembers) {
       member.dispose();
     }
-
     super.dispose();
   }
 
@@ -52,6 +44,30 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
     }
 
     teamMembers = List.generate(count, (_) => TeamMember());
+  }
+
+  void fillRecommendedIdea() {
+    if (widget.recommendedIdea == null) {
+      return;
+    }
+
+    final idea = widget.recommendedIdea;
+
+    nameController.text = idea['title'] ?? '';
+
+    introController.text = idea['description'] ?? '';
+
+    specController.text =
+        (idea['specialization'] as List<dynamic>? ?? []).join(', ');
+
+    techController.text = (idea['Tools'] as List<dynamic>? ?? []).join(', ');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    fillRecommendedIdea();
   }
 
   @override
@@ -68,7 +84,7 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
             Icons.arrow_back,
             color: Colors.white,
           ),
-          onPressed: () => context.go('/studentDashboard'),
+          onPressed: () => context.pop(),
         ),
       ),
       body: SingleChildScrollView(
@@ -248,14 +264,10 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
 
                     try {
                       final prefs = await SharedPreferences.getInstance();
-
                       final currentCollegeCode = prefs.getInt('collegeCode');
-
                       print("CURRENT COLLEGE CODE: $currentCollegeCode");
-
                       if (currentCollegeCode == null) {
                         print("NO COLLEGE CODE");
-
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -263,7 +275,6 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                             ),
                           ),
                         );
-
                         return;
                       }
 

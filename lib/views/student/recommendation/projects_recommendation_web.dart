@@ -1,42 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../model/project_idea.dart';
-
 class ProjectsRecommendationWebView
     extends StatelessWidget {
-  final List<String> tracks;
-  final ProjectIdea projectIdea;
+
+  final List<dynamic> ideas;
 
   const ProjectsRecommendationWebView({
+
     super.key,
-    required this.tracks,
-    required this.projectIdea,
+
+    required this.ideas,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       backgroundColor:
       const Color(0xFF0D0F1A),
 
       body: Center(
+
         child: SizedBox(
+
           width: 1100,
 
           child: Column(
+
             children: [
+
               const SizedBox(height: 30),
 
               Row(
+
                 children: [
+
                   IconButton(
+
                     icon: const Icon(
+
                       Icons.arrow_back,
+
                       color: Colors.white,
                     ),
 
                     onPressed: () {
+
                       context.pop();
                     },
                   ),
@@ -44,11 +55,15 @@ class ProjectsRecommendationWebView
                   const SizedBox(width: 10),
 
                   const Text(
+
                     "Recommended Projects",
 
                     style: TextStyle(
+
                       color: Colors.white,
+
                       fontSize: 32,
+
                       fontWeight:
                       FontWeight.bold,
                     ),
@@ -59,25 +74,52 @@ class ProjectsRecommendationWebView
               const SizedBox(height: 30),
 
               Expanded(
-                child: GridView.builder(
+
+                child:
+
+                ideas.isEmpty
+
+                    ? const Center(
+
+                  child: Text(
+
+                    "No ideas found",
+
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+
+                    : GridView.builder(
+
                   padding:
                   const EdgeInsets.all(
                       16),
 
                   gridDelegate:
                   const SliverGridDelegateWithFixedCrossAxisCount(
+
                     crossAxisCount: 2,
+
                     crossAxisSpacing: 20,
+
                     mainAxisSpacing: 20,
+
                     childAspectRatio: 1.4,
                   ),
 
-                  itemCount: 6,
+                  itemCount:
+                  ideas.length,
 
                   itemBuilder:
                       (context, index) {
+
                     return _projectCard(
+
                       context,
+
+                      ideas[index],
                     );
                   },
                 ),
@@ -90,13 +132,19 @@ class ProjectsRecommendationWebView
   }
 
   Widget _projectCard(
+
       BuildContext context,
+
+      dynamic idea,
       ) {
+
     return Container(
+
       padding:
       const EdgeInsets.all(20),
 
       decoration: BoxDecoration(
+
         color:
         const Color(0xFF12152A),
 
@@ -104,41 +152,58 @@ class ProjectsRecommendationWebView
         BorderRadius.circular(20),
 
         border: Border.all(
-          color: Colors.cyanAccent
+
+          color:
+          Colors.cyanAccent
               .withOpacity(0.5),
         ),
       ),
 
       child: Column(
+
         crossAxisAlignment:
         CrossAxisAlignment.start,
 
         children: [
-          const Row(
+
+          Row(
+
             mainAxisAlignment:
             MainAxisAlignment
                 .spaceBetween,
 
             children: [
-              Expanded(
-                child: Text(
-                  "Smart Attendance System",
 
-                  style: TextStyle(
-                    color: Colors.white,
+              Expanded(
+
+                child: Text(
+
+                  idea['title']
+                      ?? "Unknown",
+
+                  style:
+                  const TextStyle(
+
+                    color:
+                    Colors.white,
+
                     fontSize: 22,
+
                     fontWeight:
                     FontWeight.bold,
                   ),
                 ),
               ),
 
-              Text(
-                "92% Match",
+              const Text(
+
+                "AI Idea",
 
                 style: TextStyle(
+
                   color:
                   Colors.cyanAccent,
+
                   fontSize: 14,
                 ),
               ),
@@ -147,11 +212,15 @@ class ProjectsRecommendationWebView
 
           const SizedBox(height: 16),
 
-          const Text(
-            "A mobile app with QR-based attendance for students and instructors.",
+          Text(
 
-            style: TextStyle(
+            idea['description']
+                ?? "",
+
+            style: const TextStyle(
+
               color: Colors.grey,
+
               fontSize: 15,
             ),
           ),
@@ -159,14 +228,24 @@ class ProjectsRecommendationWebView
           const Spacer(),
 
           Wrap(
+
             spacing: 8,
+
             runSpacing: 8,
 
             children:
-            tracks.map((track) {
+
+            (idea['specialization']
+            as List<dynamic>? ??
+                [])
+
+                .map((track) {
+
               return Chip(
+
                 label: Text(
-                  track,
+
+                  track.toString(),
 
                   style:
                   const TextStyle(
@@ -189,13 +268,16 @@ class ProjectsRecommendationWebView
           const SizedBox(height: 20),
 
           Align(
+
             alignment:
             Alignment.centerRight,
 
             child: ElevatedButton(
+
               style:
               ElevatedButton
                   .styleFrom(
+
                 backgroundColor:
                 Colors.cyanAccent,
 
@@ -205,12 +287,14 @@ class ProjectsRecommendationWebView
                 padding:
                 const EdgeInsets
                     .symmetric(
+
                   horizontal: 24,
                   vertical: 16,
                 ),
 
                 shape:
                 RoundedRectangleBorder(
+
                   borderRadius:
                   BorderRadius.circular(
                       20),
@@ -218,10 +302,12 @@ class ProjectsRecommendationWebView
               ),
 
               onPressed: () {
-                context.go(
-                  '/chooseSupervisor',
 
-                  extra: projectIdea,
+                context.go(
+
+                  '/haveIdea',
+
+                  extra: idea,
                 );
               },
 

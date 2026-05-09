@@ -16,7 +16,6 @@ class StudentProfileResponsive extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveLayout(
       mobile: StudentProfileMobileView(
-        student: student,
       ),
       web: StudentProfileWebView(
         student: student,

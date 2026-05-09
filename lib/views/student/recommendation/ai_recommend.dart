@@ -1,6 +1,7 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../services/recommendation_service.dart';
 import '../../model/team.dart';
 import '../similarity/have_idea_mobile.dart';
 
@@ -8,22 +9,17 @@ class AiRecommendMobile extends StatefulWidget {
   const AiRecommendMobile({super.key});
 
   @override
-  State<AiRecommendMobile> createState() =>
-      _AiRecommendMobileState();
+  State<AiRecommendMobile> createState() => _AiRecommendMobileState();
 }
 
-class _AiRecommendMobileState
-    extends State<AiRecommendMobile> {
+class _AiRecommendMobileState extends State<AiRecommendMobile> {
   int teamSize = 3;
 
   static List<TeamMember> team = [];
 
   List<String> getSelectedTracks() {
-    return team.map((member) => member.sp).toList();
+    return team.map((member) => member.specializationController.text).toList();
   }
-
-  final TextEditingController nameController =
-  TextEditingController();
 
   final List<String> tracks = [
     "AI",
@@ -41,7 +37,6 @@ class _AiRecommendMobileState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
-
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF0D0F1A),
@@ -65,11 +60,9 @@ class _AiRecommendMobileState
           },
         ),
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -81,7 +74,6 @@ class _AiRecommendMobileState
                   color: Colors.white,
                 ),
               ),
-
               const Text(
                 "The AI will suggest project ideas based on your team specialization",
                 style: TextStyle(
@@ -89,78 +81,7 @@ class _AiRecommendMobileState
                   color: Colors.grey,
                 ),
               ),
-
               const SizedBox(height: 18),
-
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.cyanAccent,
-                  ),
-                ),
-
-                child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Team Size",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-
-                    Row(
-                      children: [
-                        _teamButton(
-                          icon: Icons.remove,
-                          onTap: () {
-                            if (teamSize > 1 &&
-                                teamSize > team.length) {
-                              setState(() {
-                                teamSize--;
-                              });
-                            }
-                          },
-                        ),
-
-                        Padding(
-                          padding:
-                          const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          child: Text(
-                            teamSize.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-
-                        _teamButton(
-                          icon: Icons.add,
-                          onTap: () {
-                            setState(() {
-                              teamSize++;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 30),
 
               Container(
                 width: double.infinity,
@@ -172,7 +93,6 @@ class _AiRecommendMobileState
                     color: Colors.cyanAccent,
                   ),
                 ),
-
                 child: Column(
                   children: [
                     ...team.asMap().entries.map((entry) {
@@ -181,19 +101,11 @@ class _AiRecommendMobileState
 
                       return ListTile(
                         title: Text(
-                          member.name,
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-
-                        subtitle: Text(
-                          member.track,
+                          member.specializationController.text,
                           style: const TextStyle(
                             color: Colors.grey,
                           ),
                         ),
-
                         trailing: IconButton(
                           icon: const Icon(
                             Icons.delete,
@@ -207,14 +119,11 @@ class _AiRecommendMobileState
                         ),
                       );
                     }).toList(),
-
                     const SizedBox(height: 10),
-
                     GestureDetector(
                       onTap: () {
                         if (team.length >= teamSize) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
                                 "You have reached the maximum team size",
@@ -226,30 +135,40 @@ class _AiRecommendMobileState
 
                         _showAddMemberDialog();
                       },
-
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "+ Add Member",
+                          "+ Add Specialization",
                           style: TextStyle(
                             color: Colors.cyanAccent,
                           ),
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
                     Align(
                       alignment: Alignment.centerRight,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                          Colors.cyanAccent,
-                          foregroundColor:
-                          Colors.black,
+                          backgroundColor: Colors.cyanAccent,
+                          foregroundColor: Colors.black,
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final tracks = getSelectedTracks();
+                          print("TRACKS: $tracks");
+                          final ideas =
+                              await RecommendationService.recommendIdeas(
+                            specializations: tracks,
+                          );
+
+                          print("IDEAS: $ideas");
+                          if (context.mounted) {
+                            context.go(
+                              '/projectRecommendation',
+                              extra: ideas,
+                            );
+                          }
+                        },
                         child: const Text("Search"),
                       ),
                     )
@@ -268,49 +187,26 @@ class _AiRecommendMobileState
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor:
-          const Color(0xFF0D0F1A),
-
+          backgroundColor: const Color(0xFF0D0F1A),
           title: const Text(
-            "Add Member",
+            "Add specializations",
             style: TextStyle(
               color: Colors.white,
             ),
           ),
-
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: nameController,
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-                decoration: const InputDecoration(
-                  hintText: "Member Name",
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
               DropdownButtonFormField<String>(
                 value: selectedTrack,
-                dropdownColor:
-                const Color(0xFF0D0F1A),
-
+                dropdownColor: const Color(0xFF0D0F1A),
                 decoration: const InputDecoration(
                   labelText: "Track",
                   labelStyle: TextStyle(
                     color: Colors.grey,
                   ),
                 ),
-
-                iconEnabledColor:
-                Colors.cyanAccent,
-
+                iconEnabledColor: Colors.cyanAccent,
                 items: tracks.map((track) {
                   return DropdownMenuItem(
                     value: track,
@@ -322,7 +218,6 @@ class _AiRecommendMobileState
                     ),
                   );
                 }).toList(),
-
                 onChanged: (value) {
                   setState(() {
                     selectedTrack = value!;
@@ -331,7 +226,6 @@ class _AiRecommendMobileState
               ),
             ],
           ),
-
           actions: [
             TextButton(
               onPressed: () {
@@ -339,19 +233,14 @@ class _AiRecommendMobileState
               },
               child: const Text("Cancel"),
             ),
-
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                Colors.cyanAccent,
-                foregroundColor:
-                Colors.black,
+                backgroundColor: Colors.cyanAccent,
+                foregroundColor: Colors.black,
               ),
-
               onPressed: () {
                 if (team.length >= teamSize) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(
                         "You can't add more members than the team size",
@@ -361,37 +250,18 @@ class _AiRecommendMobileState
                   return;
                 }
 
-                if (nameController.text
-                    .trim()
-                    .isEmpty) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "Please enter the new member's name",
-                      ),
-                    ),
-                  );
-                  return;
-                }
-
                 setState(() {
-                  team.add(
-                    TeamMember(
-                      name: nameController.text
-                          .trim(),
-                      track: selectedTrack,
-                    ),
-                  );
-                });
+                  TeamMember member = TeamMember();
 
-                nameController.clear();
+                  member.specializationController.text = selectedTrack;
+
+                  team.add(member);
+                });
 
                 selectedTrack = tracks[0];
 
                 Navigator.pop(context);
               },
-
               child: const Text("Add"),
             ),
           ],
@@ -423,4 +293,66 @@ Widget _teamButton({
       ),
     ),
   );
-}*/
+}
+/*        Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.cyanAccent,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Team Size",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        _teamButton(
+                          icon: Icons.remove,
+                          onTap: () {
+                            if (teamSize > 1 && teamSize > team.length) {
+                              setState(() {
+                                teamSize--;
+                              });
+                            }
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Text(
+                            teamSize.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        _teamButton(
+                          icon: Icons.add,
+                          onTap: () {
+                            setState(() {
+                              teamSize++;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              */

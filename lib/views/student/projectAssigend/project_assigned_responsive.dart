@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:graduation_project_recommender/views/student/projectAssigend/project_assigned_mobile.dart';
+import 'package:graduation_project_recommender/views/student/projectAssigend/project_assigned_web.dart';
 
 import '../../../core/design/responsive_layout.dart';
-import 'project_assigned_mobile.dart';
-import 'project_assigned_web.dart';
 
 class ProjectAssignedResponsive extends StatelessWidget {
   final String projectId;
+
   final String status;
 
   const ProjectAssignedResponsive({
@@ -17,10 +18,7 @@ class ProjectAssignedResponsive extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-      mobile: ProjectAssignedMobileView(
-        projectId: projectId,
-        status: status,
-      ),
+      mobile: ProjectAssignedMobileView(),
       web: ProjectAssignedWebView(
         projectId: projectId,
         status: status,

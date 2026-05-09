@@ -107,31 +107,41 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // ================= STUDENT =================
+
     GoRoute(
       path: '/projectRecommendation',
       builder: (context, state) {
-        final projectIdea = state.extra as ProjectIdea;
-
+        final ideas = state.extra as List<dynamic>;
         return ProjectsRecommendationResponsive(
-          projectIdea: projectIdea,
-          tracks: [],
+          ideas: ideas,
         );
       },
     ),
 
-    /*  GoRoute(
+    GoRoute(
       path: '/aiRecommend',
-      builder: (context, state) => const AiRecommendResponsive(),
-    ),*/
+      builder: (context, state) => const AiRecommendMobile(),
+    ),
+
     GoRoute(
       path: '/haveIdea',
-      builder: (context, state) => const HaveIdeaResponsive(),
+      builder: (context, state) {
+        final recommendedIdea = state.extra;
+
+        print(
+          "ROUTER IDEA: "
+          "$recommendedIdea",
+        );
+
+        return HaveIdeaResponsive(
+          recommendedIdea: recommendedIdea,
+        );
+      },
     ),
 
     GoRoute(
       path: '/similarityCheck',
       builder: (context, state) {
-
         final data = state.extra as Map<String, dynamic>;
 
         return SimilarityCheckMobileView(
@@ -141,28 +151,17 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-
     GoRoute(
-
       path: '/chooseTA',
-
       builder: (context, state) {
-
-        final data =
-        state.extra
-        as Map<String, dynamic>;
+        final data = state.extra as Map<String, dynamic>;
 
         return ChooseTAResponsive(
-
-          projectIdea:
-          data['projectIdea'],
-
-          doctor:
-          data['doctor'],
+          projectIdea: data['projectIdea'],
+          doctor: data['doctor'],
         );
       },
     ),
-
 
     GoRoute(
       path: '/chooseSupervisor',
@@ -190,13 +189,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/studentProfile',
       builder: (context, state) {
-        final student = state.extra as Student;
-
-        return StudentProfileResponsive(
-          student: student,
-        );
+        return const StudentProfileMobileView();
       },
     ),
+
     /*   GoRoute(
       path: '/sendIdeaToDr',
       builder: (context, state) {
@@ -212,12 +208,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/confirmSubmission',
       builder: (context, state) {
-        final data = state.extra as Map;
+        final data = state.extra as Map<String, dynamic>;
 
         return ConfirmSubmissionResponsive(
           doctor: data['doctor'],
+          ta: data['ta'],
           projectIdea: data['projectIdea'],
-          teamMembers: data['teamMembers'],
+          teamMembers: [],
         );
       },
     ),
@@ -225,8 +222,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/projectAssigned',
       builder: (context, state) {
-        final data = state.extra as Map;
-
+        final data = state.extra as Map<String, dynamic>;
         return ProjectAssignedResponsive(
           projectId: data['projectId'],
           status: data['status'],
@@ -344,6 +340,17 @@ final GoRouter appRouter = GoRouter(
           path: '/studentDashboard',
           builder: (context, state) {
             return const StudentDashboardResponsive();
+          },
+        ),
+        GoRoute(
+            path: '/studentChat',
+            builder: (context, state) {
+              return const StudentChatView();
+            }),
+        GoRoute(
+          path: '/studentProject',
+          builder: (context, state) {
+            return const ProjectAssignedMobileView();
           },
         ),
       ],

@@ -1,271 +1,244 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../model/doctor.dart';
+import '../../../core/logic/api_service.dart';
 import '../../model/project_idea.dart';
 
-class ConfirmSubmissionMobileView extends StatelessWidget {
-  final Doctor doctor;
+class ConfirmSubmissionMobileView extends StatefulWidget {
+  final dynamic doctor;
+
+  final dynamic ta;
+
   final ProjectIdea projectIdea;
 
   const ConfirmSubmissionMobileView({
     super.key,
     required this.doctor,
+    required this.ta,
     required this.projectIdea,
-    required List teamMembers,
   });
+
+  @override
+  State<ConfirmSubmissionMobileView> createState() =>
+      _ConfirmSubmissionMobileViewState();
+}
+
+class _ConfirmSubmissionMobileViewState
+    extends State<ConfirmSubmissionMobileView> {
+  bool isLoading = false;
+
+  Future<void> submitProject() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final projectData = widget.projectIdea.toJson();
+
+      projectData['doctor_id'] = widget.doctor['_id'];
+
+      projectData['ta_id'] = widget.ta['_id'];
+
+      print(
+        "FINAL PROJECT DATA: "
+        "$projectData",
+      );
+
+      final result = await ApiService.addProject(
+        projectData: projectData,
+      );
+
+      print(
+        "FINAL RESPONSE: $result",
+      );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Project submitted successfully ✅",
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        context.go(
+          '/studentDashboard',
+        );
+      }
+    } catch (e) {
+      print("SUBMIT ERROR: $e");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
-
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
         elevation: 0,
-
+        leading: const BackButton(
+          color: Colors.white,
+        ),
         title: const Text(
           "Confirm Submission",
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
           ),
-        ),
-
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-
-          onPressed: () => Navigator.pop(context),
         ),
       ),
-
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "You are about to submit your graduation project for approval.\nPlease confirm the details below.",
-
-              textAlign: TextAlign.center,
-
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
+            const Center(
+              child: Text(
+                "Review your project before submission",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-
             const SizedBox(height: 20),
-
             Container(
               width: double.infinity,
-
               padding: const EdgeInsets.all(16),
-
               decoration: BoxDecoration(
-                borderRadius:
-                BorderRadius.circular(16),
-
+                color: const Color(0xFF1A1D2E),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: const Color(0xff4699A8),
                 ),
               ),
-
               child: Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
-
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
                     child: Text(
-                      projectIdea.title,
-
+                      widget.projectIdea.title,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 22,
                         color: Colors.white,
-                        fontWeight:
-                        FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  const Row(
-                    children: [
-                      Text(
-                        "Team Members",
-
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
+                  const Text(
+                    "Description",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.projectIdea.description,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    "Supervisor",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.doctor['name'] ?? "",
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
                   const SizedBox(height: 20),
-
-                  Row(
-                    children: [
-                      const Text(
-                        "Doctor: ",
-
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
+                  const Text(
+                    "Teaching Assistant",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.ta['name'] ?? "",
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Team Members",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...widget.projectIdea.team.members.map(
+                    (member) => Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 8,
                       ),
-
-                      const SizedBox(width: 50),
-
-                      Text(
-                        doctor.name,
-
+                      child: Text(
+                        member.collegeCode.toString(),
                         style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  const Row(
-                    children: [
-                      Text(
-                        "Teaching Assistant: ",
-
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-
-                      SizedBox(width: 30),
-
-                      Text(
-                        "Eng/ Noha Ali",
-
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
-
-            const Spacer(),
-
+            const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
-
               child: ElevatedButton(
-                onPressed: () async {
-                  print(
-                    "CONFIRM INTRO = ${projectIdea.description}",
-                  );
-
-                  print(
-                    "DOCTOR UID = ${doctor.uid}",
-                  );
-
-                  final projectDoc =
-                  await FirebaseFirestore
-                      .instance
-                      .collection(
-                      "projects")
-                      .add({
-                    "name": projectIdea.title,
-
-                    "problem":
-                    projectIdea.specialization,
-
-                    "introduction":
-                    projectIdea.description,
-
-                    "doctorId":
-                    doctor.uid,
-
-                    "status": "pending",
-
-                    "createdAt": FieldValue
-                        .serverTimestamp(),
-                  });
-
-                  await FirebaseFirestore
-                      .instance
-                      .collection(
-                      "notifications")
-                      .add({
-                    "userId": doctor.uid,
-
-                    "title":
-                    "New Project Idea 📚",
-
-                    "body":
-                    projectIdea.description,
-
-                    "projectName":
-                    projectIdea.title,
-
-                    "projectId":
-                    projectDoc.id,
-
-                    "type":
-                    "new_project",
-
-                    "seen": false,
-
-                    "createdAt":
-                    Timestamp.now(),
-                  });
-
-                  ScaffoldMessenger.of(
-                      context)
-                      .showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "Project submitted successfully ✅",
+                onPressed: isLoading ? null : submitProject,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff4699A8),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : const Text(
+                        "Submit Project",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-
-                      backgroundColor:
-                      Colors.green,
-                    ),
-                  );
-
-                  context.go(
-                    '/studentDashboard',
-                  );
-                },
-
-                style:
-                ElevatedButton.styleFrom(
-                  backgroundColor:
-                  const Color(
-                      0xff4699A8),
-
-                  shape:
-                  RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(
-                        12),
-                  ),
-                ),
-
-                child: const Text(
-                  "Submit",
-
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight:
-                    FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ),
             ),
           ],

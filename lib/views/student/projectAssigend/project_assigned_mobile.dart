@@ -2,173 +2,151 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ProjectAssignedMobileView
-    extends StatelessWidget {
-  final String projectId;
-  final String status;
+import '../../../services/student_dashboard_service.dart';
 
+class ProjectAssignedMobileView extends StatefulWidget {
   const ProjectAssignedMobileView({
     super.key,
-    required this.projectId,
-    required this.status,
   });
+
+  @override
+  State<ProjectAssignedMobileView> createState() =>
+      _ProjectAssignedMobileViewState();
+}
+
+class _ProjectAssignedMobileViewState extends State<ProjectAssignedMobileView> {
+  String projectId = "";
+
+  String status = "pending";
+
+  String normalizedStatus = "pending";
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadProjectStatus();
+  }
+
+  Future<void> loadProjectStatus() async {
+    final data = await DashboardService.getDashboard();
+
+    final project = data['project'];
+
+    if (project != null) {
+      setState(() {
+        projectId = project['_id'] ?? "";
+
+        status = project['status'] ?? "pending";
+
+        normalizedStatus = status.toLowerCase().trim();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-      const Color(0xFF0D0F1A),
-
+      backgroundColor: const Color(0xFF0D0F1A),
       body: Padding(
-        padding:
-        const EdgeInsets.all(22),
-
+        padding: const EdgeInsets.all(22),
         child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.center,
-
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 60),
-
+            const SizedBox(
+              height: 60,
+            ),
             FadeInDown(
-              duration:
-              const Duration(
+              duration: const Duration(
                 milliseconds: 500,
               ),
-
               child: _statusHeader(),
             ),
-
-            const SizedBox(height: 50),
-
+            const SizedBox(
+              height: 50,
+            ),
             ZoomIn(
-              duration:
-              const Duration(
+              duration: const Duration(
                 milliseconds: 700,
               ),
-
               curve: Curves.elasticOut,
-
               child: Icon(
                 getStatusIcon(),
                 size: 90,
-                color:
-                getStatusColor(),
+                color: getStatusColor(),
               ),
             ),
-
-            const SizedBox(height: 20),
-
+            const SizedBox(
+              height: 20,
+            ),
             FadeInUp(
-              duration:
-              const Duration(
+              duration: const Duration(
                 milliseconds: 600,
               ),
-
               child: Text(
                 getStatusTitle(),
-
-                style:
-                const TextStyle(
-                  color:
-                  Colors.white,
+                style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 26,
-                  fontWeight:
-                  FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-
-            const SizedBox(height: 8),
-
+            const SizedBox(
+              height: 8,
+            ),
             FadeInUp(
-              delay:
-              const Duration(
+              delay: const Duration(
                 milliseconds: 200,
               ),
-
               child: Text(
                 getStatusMessage(),
-
-                style:
-                const TextStyle(
-                  color:
-                  Colors.grey,
+                style: const TextStyle(
+                  color: Colors.grey,
                 ),
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            if (status ==
-                'accepted')
+            const SizedBox(
+              height: 20,
+            ),
+            if (normalizedStatus == 'accepted')
               BounceIn(
-                delay:
-                const Duration(
-                  milliseconds:
-                  400,
+                delay: const Duration(
+                  milliseconds: 400,
                 ),
-
                 child: Text(
                   projectId,
-
-                  style:
-                  const TextStyle(
-                    color: Colors
-                        .white,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 28,
-                    fontWeight:
-                    FontWeight
-                        .bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
             const Spacer(),
-
             FadeInUp(
-              delay:
-              const Duration(
-                milliseconds:
-                600,
+              delay: const Duration(
+                milliseconds: 600,
               ),
-
               child: SizedBox(
-                width:
-                double.infinity,
+                width: double.infinity,
                 height: 48,
-
-                child:
-                ElevatedButton(
+                child: ElevatedButton(
                   onPressed: () {
                     context.go(
                       '/studentDashboard',
                     );
                   },
-
-                  style:
-                  ElevatedButton
-                      .styleFrom(
-                    backgroundColor:
-                    const Color(
-                        0xff6EC6D9),
-
-                    shape:
-                    RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(
-                          14),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff6EC6D9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-
-                  child:
-                  const Text(
+                  child: const Text(
                     "Return to Home",
-
-                    style:
-                    TextStyle(
-                      color: Colors
-                          .black,
+                    style: TextStyle(
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -181,18 +159,15 @@ class ProjectAssignedMobileView
   }
 
   IconData getStatusIcon() {
-    switch (status) {
+    switch (normalizedStatus) {
       case 'accepted':
-        return Icons
-            .celebration_rounded;
+        return Icons.celebration_rounded;
 
       case 'pending':
-        return Icons
-            .hourglass_top_rounded;
+        return Icons.hourglass_top_rounded;
 
       case 'rejected':
-        return Icons
-            .cancel_rounded;
+        return Icons.cancel_rounded;
 
       default:
         return Icons.help_outline;
@@ -200,7 +175,7 @@ class ProjectAssignedMobileView
   }
 
   Color getStatusColor() {
-    switch (status) {
+    switch (normalizedStatus) {
       case 'accepted':
         return Colors.green;
 
@@ -216,7 +191,7 @@ class ProjectAssignedMobileView
   }
 
   String getStatusTitle() {
-    switch (status) {
+    switch (normalizedStatus) {
       case 'accepted':
         return "Success";
 
@@ -232,7 +207,7 @@ class ProjectAssignedMobileView
   }
 
   String getStatusMessage() {
-    switch (status) {
+    switch (normalizedStatus) {
       case 'accepted':
         return "Your project has been accepted";
 
@@ -249,32 +224,22 @@ class ProjectAssignedMobileView
 
   Widget _statusHeader() {
     return Row(
-      mainAxisAlignment:
-      MainAxisAlignment
-          .spaceBetween,
-
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
           "Project Status",
-
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
-            fontWeight:
-            FontWeight.bold,
+            fontWeight: FontWeight.bold,
           ),
         ),
-
         Chip(
           label: Text(
-            status.toUpperCase(),
+            normalizedStatus.toUpperCase(),
           ),
-
-          backgroundColor:
-          getStatusColor(),
-
-          labelStyle:
-          const TextStyle(
+          backgroundColor: getStatusColor(),
+          labelStyle: const TextStyle(
             color: Colors.white,
           ),
         ),
