@@ -7,7 +7,7 @@ class ConfirmSubmissionMobileView extends StatefulWidget {
   final dynamic doctor;
 
   final dynamic ta;
-
+  final double? similarityScore;
   final ProjectIdea projectIdea;
 
   const ConfirmSubmissionMobileView({
@@ -15,6 +15,7 @@ class ConfirmSubmissionMobileView extends StatefulWidget {
     required this.doctor,
     required this.ta,
     required this.projectIdea,
+    required this.similarityScore,
   });
 
   @override
@@ -33,8 +34,10 @@ class _ConfirmSubmissionMobileViewState
 
     try {
       final projectData = widget.projectIdea.toJson();
-
-      projectData['doctor_id'] = widget.doctor['_id'];
+      print("SIMILARITY SCORE = ${widget.similarityScore}");
+      print("TYPE = ${widget.similarityScore.runtimeType}");
+      projectData['similarity_score'] = widget.similarityScore ?? 0;
+      projectData['doctor_id'] = widget.doctor.apiId;
 
       projectData['ta_id'] = widget.ta['_id'];
 
@@ -42,7 +45,8 @@ class _ConfirmSubmissionMobileViewState
         "FINAL PROJECT DATA: "
         "$projectData",
       );
-
+      print("PROJECT DATA BEFORE SEND:");
+      print(projectData);
       final result = await ApiService.addProject(
         projectData: projectData,
       );
@@ -168,7 +172,7 @@ class _ConfirmSubmissionMobileViewState
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.doctor['name'] ?? "",
+                    widget.doctor.name ?? "",
                     style: const TextStyle(
                       color: Colors.white,
                     ),

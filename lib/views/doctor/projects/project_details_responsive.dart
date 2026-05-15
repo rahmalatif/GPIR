@@ -1,34 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/design/responsive_layout.dart';
-import '../../model/DR_project.dart';
 import 'project_details_mobile.dart';
 import 'project_details_web.dart';
 
-class ProjectDetailsResponsive
-    extends StatelessWidget {
-  final String? projectId;
-  final ProjectDR? project;
+class ProjectDetailsResponsive extends StatelessWidget {
+  final String projectId;
 
   const ProjectDetailsResponsive({
     super.key,
-    this.projectId,
-    this.project,
+    required this.projectId,
   });
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-      mobile:
-      ProjectDetailsMobileView(
+      mobile: ProjectDetailsMobileView(
         projectId: projectId,
-        project: project,
       ),
-
-      web:
-      ProjectDetailsWebView(
+      web: ProjectDetailsWebView(
         projectId: projectId,
-        project: project,
       ),
     );
   }

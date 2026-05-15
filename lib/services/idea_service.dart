@@ -33,7 +33,7 @@ class IdeaServices {
             ),
           )
           .timeout(
-            const Duration(seconds: 20),
+            const Duration(seconds: 40),
           );
 
       print("STATUS CODE: ${response.statusCode}");

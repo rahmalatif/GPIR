@@ -19,10 +19,7 @@ class ProjectAssignedResponsive extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveLayout(
       mobile: ProjectAssignedMobileView(),
-      web: ProjectAssignedWebView(
-        projectId: projectId,
-        status: status,
-      ),
+      web: ProjectAssignedWebView(),
     );
   }
 }

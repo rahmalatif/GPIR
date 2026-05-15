@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../services/admin_pending_projects_service.dart';
 import '../model/admin_project.dart';
 
 class PendingProjectsView extends StatefulWidget {
@@ -11,24 +12,14 @@ class PendingProjectsView extends StatefulWidget {
 }
 
 class _PendingProjectsViewState extends State<PendingProjectsView> {
-  final List<AdminProject> Projects = [
-    AdminProject(
-      id: "CS-2025-01",
-      name: "Smart Attendance System",
-      status: "Approved",
-      date: "2025",
-      team: ["Ahmed", "Sara", "Omar"],
-      description: "QR based attendance system",
-    ),
-    AdminProject(
-      id: "CS-2024-07",
-      name: "Health Tracker App",
-      status: "Approved",
-      date: "2024",
-      team: ["Laila", "Youssef"],
-      description: "Daily health monitoring app",
-    ),
-  ];
+  late Future<List<dynamic>> projectsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    projectsFuture = AdminPendingProjectsService.getPendingProjects();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,23 +37,52 @@ class _PendingProjectsViewState extends State<PendingProjectsView> {
               context.pop();
             }),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(18),
-        child: ListView.builder(
-          itemCount: Projects.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _projectCard(Projects[index], context),
+      body: FutureBuilder<List<dynamic>>(
+        future: projectsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          },
-        ),
+          }
+
+          final projects = snapshot.data ?? [];
+
+          if (projects.isEmpty) {
+            return const Center(
+              child: Text(
+                "No pending projects",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(18),
+            child: ListView.builder(
+              itemCount: projects.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 12,
+                  ),
+                  child: _projectCard(
+                    projects[index],
+                    context,
+                  ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-Widget _projectCard(AdminProject project, BuildContext context) {
+Widget _projectCard(dynamic project, BuildContext context) {
   return Container(
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
@@ -73,49 +93,51 @@ Widget _projectCard(AdminProject project, BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          project.name,
+          project['title'],
           style: const TextStyle(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         ),
-
         const SizedBox(height: 6),
-
         Row(
           children: [
             Expanded(
               child: Text(
-                project.team.join(", "),
+                (project['team_id']?['members'] as List<dynamic>? ?? [])
+                    .map(
+                      (m) => m['name'],
+                    )
+                    .join(", "),
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Text(
-              project.date,
+            project['createdAt']
+                ?.toString()
+                .substring(0, 4)
+
+            ?? "",
               style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
         ),
-
         const SizedBox(height: 8),
-
         Text(
-          project.description,
+          project['description'],
           style: const TextStyle(fontSize: 12, color: Colors.grey),
         ),
-
         const SizedBox(height: 10),
-
         Row(
           children: [
             const Spacer(),
             TextButton(
               onPressed: () {
                 context.push(
-                  '/adminIdeasDetails',
-                  extra: project,
+                  '/adminIdeaDetails',
+                  extra: project['_id'],
                 );
               },
               child: const Text(

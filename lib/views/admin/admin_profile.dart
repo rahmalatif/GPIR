@@ -3,10 +3,30 @@ import 'package:go_router/go_router.dart';
 
 import '../model/user_model.dart';
 
-class AdminProfileView extends StatelessWidget {
-  const AdminProfileView({super.key, required this.admin});
+class AdminProfileView extends StatefulWidget {
+  const AdminProfileView({super.key});
 
-  final UserModel admin;
+  @override
+  State<AdminProfileView> createState() => _AdminProfileViewState();
+}
+
+class _AdminProfileViewState extends State<AdminProfileView> {
+  Map<String, dynamic>? admin;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getAdminData();
+  }
+
+  void getAdminData() {
+    admin = {
+      "name": "Admin",
+      "id": "ADMIN-001",
+      "email": "admin@gmail.com",
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +52,7 @@ class AdminProfileView extends StatelessWidget {
             const SizedBox(height: 16),
             Center(
               child: Text(
-                admin.name,
+                admin!['name'],
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -42,8 +62,8 @@ class AdminProfileView extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             const SizedBox(height: 30),
-            _infoItem("ID", admin.id),
-            _infoItem("Email", admin.email),
+            _infoItem("ID", admin!['id']),
+            _infoItem("Email", admin!['email']),
             SizedBox(
               height: 15,
             ),

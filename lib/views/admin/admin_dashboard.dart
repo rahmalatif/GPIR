@@ -1,143 +1,204 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class AdminDashboardView extends StatelessWidget {
-  const AdminDashboardView({super.key});
+import '../../services/admin_dashboard_sevices.dart';
+
+class AdminDashboardView extends StatefulWidget {
+  const AdminDashboardView({
+    super.key,
+  });
+
+  @override
+  State<AdminDashboardView> createState() => _AdminDashboardViewState();
+}
+
+class _AdminDashboardViewState extends State<AdminDashboardView> {
+  late Future<Map<String, dynamic>> dashboardFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    dashboardFuture = AdminDashboardService.getDashboard();
+  }
 
   String greeting() {
     final hour = DateTime.now().hour;
 
-    if (hour < 12) return "Good Morning\nMr. Osama";
-    if (hour < 17) return "Good Afternoon\nMr. Osama";
+    if (hour < 12) {
+      return "Good Morning\nMr. Osama";
+    }
+
+    if (hour < 17) {
+      return "Good Afternoon\nMr. Osama";
+    }
+
     return "Good Evening\nMr. Osama";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
+        elevation: 0,
         actions: [
           IconButton(
             onPressed: () {
-              context.push('/adminNotifications');
+              context.push(
+                '/adminNotifications',
+              );
             },
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(
+              Icons.notifications,
+              color: Colors.white,
+            ),
           ),
-
         ],
       ),
-      backgroundColor: const Color(0xFF0D0F1A),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: dashboardFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-            const SizedBox(height: 40),
-
-            Text(
-              greeting(),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text(
+                "No dashboard data",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
-            ),
+            );
+          }
 
-            const SizedBox(height: 30),
+          final data = snapshot.data!;
 
-            Row(
+          final pendingProjects = data['pendingProjects'] ?? [];
+
+          final ongoingProjects = data['ongoingProjects'] ?? [];
+
+          final projectsWithoutCode = data['projectsWithoutCode'] ?? [];
+
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                project(
-                  title: "Pending\nProjects",
-                  icon: Icons.pending_actions,
-                  onTap: () {
-                    context.push(
-                      '/adminPendingIdeas'
-                    );
-                  },
+                const SizedBox(
+                  height: 40,
                 ),
-                const SizedBox(width: 14),
-                project(
-                  title: "Approved\nProjects",
-                  icon: Icons.check_circle_outline,
-                  onTap: () {
-                    context.push(
-                      '/adminApprovedProjects'
-                    );
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-        GestureDetector(
-          onTap: (){
-            context.push('/adminAllProjectsId');
-          },
-          child: Container(
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1D2E),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.menu, color: Colors.cyan, size: 28),
-                const SizedBox(width: 12),
                 Text(
-                  "All projects with IDs",
+                  greeting(),
                   style: const TextStyle(
-                    color: Colors.cyan,
-                    fontSize: 15,
+                    color: Colors.white,
+                    fontSize: 22,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    project(
+                      title: "Projects\nwithout ID",
+                      count: projectsWithoutCode.length.toString(),
+                      icon: Icons.pending_actions,
+                      onTap: () {
+                        context.push(
+                          '/adminPendingIdeas',
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      width: 14,
+                    ),
+                    project(
+                      title: "Projects\non going",
+                      count: ongoingProjects.length.toString(),
+                      icon: Icons.check_circle_outline,
+                      onTap: () {
+                        context.push(
+                          '/adminApprovedProjects',
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget project({
+    required String title,
+    required String count,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1A1D2E),
+            borderRadius: BorderRadius.circular(18),
           ),
-        )
-          ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    icon,
+                    color: Colors.cyan,
+                    size: 32,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.cyan.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      count,
+                      style: const TextStyle(
+                        color: Colors.cyan,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-Widget project({
-  required String title,
-  required IconData icon,
-  required VoidCallback onTap,
-}) {
-  return Expanded(
-    child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A1D2E),
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: Colors.cyan, size: 32),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-

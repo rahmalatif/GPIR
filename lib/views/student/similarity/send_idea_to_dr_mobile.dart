@@ -1,4 +1,4 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -258,17 +258,17 @@ class _SendIdeaToDrMobileViewState extends State<SendIdeaToDrMobileView> {
                 onPressed: () async {
                   await clearDraft();
 
-                  final editedIdea = ProjectIdea(
-                    title: '',
-                    description: '',
-                    tools: [],
-                    specialization: [],
-                    doctorId: '',
-                    taId: '',
-                    year: 2026,
-                    team: [],
-                  );
 
+                  final editedIdea = ProjectIdea(
+                    title: nameController.text,
+                    description: introController.text,
+                    tools: widget.projectIdea.tools,
+                    specialization: widget.projectIdea.specialization,
+                    doctorId: widget.projectIdea.doctorId,
+                    taId: widget.projectIdea.taId,
+                    year: widget.projectIdea.year,
+                    team: widget.projectIdea.team,
+                  );
                   context.go(
                     '/confirmSubmission',
                     extra: {
@@ -304,4 +304,3 @@ class _SendIdeaToDrMobileViewState extends State<SendIdeaToDrMobileView> {
     );
   }
 }
-*/

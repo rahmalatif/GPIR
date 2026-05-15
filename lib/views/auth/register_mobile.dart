@@ -15,12 +15,12 @@ class RegisterMobileView extends StatefulWidget {
 }
 
 class _RegisterMobileViewState extends State<RegisterMobileView> {
-
   late final TextEditingController nameController;
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
   late final TextEditingController idController;
   late final TextEditingController phonecontroller;
+  late final TextEditingController specializationController;
 
   bool isLoading = false;
 
@@ -35,6 +35,7 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
     passwordController = TextEditingController();
     idController = TextEditingController();
     phonecontroller = TextEditingController();
+    specializationController = TextEditingController();
   }
 
   @override
@@ -44,7 +45,7 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
     passwordController.dispose();
     idController.dispose();
     phonecontroller.dispose();
-
+    specializationController.dispose();
     super.dispose();
   }
 
@@ -53,13 +54,13 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
         passwordController.text.isEmpty ||
         phonecontroller.text.isEmpty ||
         (isStudent && idController.text.isEmpty) ||
-        (!isStudent && emailController.text.isEmpty)) {
+        (!isStudent && emailController.text.isEmpty) ||
+        (!isStudent && specializationController.text.isEmpty)) {
       showMessage("Please fill all fields");
       return;
     }
 
-    final parsedId =
-    isStudent ? int.tryParse(idController.text) : null;
+    final parsedId = isStudent ? int.tryParse(idController.text) : null;
 
     final phone = phonecontroller.text;
 
@@ -83,6 +84,7 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
         email: isStudent ? null : emailController.text,
         id: parsedId,
         phonenumber: phone,
+        specialization: isStudent ? null : specializationController.text,
       );
 
       final userName = result.name ?? "User";
@@ -92,7 +94,6 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
       if (!mounted) return;
 
       context.go('/login', extra: widget.role);
-
     } catch (e) {
       print("ERROR: $e");
 
@@ -121,7 +122,6 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
           child: Column(
             children: [
               const SizedBox(height: 60),
-
               Text(
                 "Register as ${widget.role}",
                 style: const TextStyle(
@@ -129,18 +129,14 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
                   color: Colors.white,
                 ),
               ),
-
               const SizedBox(height: 30),
-
               _input(
                 "Name",
                 false,
                 nameController,
                 keyboardType: TextInputType.name,
               ),
-
               const SizedBox(height: 20),
-
               _input(
                 isStudent ? "Student ID" : "Email",
                 false,
@@ -149,50 +145,51 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
                     ? TextInputType.number
                     : TextInputType.emailAddress,
               ),
-
+              if (!isStudent) ...[
+                const SizedBox(height: 20),
+                _input(
+                  "Specialization",
+                  false,
+                  specializationController,
+                  keyboardType: TextInputType.text,
+                ),
+              ],
               const SizedBox(height: 20),
-
               _input(
                 "Phone",
                 false,
                 phonecontroller,
                 keyboardType: TextInputType.phone,
               ),
-
               const SizedBox(height: 20),
-
               _input(
                 "Password",
                 true,
                 passwordController,
                 keyboardType: TextInputType.visiblePassword,
               ),
-
               const SizedBox(height: 50),
-
               isLoading
                   ? const CircularProgressIndicator(
-                color: Colors.white,
-              )
+                      color: Colors.white,
+                    )
                   : ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF46F0D2),
-                  minimumSize: const Size(300, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                onPressed: register,
-                child: const Text(
-                  "Register",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF46F0D2),
+                        minimumSize: const Size(300, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      onPressed: register,
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
               const SizedBox(height: 10),
-
               TextButton(
                 onPressed: () {
                   context.go(
@@ -216,11 +213,11 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
 }
 
 Widget _input(
-    String label,
-    bool isPassword,
-    TextEditingController controller, {
-      required TextInputType keyboardType,
-    }) {
+  String label,
+  bool isPassword,
+  TextEditingController controller, {
+  required TextInputType keyboardType,
+}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 30),
     child: TextField(

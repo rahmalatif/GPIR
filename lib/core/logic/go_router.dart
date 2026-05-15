@@ -30,10 +30,8 @@ import 'package:graduation_project_recommender/views/student/similarity/confirm_
 import 'package:graduation_project_recommender/views/model/project_idea.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/student/dashboard/student_project_details.dart';
-
 import '../../views/admin/admin_dashboard.dart';
 import '../../views/admin/admin_notifications.dart';
-import '../../views/admin/all_projects.dart';
 import '../../views/admin/approved_projects.dart';
 import '../../views/admin/idea_details.dart';
 import '../../views/admin/pending_projects.dart';
@@ -75,303 +73,328 @@ import '../design/dr_nav_bar.dart';
 import '../design/library_nav_bar.dart';
 import '../design/nav_Bar.dart';
 
-final GoRouter appRouter = GoRouter(
-  initialLocation: '/splash',
-  routes: [
-    // Splash
-    GoRoute(
-      path: '/splash',
-      builder: (context, state) => const SplashView(),
-    ),
+final GoRouter appRouter = GoRouter(initialLocation: '/splash', routes: [
+  // Splash
+  GoRoute(
+    path: '/splash',
+    builder: (context, state) => const SplashView(),
+  ),
 
-    // Auth
-    GoRoute(
-      path: '/roleSelection',
-      builder: (context, state) => const ResponsiveRoleSelection(),
-    ),
+// Auth
+  GoRoute(
+    path: '/roleSelection',
+    builder: (context, state) => const ResponsiveRoleSelection(),
+  ),
 
-    GoRoute(
-      path: '/login',
-      builder: (context, state) {
-        final role = state.extra as String? ?? 'student';
-        return LoginResponsive(role: role);
-      },
-    ),
+  GoRoute(
+    path: '/login',
+    builder: (context, state) {
+      final role = state.extra as String? ?? 'student';
+      return LoginResponsive(role: role);
+    },
+  ),
 
-    GoRoute(
-      path: '/register',
-      builder: (context, state) {
-        final role = state.extra as String;
-        return RegisterResponsive(role: role);
-      },
-    ),
+  GoRoute(
+    path: '/register',
+    builder: (context, state) {
+      final role = state.extra as String;
+      return RegisterResponsive(role: role);
+    },
+  ),
 
-    // ================= STUDENT =================
+// ================= STUDENT =================
 
-    GoRoute(
-      path: '/projectRecommendation',
-      builder: (context, state) {
-        final ideas = state.extra as List<dynamic>;
-        return ProjectsRecommendationResponsive(
-          ideas: ideas,
-        );
-      },
-    ),
+  GoRoute(
+    path: '/projectRecommendation',
+    builder: (context, state) {
+      final ideas = state.extra as List<dynamic>;
+      return ProjectsRecommendationResponsive(
+        ideas: ideas,
+      );
+    },
+  ),
 
-    GoRoute(
-      path: '/aiRecommend',
-      builder: (context, state) => const AiRecommendMobile(),
-    ),
+  GoRoute(
+    path: '/aiRecommend',
+    builder: (context, state) => const AiRecommendMobile(),
+  ),
 
-    GoRoute(
-      path: '/haveIdea',
-      builder: (context, state) {
-        final recommendedIdea = state.extra;
+  GoRoute(
+    path: '/haveIdea',
+    builder: (context, state) {
+      final recommendedIdea = state.extra;
 
-        print(
-          "ROUTER IDEA: "
-          "$recommendedIdea",
-        );
+      print(
+        "ROUTER IDEA: "
+        "$recommendedIdea",
+      );
 
-        return HaveIdeaResponsive(
-          recommendedIdea: recommendedIdea,
-        );
-      },
-    ),
+      return HaveIdeaResponsive(
+        recommendedIdea: recommendedIdea,
+      );
+    },
+  ),
 
-    GoRoute(
-      path: '/similarityCheck',
-      builder: (context, state) {
+  GoRoute(
+    path: '/similarityCheck',
+    builder: (context, state) {
+      final data = state.extra as Map<String, dynamic>;
+
+      return SimilarityCheckMobileView(
+        result: data['result'],
+        projectIdea: data['projectIdea'],
+      );
+    },
+  ),
+
+  GoRoute(
+    path: '/chooseTA',
+    builder: (context, state) {
+      final data = state.extra as Map<String, dynamic>;
+
+      return ChooseTAResponsive(
+        projectIdea: data['projectIdea'],
+        doctor: data['doctor'],
+        similarityScore: data['similarity_score'],
+      );
+    },
+  ),
+
+  GoRoute(
+    path: '/chooseSupervisor',
+    builder: (context, state) {
+      ProjectIdea projectIdea;
+      double similarityScore = 0;
+
+      if (state.extra is Map<String, dynamic>) {
         final data = state.extra as Map<String, dynamic>;
 
-        return SimilarityCheckMobileView(
-          result: data['result'],
-          projectIdea: data['projectIdea'],
-        );
-      },
-    ),
+        projectIdea = data['projectIdea'] as ProjectIdea;
 
-    GoRoute(
-      path: '/chooseTA',
+        similarityScore = (data['similarityScore'] ?? 0).toDouble();
+      } else {
+        projectIdea = state.extra as ProjectIdea;
+      }
+
+      return ChooseSupervisorResponsive(
+        projectIdea: projectIdea,
+        similarityScore: similarityScore,
+      );
+    },
+  ),
+
+  GoRoute(
+    path: '/studentNotifications',
+    builder: (context, state) => const StudentNotificationsResponsive(),
+  ),
+
+  GoRoute(
+    path: '/studentProfile',
+    builder: (context, state) {
+      return const StudentProfileMobileView();
+    },
+  ),
+
+  GoRoute(
+    path: '/confirmSubmission',
+    builder: (context, state) {
+      final data = state.extra as Map<String, dynamic>;
+
+      return ConfirmSubmissionResponsive(
+        doctor: data['doctor'],
+        ta: data['ta'],
+        projectIdea: data['projectIdea'],
+        similarityScore: data['similarityScore'],
+        teamMembers: [],
+      );
+    },
+  ),
+
+  GoRoute(
+    path: '/projectAssigned',
+    builder: (context, state) {
+      final data = state.extra as Map<String, dynamic>;
+      return ProjectAssignedResponsive(
+        projectId: data['projectId'],
+        status: data['status'],
+      );
+    },
+  ),
+
+// ================= DOCTOR =================
+
+  GoRoute(
+    path: '/drPendingIdeas',
+    builder: (context, state) => const PendingIdeasResponsive(),
+  ),
+
+  GoRoute(
+    path: '/rejectIdea',
+    builder: (context, state) => const RejectIdeaResponsive(),
+  ),
+
+  GoRoute(
+    path: '/ideaDetails',
+    builder: (context, state) {
+      final projectId = state.extra as String;
+
+      return ProjectDetailsMobileView(
+        projectId: projectId,
+      );
+    },
+  ),
+
+  GoRoute(
+    path: '/addIdea',
+    builder: (context, state) => const AddIdeaResponsive(),
+  ),
+
+  GoRoute(
+    path: '/doctorNotifications',
+    builder: (context, state) {
+      final doctorId = state.extra as String;
+      return DoctorNotificationsView(doctorId: doctorId);
+    },
+  ),
+
+// ================= ADMIN =================
+
+  GoRoute(
+    path: '/adminPendingIdeas',
+    builder: (context, state) => const PendingProjectsView(),
+  ),
+
+  GoRoute(
+    path: '/adminApprovedProjects',
+    builder: (context, state) => const AdminApprovedProjectsView(),
+  ),
+
+  GoRoute(
+      path: '/projectId',
       builder: (context, state) {
-        final data = state.extra as Map<String, dynamic>;
+        final projectId = state.extra as String;
 
-        return ChooseTAResponsive(
-          projectIdea: data['projectIdea'],
-          doctor: data['doctor'],
-        );
-      },
-    ),
+        return ProjectIdView(projectId: projectId);
+      }),
+  GoRoute(
+    path: '/adminIdeaDetails',
+    builder: (context, state) {
+      final projectId = state.extra as String;
 
-    GoRoute(
-      path: '/chooseSupervisor',
-      builder: (context, state) {
-        final project = state.extra as ProjectIdea?;
+      return AdminIdeaDetailsView(
+        projectId: projectId,
+      );
+    },
+  ),
 
-        if (project == null) {
-          return const Scaffold(
-            body: Center(
-              child: Text(
-                "No Data",
-              ),
-            ),
-          );
-        }
-        return ChooseSupervisorResponsive(
-          projectIdea: project,
-        );
-      },
-    ),
-    GoRoute(
-      path: '/studentNotifications',
-      builder: (context, state) => const StudentNotificationsResponsive(),
-    ),
-    GoRoute(
-      path: '/studentProfile',
-      builder: (context, state) {
-        return const StudentProfileMobileView();
-      },
-    ),
+// ================= LIBRARY =================
 
-    /*   GoRoute(
-      path: '/sendIdeaToDr',
-      builder: (context, state) {
-        final data = state.extra as Map;
+  GoRoute(
+    path: '/libraryProjectDetails',
+    builder: (context, state) {
+      final library = state.extra as LibraryProject;
+      return LibraryProjectDetails(project: library);
+    },
+  ),
 
-        return SendIdeaToDrResponsive(
-          doctor: data['doctor'],
-          projectIdea: data['projectIdea'],
-        );
-      },
-    ),*/
+// ================= NAVIGATION =================
 
-    GoRoute(
-      path: '/confirmSubmission',
-      builder: (context, state) {
-        final data = state.extra as Map<String, dynamic>;
+  ShellRoute(
+    builder: (context, state, child) => LibraryNavBar(child: child),
+    routes: [
+      GoRoute(
+        path: '/libraryDashboard',
+        builder: (context, state) => const LibraryDashboardView(),
+      ),
+    ],
+  ),
 
-        return ConfirmSubmissionResponsive(
-          doctor: data['doctor'],
-          ta: data['ta'],
-          projectIdea: data['projectIdea'],
-          teamMembers: [],
-        );
-      },
-    ),
-
-    GoRoute(
-      path: '/projectAssigned',
-      builder: (context, state) {
-        final data = state.extra as Map<String, dynamic>;
-        return ProjectAssignedResponsive(
-          projectId: data['projectId'],
-          status: data['status'],
-        );
-      },
-    ),
-
-    // ================= DOCTOR =================
-
-    GoRoute(
-      path: '/drPendingIdeas',
-      builder: (context, state) => const PendingIdeasResponsive(),
-    ),
-    GoRoute(
-      path: '/doctorProjects',
-      builder: (context, state) => const ProjectsResponsive(),
-    ),
-    GoRoute(
-      path: '/rejectIdea',
-      builder: (context, state) => const RejectIdeaResponsive(),
-    ),
-    GoRoute(
-      path: '/ideaDetails',
-      builder: (context, state) {
-        final extra = state.extra;
-
-        if (extra is ProjectDR) {
-          return ProjectDetailsResponsive(
-            project: extra,
-          );
-        }
-        return ProjectDetailsResponsive(
-          projectId: extra as String,
-        );
-      },
-    ),
-
-    GoRoute(
-      path: '/addIdea',
-      builder: (context, state) => const AddIdeaResponsive(),
-    ),
-
-    GoRoute(
-      path: '/doctorNotifications',
-      builder: (context, state) {
-        final doctorId = state.extra as String;
-        return DoctorNotificationsView(doctorId: doctorId);
-      },
-    ),
-
-    // ================= ADMIN =================
-
-    GoRoute(
-      path: '/adminPendingIdeas',
-      builder: (context, state) => const PendingProjectsView(),
-    ),
-
-    GoRoute(
-      path: '/adminApprovedProjects',
-      builder: (context, state) => const AdminApprovedProjectsView(),
-    ),
-
-    // ================= LIBRARY =================
-
-    GoRoute(
-      path: '/libraryProjectDetails',
-      builder: (context, state) {
-        final library = state.extra as LibraryProject;
-        return LibraryProjectDetails(project: library);
-      },
-    ),
-
-    // ================= NAVIGATION =================
-
-    ShellRoute(
-      builder: (context, state, child) => LibraryNavBar(child: child),
-      routes: [
-        GoRoute(
-          path: '/libraryDashboard',
-          builder: (context, state) => const LibraryDashboardView(),
-        ),
-      ],
-    ),
-
-    ShellRoute(
-      builder: (context, state, child) => AdminNavBar(child: child),
-      routes: [
-        GoRoute(
-          path: '/AdminDashboard',
-          builder: (context, state) => const AdminDashboardView(),
-        ),
-      ],
-    ),
-
-    ShellRoute(
-      builder: (context, state, child) => DoctorNavBar(child: child),
-      routes: [
-        GoRoute(
-          path: '/doctorDashboard',
-          builder: (context, state) {
-            final user = state.extra as UserModel;
-
-            return DashboardResponsive(
-              user: user,
-            );
-          },
-        ),
-      ],
-    ),
-
-    ShellRoute(
-      builder: (context, state, child) => StudentNavBar(child: child),
-      routes: [
-        GoRoute(
-          path: '/studentDashboard',
-          builder: (context, state) {
-            return const StudentDashboardResponsive();
-          },
-        ),
-        GoRoute(
+  ShellRoute(
+    builder: (context, state, child) => AdminNavBar(child: child),
+    routes: [
+      GoRoute(
+        path: '/adminDashboard',
+        builder: (context, state) => const AdminDashboardView(),
+      ),
+      GoRoute(
+        path: '/adminProfile',
+        builder: (context, state) => const AdminProfileView(),
+      ),
+      ShellRoute(
+        builder: (context, state, child) => DoctorNavBar(child: child),
+        routes: [
+          GoRoute(
+            path: '/doctorDashboard',
+            builder: (context, state) {
+              return const DashboardMobileView();
+            },
+          ),
+          GoRoute(
+            path: '/doctorProjects',
+            builder: (context, state) {
+              return const ProjectsResponsive();
+            },
+          ),
+          GoRoute(
+            path: '/doctorProfile',
+            builder: (context, state) {
+              return const DoctorProfileView();
+            },
+          ),
+        ],
+      ),
+      ShellRoute(
+        builder: (context, state, child) => StudentNavBar(child: child),
+        routes: [
+          GoRoute(
+            path: '/studentDashboard',
+            builder: (context, state) {
+              return const StudentDashboardResponsive();
+            },
+          ),
+          GoRoute(
             path: '/studentChat',
             builder: (context, state) {
               return const StudentChatView();
-            }),
-        GoRoute(
-          path: '/studentProject',
-          builder: (context, state) {
-            return const ProjectAssignedMobileView();
-          },
-        ),
-      ],
-    ),
-  ],
-);
+            },
+          ),
+          GoRoute(
+            path: '/studentProject',
+            builder: (context, state) {
+              return const ProjectAssignedMobileView();
+            },
+          ),
+        ],
+      ),
+    ],
+  )
+]);
 
-void routeByRole(BuildContext context, String role) {
+void routeByRole(
+  BuildContext context,
+  String role, {
+  UserModel? user,
+}) {
   switch (role.toLowerCase()) {
     case 'admin':
-      context.go('/AdminDashboard');
+      context.go('/adminDashboard');
       break;
+
     case 'doctor':
-      context.go('/doctorDashboard');
+      context.go(
+        '/doctorDashboard',
+        extra: user,
+      );
       break;
+
     case 'library':
       context.go('/libraryDashboard');
       break;
+
     case 'student':
       context.go('/studentDashboard');
       break;
+
     default:
       context.go('/roleSelection');
   }

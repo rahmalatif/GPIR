@@ -14,6 +14,7 @@ class ApiService {
     String? email,
     int? id,
     required String phonenumber,
+    String? specialization,
   }) async {
     String endpoint;
     Map<String, dynamic> body;
@@ -33,6 +34,7 @@ class ApiService {
         "email": email,
         "password": password,
         "role": role,
+        "specialization" : specialization
       };
     }
 

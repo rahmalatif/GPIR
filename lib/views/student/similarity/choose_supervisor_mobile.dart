@@ -35,10 +35,16 @@ class _ChooseSupervisorMobileViewState
     loadDoctors();
   }
 
+  List<Doctor> doctor = [];
+
   Future<void> loadDoctors() async {
-    doctors = await DoctorService.getDoctors();
+    final List<dynamic> data = await DoctorService.getDoctors();
 
     setState(() {
+      doctors = data.map((item) {
+        return Doctor.fromJson(item, item['uid'] ?? '');
+      }).toList();
+
       isLoading = false;
     });
   }
@@ -63,7 +69,7 @@ class _ChooseSupervisorMobileViewState
             color: Colors.white,
           ),
           onPressed: () {
-            context.pop();
+            context.go('/haveIdea');
           },
         ),
       ),
@@ -153,7 +159,7 @@ class _ChooseSupervisorMobileViewState
 }
 
 class DoctorContainer extends StatelessWidget {
-  final dynamic doctor;
+  final Doctor doctor;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -186,20 +192,14 @@ class DoctorContainer extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const CircleAvatar(
-              radius: 24,
-              backgroundColor: Colors.transparent,
-              child: AppImage(
-                image: "assets/png/man.png",
-              ),
-            ),
+
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doctor['name'] ?? '',
+                    doctor.name ?? 'No name',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -208,7 +208,7 @@ class DoctorContainer extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    doctor['specialization'] ?? 'No Specialization',
+                    doctor.track ?? 'No Specialization',
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 10,

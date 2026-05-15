@@ -6,24 +6,21 @@ import 'have_idea_web.dart';
 
 class HaveIdeaResponsive extends StatelessWidget {
   final dynamic recommendedIdea;
+
   const HaveIdeaResponsive({
-    super.key, this.recommendedIdea,
+    super.key,
+    this.recommendedIdea,
   });
 
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-        mobile:
-        HaveIdeaMobileView(
-
-        recommendedIdea:
-        recommendedIdea,
-        ),
-      web: HaveIdeaMobileView(
-        recommendedIdea:
-        recommendedIdea,
+      mobile: HaveIdeaMobileView(
+        recommendedIdea: recommendedIdea,
       ),
-      //  web: HaveIdeaWebView(),
+      web: HaveIdeaMobileView(
+        recommendedIdea: recommendedIdea,
+      ),
     );
   }
 }

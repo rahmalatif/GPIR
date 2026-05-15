@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'login_mobile.dart';
 
-class LoginWebView extends StatelessWidget {
+import 'login_content.dart';
+
+class LoginWebView
+    extends StatelessWidget {
+
   final String role;
 
   const LoginWebView({
@@ -11,24 +14,33 @@ class LoginWebView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0F1A),
+      backgroundColor:
+      const Color(0xFF0D0F1A),
 
       body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 40),
+        child:
+        SingleChildScrollView(
+          child: Container(
+            width: 450,
 
-            child: Container(
-              width: 400,
-              padding: const EdgeInsets.all(20),
+            padding:
+            const EdgeInsets.all(
+                25),
 
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(20),
-              ),
+            decoration:
+            BoxDecoration(
+              color: Colors.black
+                  .withOpacity(0.25),
 
-              child: LoginMobileView(role: role),
+              borderRadius:
+              BorderRadius.circular(
+                  20),
+            ),
+
+            child: LoginContent(
+              role: role,
             ),
           ),
         ),

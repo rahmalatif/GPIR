@@ -84,7 +84,9 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
             Icons.arrow_back,
             color: Colors.white,
           ),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            context.go('/studentDashboard');
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -311,8 +313,6 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                             .split(',')
                             .map((e) => e.trim())
                             .toList(),
-                        doctorId: "69f8791a5f9ca3ce23568b60",
-                        taId: "69f7c63b77d75c63a665e53c",
                         year: DateTime.now().year,
                         team: TeamData(
                           leaderCollegeCode: currentCollegeCode,
@@ -326,6 +326,8 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                             );
                           }).toList(),
                         ),
+                        doctorId: '',
+                        taId: '',
                       );
 
                       print("IDEA CREATED");
@@ -334,8 +336,11 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
 
                       print("BEFORE API");
 
-                      final result = await IdeaServices().checkSimilarity(idea);
+                      final result = await IdeaServices().checkSimilarity(
+                        idea,
+                      );
 
+                      if (!context.mounted) return;
                       print("AFTER API");
 
                       print("SIMILARITY RESPONSE: $result");
@@ -351,6 +356,8 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                       print("NAVIGATION DONE");
                     } catch (e) {
                       print("ERROR: $e");
+
+                      if (!mounted) return;
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

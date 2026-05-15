@@ -1,269 +1,147 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ProjectsRecommendationMobileView
-    extends StatelessWidget {
-
+class ProjectsRecommendationMobileView extends StatelessWidget {
   final List<dynamic> ideas;
 
   const ProjectsRecommendationMobileView({
-
     super.key,
-
     required this.ideas,
   });
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
-      backgroundColor:
-      const Color(0xFF0D0F1A),
+      backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
-        backgroundColor:
-        const Color(0xFF0D0F1A),
+        backgroundColor: const Color(0xFF0D0F1A),
         title: const Text(
-
           "Recommended Projects",
           style: TextStyle(
             color: Colors.white,
           ),
         ),
-
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
-
           onPressed: () {
-            context.pop();
+            context.go('/aiRecommend');
           },
         ),
       ),
-
-      body:
-
-      ideas.isEmpty
-
+      body: ideas.isEmpty
           ? const Center(
-
-        child: Text(
-
-          "No ideas found",
-
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      )
-
+              child: Text(
+                "No ideas found",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            )
           : ListView.builder(
-
-        padding:
-        const EdgeInsets.all(16),
-
-        itemCount:
-        ideas.length,
-
-        itemBuilder:
-            (context, index) {
-
-          return _projectCard(
-
-            context,
-
-            ideas[index],
-          );
-        },
-      ),
+              padding: const EdgeInsets.all(16),
+              itemCount: ideas.length,
+              itemBuilder: (context, index) {
+                return _projectCard(
+                  context,
+                  ideas[index],
+                );
+              },
+            ),
     );
   }
 
   Widget _projectCard(
-
-      BuildContext context,
-
-      dynamic idea,
-      ) {
-
+    BuildContext context,
+    dynamic idea,
+  ) {
     return Container(
-
-      margin:
-      const EdgeInsets.only(
+      margin: const EdgeInsets.only(
         bottom: 16,
       ),
-
-      padding:
-      const EdgeInsets.all(16),
-
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-
-        color:
-        const Color(0xFF12152A),
-
-        borderRadius:
-        BorderRadius.circular(16),
-
+        color: const Color(0xFF12152A),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-
-          color:
-          Colors.cyanAccent
-              .withOpacity(0.5),
+          color: Colors.cyanAccent.withOpacity(0.5),
         ),
       ),
-
       child: Column(
-
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
-
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Row(
-
-            mainAxisAlignment:
-            MainAxisAlignment
-                .spaceBetween,
-
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-
               Expanded(
-
                 child: Text(
-
-                  idea['title']
-                      ?? "Unknown",
-
-                  style:
-                  const TextStyle(
-
-                    color:
-                    Colors.white,
-
+                  idea['title'] ?? "Unknown",
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 16,
-
-                    fontWeight:
-                    FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-
               const Text(
-
                 "AI Idea",
-
                 style: TextStyle(
-
-                  color:
-                  Colors.cyanAccent,
-
+                  color: Colors.cyanAccent,
                   fontSize: 12,
                 ),
               ),
             ],
           ),
-
           const SizedBox(height: 8),
-
           Text(
-
-            idea['description']
-                ?? "",
-
+            idea['description'] ?? "",
             maxLines: 3,
-
-            overflow:
-            TextOverflow.ellipsis,
-
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-
               color: Colors.grey,
-
               fontSize: 12,
             ),
           ),
-
           const SizedBox(height: 12),
-
           Wrap(
-
             spacing: 6,
-
             runSpacing: 6,
-
             children:
-
-            (idea['specialization']
-            as List<dynamic>? ??
-                [])
-
-                .map((track) {
-
+                (idea['specialization'] as List<dynamic>? ?? []).map((track) {
               return Chip(
-
                 label: Text(
-
                   track.toString(),
-
-                  style:
-                  const TextStyle(
+                  style: const TextStyle(
                     fontSize: 11,
                   ),
                 ),
-
-                backgroundColor:
-                Colors.cyanAccent
-                    .withOpacity(0.2),
-
-                labelStyle:
-                const TextStyle(
+                backgroundColor: Colors.cyanAccent.withOpacity(0.2),
+                labelStyle: const TextStyle(
                   color: Colors.black,
                 ),
               );
             }).toList(),
           ),
-
           const SizedBox(height: 12),
-
           Align(
-
-            alignment:
-            Alignment.centerRight,
-
+            alignment: Alignment.centerRight,
             child: ElevatedButton(
-
-              style:
-              ElevatedButton
-                  .styleFrom(
-
-                backgroundColor:
-                Colors.cyanAccent,
-
-                foregroundColor:
-                Colors.black,
-
-                shape:
-                RoundedRectangleBorder(
-
-                  borderRadius:
-                  BorderRadius.circular(
-                      20),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.cyanAccent,
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-
               onPressed: () {
-
                 context.go(
-
                   '/haveIdea',
-
                   extra: idea,
                 );
               },
-
               child: const Text(
                 "Use This Idea",
               ),

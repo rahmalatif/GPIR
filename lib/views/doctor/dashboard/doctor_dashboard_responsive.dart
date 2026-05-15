@@ -6,8 +6,7 @@ import '../../model/user_model.dart';
 import 'doctor_dashboard_mobile.dart';
 import 'doctor_dashboard_web.dart';
 
-class DashboardResponsive
-    extends StatelessWidget {
+class DashboardResponsive extends StatelessWidget {
   final UserModel user;
 
   const DashboardResponsive({
@@ -18,11 +17,7 @@ class DashboardResponsive
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-      mobile:
-      DashboardMobileView(
-        user: user,
-      ),
-
+      mobile: DashboardMobileView(),
       web: DashboardWebView(
         user: user,
       ),

@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'core/logic/go_router.dart';
 
 void main() async {
-
-
   runApp(const MyApp());
 }
 

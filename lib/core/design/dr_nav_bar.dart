@@ -12,8 +12,7 @@ class DoctorNavBar extends StatelessWidget {
 
     if (location.startsWith('/doctorDashboard')) return 0;
     if (location.startsWith('/doctorProjects')) return 1;
-    if (location.startsWith('/doctorChat')) return 2;
-    if (location.startsWith('/doctorProfile')) return 3;
+    if (location.startsWith('/doctorProfile')) return 2;
 
     return 0;
   }
@@ -27,32 +26,40 @@ class DoctorNavBar extends StatelessWidget {
         currentIndex: _getIndex(context),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black54,
+        type: BottomNavigationBarType.fixed,
 
         onTap: (index) {
           switch (index) {
             case 0:
               context.go('/doctorDashboard');
               break;
+
             case 1:
               context.go('/doctorProjects');
               break;
+
             case 2:
-              context.go('/doctorChat');
-              break;
-            case 3:
               context.go('/doctorProfile');
               break;
           }
         },
 
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Projects'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
 
-        type: BottomNavigationBarType.fixed,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.work),
+            label: 'Projects',
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

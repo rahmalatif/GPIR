@@ -11,31 +11,22 @@ class StudentDashboardMobile extends StatefulWidget {
   });
 
   @override
-  State<StudentDashboardMobile> createState() =>
-      _StudentDashboardMobileState();
+  State<StudentDashboardMobile> createState() => _StudentDashboardMobileState();
 }
 
-class _StudentDashboardMobileState
-    extends State<StudentDashboardMobile> {
+class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
+  void haveAnIdeaOnTap() => context.go('/haveIdea');
 
-  void haveAnIdeaOnTap() =>
-      context.go('/haveIdea');
-
-  void aiRecommendIdea() =>
-      context.go('/aiRecommend');
+  void aiRecommendIdea() => context.go('/aiRecommend');
 
   String greeting(String name) {
-
-    final hour =
-        DateTime.now().hour;
+    final hour = DateTime.now().hour;
 
     if (hour < 12) {
-
       return 'Good Morning,\n$name';
     }
 
     if (hour < 17) {
-
       return 'Good Afternoon,\n$name';
     }
 
@@ -44,72 +35,42 @@ class _StudentDashboardMobileState
 
   @override
   Widget build(BuildContext context) {
-
     String today = DateFormat(
       'dd MMM yyyy',
     ).format(DateTime.now());
 
     return Scaffold(
-
-      backgroundColor:
-      const Color(0xFF0D0F1A),
-
+      backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
-
-        automaticallyImplyLeading:
-        false,
-
-        backgroundColor:
-        const Color(0xFF0D0F1A),
-
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF0D0F1A),
         actions: [
-
           IconButton(
-
             onPressed: () {
-
               context.go(
                 '/studentNotifications',
               );
             },
-
             icon: const Icon(
               Icons.notifications,
             ),
-
             color: Colors.white,
           ),
         ],
       ),
-
       body: FutureBuilder(
-
-        future:
-        DashboardService
-            .getDashboard(),
-
-        builder:
-            (context, snapshot) {
-
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-
+        future: DashboardService.getDashboard(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-
-              child:
-              CircularProgressIndicator(),
+              child: CircularProgressIndicator(),
             );
           }
 
-          if (!snapshot.hasData ||
-              snapshot.data!.isEmpty) {
-
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(
-
               child: Text(
-
                 "No dashboard data",
-
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -117,131 +78,82 @@ class _StudentDashboardMobileState
             );
           }
 
-          final data =
-          snapshot.data!;
+          final data = snapshot.data!;
 
-          final student =
-              data['student'] ?? {};
+          final student = data['student'] ?? {};
 
-          final project =
-              data['project'] ?? {};
+          final project = data['project'] ?? {};
 
-          final supervisor =
-              data['supervisor'] ?? {};
+          final supervisor = data['supervisor'] ?? {};
 
-          final ta =
-              data['teachingAssistant'] ?? {};
+          final ta = data['teachingAssistant'] ?? {};
 
-          final team =
-              data['team'] ?? {
+          final team = data['team'] ??
+              {
                 'members': [],
               };
 
-          final hasProject =
-              project.isNotEmpty;
+          final hasProject = project.isNotEmpty;
 
           return SingleChildScrollView(
-
             child: Column(
-
               children: [
-
                 Padding(
-
-                  padding:
-                  const EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: 18,
                   ),
-
                   child: Align(
-
-                    alignment:
-                    Alignment.centerLeft,
-
+                    alignment: Alignment.centerLeft,
                     child: Text(
-
                       greeting(
-
-                        student['name']
-                            ?? "Student",
+                        student['name'] ?? "Student",
                       ),
-
-                      style:
-                      const TextStyle(
-
-                        color:
-                        Colors.white,
-
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 22,
-
-                        fontWeight:
-                        FontWeight.w500,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ),
-
                 Padding(
-
-                  padding:
-                  const EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: 18,
                   ),
-
                   child: Align(
-
-                    alignment:
-                    Alignment.centerLeft,
-
+                    alignment: Alignment.centerLeft,
                     child: Text(
-
                       today,
-
-                      style:
-                      const TextStyle(
-
-                        color:
-                        Colors.white,
-
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 22,
                       ),
                     ),
                   ),
                 ),
-
                 const SizedBox(
                   height: 30,
                 ),
-
                 buildStatusCard(
                   project,
                 ),
-
                 const SizedBox(
                   height: 20,
                 ),
-
-                if (!hasProject)
-
-                  buildOptions(),
-
+                if (!hasProject) buildOptions(),
                 const SizedBox(
                   height: 30,
                 ),
-
                 buildTeamCard(
                   team,
                 ),
-
                 const SizedBox(
                   height: 15,
                 ),
-
                 buildSupervisorCard(
                   supervisor,
                   ta,
                 ),
-
                 const SizedBox(
                   height: 30,
                 ),
@@ -254,137 +166,60 @@ class _StudentDashboardMobileState
   }
 
   Widget buildStatusCard(
-      dynamic project,
-      ) {
-
-    final hasProject =
-        project.isNotEmpty;
+    dynamic project,
+  ) {
+    final hasProject = project.isNotEmpty;
 
     return Center(
-
       child: SizedBox(
-
         height: 160,
-
         width: 340,
-
         child: Card(
-
-          color:
-          const Color(0xff1D1D2E),
-
+          color: const Color(0xff1D1D2E),
           child: Column(
-
-            crossAxisAlignment:
-            CrossAxisAlignment.start,
-
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Padding(
-
-                padding:
-                const EdgeInsets.all(8),
-
+                padding: const EdgeInsets.all(8),
                 child: Text(
-
                   hasProject
-
-                      ? project['title']
-                      ?? ""
-
+                      ? project['title'] ?? ""
                       : "No project submitted yet",
-
-                  style:
-                  const TextStyle(
-
-                    color:
-                    Colors.white,
-
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 18,
                   ),
                 ),
               ),
-
               Padding(
-
-                padding:
-                const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 8,
                 ),
-
                 child: Text(
-
                   hasProject
-
                       ? "Supervised By: "
-                      "${project['doctor_id']?['name'] ?? 'Not Assigned'}"
-
+                          "${project['doctor_id']?['name'] ?? 'Not Assigned'}"
                       : "Supervised By: Not assigned yet",
-
-                  style:
-                  const TextStyle(
+                  style: const TextStyle(
                     color: Colors.grey,
                   ),
                 ),
               ),
-
-              Padding(
-
-                padding:
-                const EdgeInsets.symmetric(
-
-                  horizontal: 8,
-
-                  vertical: 5,
-                ),
-
-                child: Text(
-
-                  hasProject
-
-                      ? "Similarity: "
-                      "${project['similarity_score']}%"
-
-                      : "Similarity: --",
-
-                  style:
-                  const TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-
               const Spacer(),
-
               Center(
-
                 child: ElevatedButton(
-
-                  style:
-                  ElevatedButton.styleFrom(
-
-                    backgroundColor:
-                    const Color(
-                        0xff4699A8),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff4699A8),
                   ),
-
-                  onPressed:
-
-                  hasProject
-
+                  onPressed: hasProject
                       ? () {
-
-                    context.go(
-                      '/studentProject',
-                    );
-                  }
-
+                          context.go(
+                            '/studentProject',
+                          );
+                        }
                       : null,
-
                   child: const Text(
-
                     "View Details",
-
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -399,103 +234,56 @@ class _StudentDashboardMobileState
   }
 
   Widget buildOptions() => Row(
-
-    mainAxisAlignment:
-    MainAxisAlignment.center,
-
-    children: [
-
-      buildOptionCard(
-
-        image:
-        'assets/png/idea.png',
-
-        text:
-        "Have an Idea",
-
-        onTap:
-        haveAnIdeaOnTap,
-      ),
-
-      const SizedBox(
-        width: 50,
-      ),
-
-      buildOptionCard(
-
-        image:
-        'assets/png/ai.png',
-
-        text:
-        "Recommend Idea",
-
-        onTap:
-        aiRecommendIdea,
-      ),
-    ],
-  );
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildOptionCard(
+            image: 'assets/png/idea.png',
+            text: "Have an Idea",
+            onTap: haveAnIdeaOnTap,
+          ),
+          const SizedBox(
+            width: 50,
+          ),
+          buildOptionCard(
+            image: 'assets/png/ai.png',
+            text: "Recommend Idea",
+            onTap: aiRecommendIdea,
+          ),
+        ],
+      );
 
   Widget buildOptionCard({
-
     required String image,
-
     required String text,
-
     required VoidCallback onTap,
   }) =>
-
       GestureDetector(
-
         onTap: onTap,
-
         child: Container(
-
           height: 120,
-
           width: 130,
-
           decoration: BoxDecoration(
-
             border: Border.all(
-
-              color:
-              const Color(
-                  0xff4699A8),
+              color: const Color(0xff4699A8),
             ),
-
-            borderRadius:
-            BorderRadius.circular(
-                8),
+            borderRadius: BorderRadius.circular(8),
           ),
-
           child: Column(
-
-            mainAxisAlignment:
-            MainAxisAlignment.center,
-
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               SizedBox(
-
                 width: 80,
-
                 height: 80,
-
                 child: AppImage(
                   image: image,
                 ),
               ),
-
               const SizedBox(
                 height: 5,
               ),
-
               Text(
-
                 text,
-
-                style:
-                const TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
@@ -505,95 +293,48 @@ class _StudentDashboardMobileState
       );
 
   Widget buildTeamCard(
-      dynamic team,
-      ) {
-
-    final members =
-        team['members']
-        as List<dynamic>? ??
-
-            [];
+    dynamic team,
+  ) {
+    final members = team['members'] as List<dynamic>? ?? [];
 
     return Center(
-
       child: SizedBox(
-
         width: 350,
-
         child: Card(
-
-          color:
-          const Color(0xff1D1D2E),
-
+          color: const Color(0xff1D1D2E),
           child: Column(
-
-            crossAxisAlignment:
-            CrossAxisAlignment.start,
-
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const Padding(
-
-                padding:
-                EdgeInsets.all(8),
-
+                padding: EdgeInsets.all(8),
                 child: Text(
-
                   "Team Members",
-
                   style: TextStyle(
-
                     fontSize: 18,
-
-                    color:
-                    Colors.white,
+                    color: Colors.white,
                   ),
                 ),
               ),
-
               ...members.map(
-
-                    (m) => Padding(
-
-                  padding:
-                  const EdgeInsets.symmetric(
-
+                (m) => Padding(
+                  padding: const EdgeInsets.symmetric(
                     vertical: 6,
-
                     horizontal: 8,
                   ),
-
                   child: Row(
-
                     children: [
-
                       Text(
-
-                        m['name']
-                            ?? "",
-
-                        style:
-                        const TextStyle(
-
-                          color:
-                          Colors.white,
-
+                        m['name'] ?? "",
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontSize: 16,
                         ),
                       ),
-
                       const Spacer(),
-
                       Text(
-
-                        m['specialization']
-                            ?? "",
-
-                        style:
-                        const TextStyle(
-
-                          color:
-                          Colors.grey,
+                        m['specialization'] ?? "",
+                        style: const TextStyle(
+                          color: Colors.grey,
                         ),
                       ),
                     ],
@@ -606,125 +347,68 @@ class _StudentDashboardMobileState
       ),
     );
   }
-
   Widget buildSupervisorCard(
-
-      dynamic supervisor,
-
-      dynamic ta,
-      ) {
-
+    dynamic supervisor,
+    dynamic ta,
+  ) {
     return Center(
-
       child: SizedBox(
-
         width: 350,
-
         height: 220,
-
         child: Card(
-
-          color:
-          const Color(0xff1D1D2E),
-
+          color: const Color(0xff1D1D2E),
           child: Padding(
-
-            padding:
-            const EdgeInsets.all(8),
-
+            padding: const EdgeInsets.all(8),
             child: Column(
-
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const Text(
-
                   'Your Supervisor',
-
                   style: TextStyle(
-
-                    color:
-                    Colors.white,
-
+                    color: Colors.white,
                     fontSize: 18,
                   ),
                 ),
-
                 Row(
-
                   children: [
-
                     Text(
-
-                      supervisor['name']
-                          ?? "Not Assigned",
-
-                      style:
-                      const TextStyle(
+                      supervisor['name'] ?? "Not Assigned",
+                      style: const TextStyle(
                         color: Colors.grey,
                       ),
                     ),
-
                     const Spacer(),
-
                     CircleAvatar(
-
-                      backgroundColor:
-                      const Color(
-                          0xff4699A8),
-
+                      backgroundColor: const Color(0xff4699A8),
                       child: IconButton(
-
                         icon: const Icon(
-
                           Icons.chat_bubble,
-
-                          color:
-                          Colors.white,
-
+                          color: Colors.white,
                           size: 18,
                         ),
-
                         onPressed: () {
-
-                          context.push(
-                              '/studentChat');
+                          context.push('/studentChat');
                         },
                       ),
                     )
                   ],
                 ),
-
                 const SizedBox(
                   height: 40,
                 ),
-
                 const Text(
-
                   'Teaching Assistant',
-
                   style: TextStyle(
-
-                    color:
-                    Colors.white,
-
+                    color: Colors.white,
                     fontSize: 18,
                   ),
                 ),
-
                 const SizedBox(
                   height: 10,
                 ),
-
                 Text(
-
-                  ta['name']
-                      ?? "Not Assigned",
-
-                  style:
-                  const TextStyle(
+                  ta['name'] ?? "Not Assigned",
+                  style: const TextStyle(
                     color: Colors.grey,
                   ),
                 ),

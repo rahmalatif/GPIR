@@ -6,13 +6,14 @@ import '../../model/project_idea.dart';
 
 class ChooseTAMobileView extends StatefulWidget {
   final ProjectIdea projectIdea;
-
+  final double? similarityScore;
   final dynamic doctor;
 
   const ChooseTAMobileView({
     super.key,
     required this.projectIdea,
     required this.doctor,
+    required this.similarityScore,
   });
 
   @override
@@ -123,6 +124,7 @@ class _ChooseTAMobileViewState extends State<ChooseTAMobileView> {
                     'projectIdea': widget.projectIdea,
                     'doctor': widget.doctor,
                     'ta': tas[selectedIndex!],
+                    'similarityScore': widget.similarityScore,
                   },
                 );
               },

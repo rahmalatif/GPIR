@@ -1,218 +1,298 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ProjectIdView extends StatefulWidget {
+import '../../services/admin_project_details_services.dart';
+
+class ProjectIdView
+    extends StatefulWidget {
+
   final String projectId;
-  final String studentId;
-  const ProjectIdView({super.key, required this.projectId, required this.studentId});
+
+  const ProjectIdView({
+    super.key,
+    required this.projectId,
+  });
 
   @override
-  State<ProjectIdView> createState() => _ProjectIdViewState();
+  State<ProjectIdView>
+  createState() =>
+      _ProjectIdViewState();
 }
 
-class _ProjectIdViewState extends State<ProjectIdView> {
-  final TextEditingController idController = TextEditingController();
-  String? errorText;
+class _ProjectIdViewState
+    extends State<ProjectIdView> {
 
-  void validate() {
-    final id = idController.text.trim();
+  final TextEditingController
+  idController =
+  TextEditingController();
 
-    if (id.isEmpty) {
-      errorText = "Please enter project ID";
-    } else if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(id)) {
-      errorText = "Only letters and numbers allowed";
-    } else if (id.length < 3) {
-      errorText = "ID must be at least 3 characters";
-    } else {
-      errorText = null;
-    }
-
-    setState(() {});
-  }
-
-  bool get isValid => errorText == null && idController.text.isNotEmpty;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(0xFF0D0F1A),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
-      
-              const Text(
-                "Project ID",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-      
-              const SizedBox(height: 30),
-      
-              const Text(
-                "Project ID:",
-                style: TextStyle(color: Colors.cyan),
-              ),
-      
-      
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1A1D2E),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.grey.shade700),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Smart Attendance System",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-      
-                    const SizedBox(height: 6),
-      
-                    Row(
-                      children: const [
-                        Text(
-                          "Supervisor: Dr.",
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                        Spacer(),
-                        Text(
-                          "Date: 14 April 2025",
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                        ),
-                      ],
-                    ),
-      
-                    const SizedBox(height: 6),
-      
-                    const Text(
-                      "Team:",
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-      SizedBox(height: 40,),
-      
-              TextField(
-                controller: idController,
-                onChanged: (_) => validate(),
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  errorText: errorText,
-                  hintText: "Enter Project Id",
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.all(12),
-                    child: Text("CS", style: TextStyle(color: Colors.white)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.cyan),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.cyan, width: 2),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.red),
-                  ),
-                ),
-              ),
-      
-              const Spacer(),
-      
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: isValid
-                      ? () async {
-                    final id = idController.text.trim();
 
-                    await FirebaseFirestore.instance
-                        .collection("projects")
-                        .doc(widget.projectId)
-                        .update({
-                      "assignedId": id,
-                      "status": "accepted",
-                    });
+    return Scaffold(
 
-                    await FirebaseFirestore.instance
-                        .collection("notifications")
-                        .add({
-                      "userId": widget.studentId,
-                      "title": "Project Accepted 🎉",
-                      "body": "Your project has been assigned ID: $id",
-                      "type": "admin_assignment",
-                      "assignedId": id,
-                      "projectId": widget.projectId,
-                      "status": "accepted",
-                      "seen": false,
-                      "createdAt": Timestamp.now(),
-                    });
+      backgroundColor:
+      const Color(0xFF0D0F1A),
 
-                    showSuccess(context);
+      appBar: AppBar(
 
-                    if (!context.mounted) return;
+        backgroundColor:
+        const Color(0xFF0D0F1A),
 
-                    context.go('/AdminDashboard');
-                  }
-                      : null,
+        elevation: 0,
 
+        leading: IconButton(
 
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4FB3C2),
-                    disabledBackgroundColor: Colors.grey.shade700,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    "Assign Project Id",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ],
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
           ),
+
+          onPressed: () {
+
+            context.pop();
+          },
+        ),
+
+        title: const Text(
+
+          "Assign Project ID",
+
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
+
+      body: Padding(
+
+        padding:
+        const EdgeInsets.all(20),
+
+        child: Column(
+
+          crossAxisAlignment:
+          CrossAxisAlignment.start,
+
+          children: [
+
+            const SizedBox(
+              height: 40,
+            ),
+
+            const Text(
+
+              "Project Code",
+
+              style: TextStyle(
+
+                color: Colors.white,
+
+                fontSize: 16,
+
+                fontWeight:
+                FontWeight.w600,
+              ),
+            ),
+
+            const SizedBox(
+              height: 10,
+            ),
+
+            TextField(
+
+              controller:
+              idController,
+
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+
+              decoration: InputDecoration(
+
+                hintText:
+                "Ex: CS-2025-001",
+
+                hintStyle:
+                const TextStyle(
+                  color: Colors.grey,
+                ),
+
+                filled: true,
+
+                fillColor:
+                const Color(
+                  0xFF1A1D2E,
+                ),
+
+                border:
+                OutlineInputBorder(
+
+                  borderRadius:
+                  BorderRadius.circular(
+                    14,
+                  ),
+
+                  borderSide:
+                  BorderSide.none,
+                ),
+              ),
+            ),
+
+            const Spacer(),
+
+            SizedBox(
+
+              width: double.infinity,
+
+              height: 50,
+
+              child: ElevatedButton(
+
+                onPressed:
+                isLoading
+
+                    ? null
+
+                    : () async {
+
+                  if (idController
+                      .text
+                      .trim()
+                      .isEmpty) {
+
+                    ScaffoldMessenger
+                        .of(context)
+                        .showSnackBar(
+
+                      const SnackBar(
+
+                        content: Text(
+                          "Please enter project code",
+                        ),
+                      ),
+                    );
+
+                    return;
+                  }
+
+                  setState(() {
+
+                    isLoading = true;
+                  });
+
+                  final success =
+
+                  await
+                  AdminProjectDetailsService
+                      .approveProject(
+
+                    widget.projectId,
+                          idController.text.trim(),
+                        );
+
+                        setState(() {
+
+                    isLoading = false;
+                  });
+
+                  if (success) {
+
+                    if (context.mounted) {
+
+                      ScaffoldMessenger
+                          .of(context)
+                          .showSnackBar(
+
+                        const SnackBar(
+
+                          content: Text(
+                            "Project Approved Successfully ✅",
+                          ),
+
+                          backgroundColor:
+                          Colors.green,
+                        ),
+                      );
+
+                      context.go(
+                        '/adminDashboard',
+                      );
+                    }
+
+                  } else {
+
+                    ScaffoldMessenger
+                        .of(context)
+                        .showSnackBar(
+
+                      const SnackBar(
+
+                        content: Text(
+                          "Something went wrong",
+                        ),
+                      ),
+                    );
+                  }
+                },
+
+                style:
+                ElevatedButton.styleFrom(
+
+                  backgroundColor:
+                  const Color(
+                    0xff4699A8,
+                  ),
+
+                  shape:
+                  RoundedRectangleBorder(
+
+                    borderRadius:
+                    BorderRadius.circular(
+                      14,
+                    ),
+                  ),
+                ),
+
+                child:
+                isLoading
+
+                    ? const SizedBox(
+
+                  height: 22,
+
+                  width: 22,
+
+                  child:
+                  CircularProgressIndicator(
+
+                    color: Colors.black,
+
+                    strokeWidth: 2,
+                  ),
+                )
+
+                    : const Text(
+
+                  "Confirm Project ID",
+
+                  style: TextStyle(
+
+                    color: Colors.black,
+
+                    fontSize: 15,
+
+                    fontWeight:
+                    FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
-void showSuccess(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.green.shade600,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      content: Row(
-        children: const [
-          Icon(Icons.check_circle, color: Colors.white),
-          SizedBox(width: 10),
-          Text("Project ID assigned successfully"),
-        ],
-      ),
-      duration: const Duration(seconds: 2),
-    ),
-  );
 }

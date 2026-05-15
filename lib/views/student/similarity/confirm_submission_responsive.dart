@@ -12,6 +12,7 @@ class ConfirmSubmissionResponsive extends StatelessWidget {
   final dynamic ta;
   final ProjectIdea projectIdea;
   final List teamMembers;
+  final double? similarityScore;
 
   const ConfirmSubmissionResponsive({
     super.key,
@@ -19,6 +20,7 @@ class ConfirmSubmissionResponsive extends StatelessWidget {
     required this.ta,
     required this.projectIdea,
     required this.teamMembers,
+    required this.similarityScore,
   });
 
   @override
@@ -28,11 +30,13 @@ class ConfirmSubmissionResponsive extends StatelessWidget {
         doctor: doctor,
         ta: ta,
         projectIdea: projectIdea,
+        similarityScore: similarityScore,
       ),
       web: ConfirmSubmissionWebView(
         doctor: doctor,
         projectIdea: projectIdea,
         ta: ta,
+        similarityScore: similarityScore,
       ),
     );
   }

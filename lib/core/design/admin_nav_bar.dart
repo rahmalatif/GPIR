@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../views/model/user_model.dart';
-
-
 
 class AdminNavBar extends StatelessWidget {
   final Widget child;
@@ -15,8 +12,7 @@ class AdminNavBar extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
 
     if (location.startsWith('/adminDashboard')) return 0;
-    if (location.startsWith('/adminAllProjectsId')) return 1;
-    if (location.startsWith('/adminProfile')) return 2;
+    if (location.startsWith('/adminProfile')) return 1;
 
     return 0;
   }
@@ -34,20 +30,15 @@ class AdminNavBar extends StatelessWidget {
         unselectedItemColor: Colors.black54,
         selectedIconTheme: const IconThemeData(color: Colors.white),
         unselectedIconTheme: const IconThemeData(color: Colors.black54),
-
         selectedLabelStyle: const TextStyle(color: Colors.white),
         unselectedLabelStyle: const TextStyle(color: Colors.black54),
-
         onTap: (index) {
           switch (index) {
             case 0:
               context.go('/adminDashboard');
               break;
-            case 1 :
-              context.go('/adminAllProjectsId');
-              break;
 
-            case 2:
+            case 1:
               context.go(
                 '/adminProfile',
                 extra: UserModel(
@@ -58,19 +49,12 @@ class AdminNavBar extends StatelessWidget {
                 ),
               );
               break;
-
-
-
           }
         },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),
             label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.padding_rounded),
-            label: 'Projects',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

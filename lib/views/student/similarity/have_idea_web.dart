@@ -1,5 +1,6 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/project_idea.dart';
 
@@ -14,26 +15,24 @@ class _HaveIdeaWebViewState extends State<HaveIdeaWebView> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
-
   final TextEditingController introController = TextEditingController();
-
   final TextEditingController specController = TextEditingController();
-
-  final TextEditingController featuresController = TextEditingController();
-
   final TextEditingController techController = TextEditingController();
-
   final TextEditingController teamCountController = TextEditingController();
-
   List<TeamMemberForm> teamMembers = [];
+
+  bool isLoading = false;
 
   @override
   void dispose() {
     nameController.dispose();
+
     introController.dispose();
+
     specController.dispose();
-    featuresController.dispose();
+
     techController.dispose();
+
     teamCountController.dispose();
 
     for (var member in teamMembers) {
@@ -43,16 +42,23 @@ class _HaveIdeaWebViewState extends State<HaveIdeaWebView> {
     super.dispose();
   }
 
-  void generateTeamFields(int count) {
+  void generateTeamFields(
+    int count,
+  ) {
     for (var member in teamMembers) {
       member.dispose();
     }
 
-    teamMembers = List.generate(count, (_) => TeamMemberForm());
+    teamMembers = List.generate(
+      count,
+      (_) => TeamMemberForm(),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       body: SingleChildScrollView(
@@ -72,9 +78,11 @@ class _HaveIdeaWebViewState extends State<HaveIdeaWebView> {
                           Icons.arrow_back,
                           color: Colors.white,
                         ),
-                        onPressed: () => context.go(
-                          '/studentDashboard',
-                        ),
+                        onPressed: () {
+                          context.go(
+                            '/studentDashboard',
+                          );
+                        },
                       ),
                       const SizedBox(width: 10),
                       const Text(
@@ -203,8 +211,8 @@ class _HaveIdeaWebViewState extends State<HaveIdeaWebView> {
                             children: [
                               Expanded(
                                 child: _InputTextInline(
-                                  "Name",
-                                  teamMembers[index].nameController,
+                                  "College Code",
+                                  teamMembers[index].collegeCodeController,
                                 ),
                               ),
                               const SizedBox(width: 20),
@@ -253,96 +261,136 @@ class _HaveIdeaWebViewState extends State<HaveIdeaWebView> {
                           vertical: 18,
                         ),
                       ),
-                      onPressed: () {
-                        if (!_formKey.currentState!.validate()) {
-                          return;
-                        }
+                      onPressed: isLoading
+                          ? null
+                          : () async {
+                              setState(() {
+                                isLoading = true;
+                              });
 
-                        if (!teamMembers.any((m) => m.isLeader)) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Please select a Team Leader",
-                              ),
+                              try {
+                                if (!_formKey.currentState!.validate()) {
+                                  return;
+                                }
+
+                                int? currentCollegeCode;
+
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+
+                                currentCollegeCode =
+                                    prefs.getInt('collegeCode');
+
+                                if (!context.mounted) return;
+
+                                if (currentCollegeCode == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Login data not found"),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                final exists = teamMembers.any(
+                                  (m) =>
+                                      int.parse(
+                                        m.collegeCodeController.text.trim(),
+                                      ) ==
+                                      currentCollegeCode,
+                                );
+
+                                if (!context.mounted) return;
+
+                                if (!exists) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Leader must be included in team members",
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                if (!teamMembers.any((m) => m.isLeader)) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Please select a Team Leader",
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                final leader = teamMembers.firstWhere(
+                                  (m) => m.isLeader,
+                                );
+
+                                final idea = ProjectIdea(
+                                  title: nameController.text.trim(),
+                                  description: introController.text.trim(),
+                                  tools: techController.text
+                                      .split(',')
+                                      .map((e) => e.trim())
+                                      .where((e) => e.isNotEmpty)
+                                      .toList(),
+                                  specialization: specController.text
+                                      .split(',')
+                                      .map((e) => e.trim())
+                                      .where((e) => e.isNotEmpty)
+                                      .toList(),
+                                  year: DateTime.now().year,
+                                  team: TeamData(
+                                    leaderCollegeCode: int.parse(
+                                      leader.collegeCodeController.text.trim(),
+                                    ),
+                                    members: teamMembers.map(
+                                      (member) {
+                                        return TeamMemberData(
+                                          collegeCode: int.parse(
+                                            member.collegeCodeController.text
+                                                .trim(),
+                                          ),
+                                          specialization: member
+                                              .specializationController.text
+                                              .trim(),
+                                        );
+                                      },
+                                    ).toList(),
+                                  ),
+                                  doctorId: '',
+                                  taId: '',
+                                );
+
+                                if (!context.mounted) return;
+
+                                context.go(
+                                  '/similarityCheck',
+                                  extra: idea,
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e.toString()),
+                                  ),
+                                );
+                              } finally {
+                                if (mounted) {
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                }
+                              }
+                            },
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.black,
+                            )
+                          : const Text(
+                              "Check Similarity",
                             ),
-                          );
-
-                          return;
-                        }
-
-                        final idea = ProjectIdea(
-
-                          title: nameController.text.trim(),
-
-                          description:
-                          introController.text.trim(),
-
-                          tools:
-                          techController.text
-                              .split(',')
-                              .map((e) => e.trim())
-                              .toList(),
-
-                          specialization:
-                          specController.text
-                              .split(',')
-                              .map((e) => e.trim())
-                              .toList(),
-
-                          doctorId: "69f8791a5f9ca3ce23568b60",
-
-                          taId: "69f7c63b77d75c63a665e53c",
-
-                          year: DateTime.now().year,
-
-                          team: TeamData(
-
-                            leaderId: int.parse(
-
-                              leader
-                                  .collegeCodeController
-                                  .text
-                                  .trim(),
-                            ),
-
-                            members:
-                            teamMembers.map((member) {
-
-                              return TeamMemberData(
-
-                                id: int.parse(
-
-                                  member
-                                      .collegeCodeController
-                                      .text
-                                      .trim(),
-                                ),
-
-                                specialization:
-
-                                member
-                                    .specializationController
-                                    .text
-                                    .trim(),
-                              );
-
-                            }).toList(),
-                          ),
-                        );
-
-                        context.go(
-                          '/similarityCheck',
-                          extra: idea,
-                        );
-                      },
-                      child: const Text(
-                        "Check Similarity",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -402,9 +450,6 @@ Widget _InputText(
                 horizontal: 20,
                 vertical: 18,
               ),
-              errorStyle: const TextStyle(
-                color: Colors.red,
-              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: const BorderSide(
@@ -417,13 +462,6 @@ Widget _InputText(
                 borderSide: const BorderSide(
                   color: Color(0xff4699A8),
                   width: 2.5,
-                ),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 2,
                 ),
               ),
             ),
@@ -451,6 +489,8 @@ Widget _InputTextInline(
       const SizedBox(height: 5),
       TextFormField(
         controller: controller,
+        keyboardType:
+            label == "College Code" ? TextInputType.number : TextInputType.text,
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
             return "Required";
@@ -486,16 +526,15 @@ Widget _InputTextInline(
 }
 
 class TeamMemberForm {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController collegeCodeController = TextEditingController();
 
   TextEditingController specializationController = TextEditingController();
 
   bool isLeader = false;
 
   void dispose() {
-    nameController.dispose();
+    collegeCodeController.dispose();
+
     specializationController.dispose();
   }
 }
-
- */

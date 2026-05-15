@@ -20,6 +20,7 @@ class AuthService {
     String? email,
     int? id,
     required String phonenumber,
+    String? specialization,
   }) async {
     final response = await ApiService.register(
       name: name,
@@ -28,6 +29,7 @@ class AuthService {
       role: role,
       id: id,
       phonenumber: phonenumber,
+      specialization: specialization
     );
 
     final data = jsonDecode(response.body);

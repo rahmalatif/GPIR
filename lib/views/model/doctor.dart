@@ -24,7 +24,7 @@ class Doctor {
   factory Doctor.fromJson(Map<String, dynamic> json, String firebaseUid) {
     return Doctor(
       uid: firebaseUid,
-      apiId: json['id'] ?? '',
+      apiId: json['_id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       track: json['track'] ?? '',

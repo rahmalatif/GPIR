@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import 'package:graduation_project_recommender/core/design/app_image.dart';
-
-import '../../model/team.dart';
-import '../similarity/have_idea_mobile.dart';
+import '../../../core/design/app_image.dart';
+import '../../../services/student_dashboard_service.dart';
 
 class StudentDashboardWeb extends StatefulWidget {
   const StudentDashboardWeb({super.key});
@@ -15,34 +13,9 @@ class StudentDashboardWeb extends StatefulWidget {
 }
 
 class _StudentDashboardWebState extends State<StudentDashboardWeb> {
-  
- /* List<TeamMember> members = [
-    TeamMember(
- /*     name: "Rahma Ahmed",
-      track: 'mobile',*/
-    ),
-    TeamMember(
+  void haveAnIdeaOnTap() => context.go('/haveIdea');
 
-    ),
-    TeamMember(
-
-    ),
-    TeamMember(
-
-    ),
-    TeamMember(
-
-    ),
-  ];*/
-
-
-  void haveAnIdeaOnTap() {
-    context.go('/haveIdea');
-  }
-
-  void aiRecommendIdea() {
-    context.go('/aiRecommend');
-  }
+  void aiRecommendIdea() => context.go('/aiRecommend');
 
   String greeting(String name) {
     final hour = DateTime.now().hour;
@@ -60,173 +33,235 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
 
   @override
   Widget build(BuildContext context) {
-    String today = DateFormat('dd MMM yyyy').format(DateTime.now());
+    String today = DateFormat(
+      'dd MMM yyyy',
+    ).format(DateTime.now());
 
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(
-            maxWidth: 1400,
-          ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 40,
-                vertical: 30,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            greeting("Rahma"),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            today,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 22,
-                            ),
-                          ),
-                        ],
-                      ),
-                      CircleAvatar(
-                        radius: 28,
-                        backgroundColor: const Color(0xff4699A8),
-                        child: IconButton(
-                          onPressed: () {
-                            context.push(
-                              '/studentNotifications',
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.notifications,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
-                  buildStatusCard(),
-                  const SizedBox(height: 40),
-                  buildOptions(),
-                  const SizedBox(height: 40),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: buildTeamCard(),
-                      ),
-                      const SizedBox(width: 25),
-                      Expanded(
-                        child: buildSupervisorCard(),
-                      ),
-                    ],
-                  ),
-                ],
+
+      // نفس فكرة الموبايل
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF0D0F1A),
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              onPressed: () {
+                context.go('/studentNotifications');
+              },
+              icon: const Icon(
+                Icons.notifications,
+                color: Colors.white,
               ),
             ),
           ),
-        ),
+        ],
       ),
-    );
-  }
 
-  Widget buildStatusCard() {
-    return SizedBox(
-      height: 240,
-      width: double.infinity,
-      child: Card(
-        color: const Color(0xff1D1D2E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "No project submitted yet",
+      body: FutureBuilder(
+        future: DashboardService.getDashboard(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xff4699A8),
+              ),
+            );
+          }
+
+          if (snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text(
+                "No dashboard data",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 15),
-              const Text(
-                "Supervised By: Not assigned yet",
-                style: TextStyle(
-                  color: Colors.grey,
                   fontSize: 18,
                 ),
               ),
-              const Spacer(),
-              Center(
-                child: SizedBox(
-                  width: 200,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff4699A8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+            );
+          }
+
+          final data = snapshot.data!;
+
+          final student = data['student'] ?? {};
+
+          final project = data['project'] ?? {};
+
+          final supervisor = data['supervisor'] ?? {};
+
+          final ta = data['teachingAssistant'] ?? {};
+
+          final team = data['team'] ??
+              {
+                'members': [],
+              };
+
+          final hasProject = project.isNotEmpty;
+
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 1200,
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Greeting
+                    Text(
+                      greeting(
+                        student['name'] ?? "Student",
                       ),
-                    ),
-                    onPressed: null,
-                    child: const Text(
-                      "View Details",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 34,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
+
+                    const SizedBox(height: 10),
+
+                    Text(
+                      today,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 20,
+                      ),
+                    ),
+
+                    const SizedBox(height: 35),
+
+                    buildStatusCard(project),
+
+                    const SizedBox(height: 30),
+
+                    if (!hasProject) buildOptions(),
+
+                    if (!hasProject)
+                      const SizedBox(
+                        height: 35,
+                      ),
+
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: buildTeamCard(team),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: buildSupervisorCard(
+                            supervisor,
+                            ta,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 30),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget buildOptions() {
-    return Center(
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 40,
-        runSpacing: 20,
+  Widget buildStatusCard(
+    dynamic project,
+  ) {
+    final hasProject = project.isNotEmpty;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xff1D1D2E),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xff4699A8),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            hasProject ? project['title'] ?? "" : "No project submitted yet",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            hasProject
+                ? "Supervised By: "
+                    "${project['doctor_id']?['name'] ?? 'Not Assigned'}"
+                : "Supervised By: Not assigned yet",
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 16,
+            ),
+          ),
+
+          const SizedBox(height: 25),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xff4699A8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+                vertical: 18,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: hasProject
+                ? () {
+                    context.go('/studentProject');
+                  }
+                : null,
+            child: const Text(
+              "View Details",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildOptions() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           buildOptionCard(
             image: 'assets/png/idea.png',
             text: "Have an Idea",
             onTap: haveAnIdeaOnTap,
           ),
+          const SizedBox(width: 40),
           buildOptionCard(
             image: 'assets/png/ai.png',
             text: "Recommend Idea",
             onTap: aiRecommendIdea,
           ),
         ],
-      ),
-    );
-  }
+      );
 
   Widget buildOptionCard({
     required String image,
@@ -237,33 +272,30 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
       onTap: onTap,
       child: Container(
         height: 220,
-        width: 300,
+        width: 260,
         decoration: BoxDecoration(
           color: const Color(0xff1D1D2E),
           border: Border.all(
             color: const Color(0xff4699A8),
           ),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 80,
-              height: 80,
+              width: 110,
+              height: 110,
               child: AppImage(
                 image: image,
               ),
             ),
-
-            const SizedBox(width: 15),
-
+            const SizedBox(height: 15),
             Text(
               text,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
+                fontSize: 20,
               ),
             ),
           ],
@@ -272,100 +304,137 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
     );
   }
 
-  Widget buildTeamCard() {
-    return Card(
-      color: const Color(0xff1D1D2E),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-       /*     const Text(
-              "Team Members",
-              style: TextStyle(
-                fontSize: 26,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ...members.map(
-              (m) => Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                ),
-                child: Text(
-                 "name",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),*/
-          ],
-        ),
-      ),
-    );
-  }
+  Widget buildTeamCard(
+    dynamic team,
+  ) {
+    final members = team['members'] as List<dynamic>? ?? [];
 
-  Widget buildSupervisorCard() {
-    return SizedBox(
-      height: 300,
-      child: Card(
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
         color: const Color(0xff1D1D2E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Your Supervisor',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Team Members",
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 20),
+          if (members.isEmpty)
+            const Text(
+              "No members added",
+              style: TextStyle(
+                color: Colors.grey,
               ),
-              const SizedBox(height: 20),
-              Row(
+            ),
+          ...members.map(
+            (m) => Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+              ),
+              child: Row(
                 children: [
-                  const Expanded(
-                    child: Text(
-                      "Dr. Ahmed Ibrahim",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 20,
-                      ),
+                  const Icon(
+                    Icons.person,
+                    color: Color(0xff4699A8),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    m['name'] ?? "",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 28,
-                    backgroundColor: const Color(0xff4699A8),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.chat_bubble,
-                        color: Colors.white,
-                        size: 22,
-                      ),
-                      onPressed: () {
-                        context.push(
-                          '/studentChat',
-                        );
-                      },
+                  const Spacer(),
+                  Text(
+                    m['specialization'] ?? "",
+                    style: const TextStyle(
+                      color: Colors.grey,
                     ),
                   ),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSupervisorCard(
+    dynamic supervisor,
+    dynamic ta,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xff1D1D2E),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Your Supervisor',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 15),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  supervisor['name'] ?? "Not Assigned",
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              CircleAvatar(
+                backgroundColor: const Color(0xff4699A8),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.chat_bubble,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                  onPressed: () {
+                    context.push('/studentChat');
+                  },
+                ),
+              ),
             ],
           ),
-        ),
+          const SizedBox(height: 40),
+          const Text(
+            'Teaching Assistant',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            ta['name'] ?? "Not Assigned",
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 16,
+            ),
+          ),
+        ],
       ),
     );
   }
