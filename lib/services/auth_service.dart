@@ -10,7 +10,9 @@ import '../views/model/user_model.dart';
 
 class AuthService {
   static String? token;
-
+  static String? email;
+  static String? name;
+  static int? studentId;
   static bool isLeader = false;
 
   static Future<dynamic> register({
@@ -23,14 +25,13 @@ class AuthService {
     String? specialization,
   }) async {
     final response = await ApiService.register(
-      name: name,
-      email: email,
-      password: password,
-      role: role,
-      id: id,
-      phonenumber: phonenumber,
-      specialization: specialization
-    );
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+        id: id,
+        phonenumber: phonenumber,
+        specialization: specialization);
 
     final data = jsonDecode(response.body);
 
@@ -86,7 +87,7 @@ class AuthService {
         final student = Student.fromJson(
           data["student"],
         );
-
+        studentId = student.collegeCode;
         print(
           "LOGIN COLLEGE CODE: "
           "${student.collegeCode}",
@@ -110,6 +111,9 @@ class AuthService {
         final user = UserModel.fromJson(
           data["user"],
         );
+
+        AuthService.email = user.email;
+        AuthService.name = user.name;
 
         return user;
       }

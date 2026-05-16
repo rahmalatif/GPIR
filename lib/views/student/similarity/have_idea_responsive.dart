@@ -18,7 +18,7 @@ class HaveIdeaResponsive extends StatelessWidget {
       mobile: HaveIdeaMobileView(
         recommendedIdea: recommendedIdea,
       ),
-      web: HaveIdeaMobileView(
+      web: HaveIdeaWebView(
         recommendedIdea: recommendedIdea,
       ),
     );

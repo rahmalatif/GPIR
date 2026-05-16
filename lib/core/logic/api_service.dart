@@ -34,7 +34,7 @@ class ApiService {
         "email": email,
         "password": password,
         "role": role,
-        "specialization" : specialization
+        "specialization": specialization
       };
     }
 
@@ -130,10 +130,12 @@ class ApiService {
       body: jsonEncode(projectData),
     );
 
-    print("REQUEST BODY: $projectData",
+    print(
+      "REQUEST BODY: $projectData",
     );
 
-    print("STATUS CODE: ${response.statusCode}",
+    print(
+      "STATUS CODE: ${response.statusCode}",
     );
 
     print(

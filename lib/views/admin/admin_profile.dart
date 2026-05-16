@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../services/auth_service.dart';
 import '../model/user_model.dart';
 
 class AdminProfileView extends StatefulWidget {
@@ -22,9 +23,8 @@ class _AdminProfileViewState extends State<AdminProfileView> {
 
   void getAdminData() {
     admin = {
-      "name": "Admin",
-      "id": "ADMIN-001",
-      "email": "admin@gmail.com",
+      "name": AuthService.name,
+      "email": AuthService.email,
     };
   }
 
@@ -52,7 +52,7 @@ class _AdminProfileViewState extends State<AdminProfileView> {
             const SizedBox(height: 16),
             Center(
               child: Text(
-                admin!['name'],
+                admin!['name'] ?? "name",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -62,19 +62,20 @@ class _AdminProfileViewState extends State<AdminProfileView> {
             ),
             const SizedBox(height: 4),
             const SizedBox(height: 30),
-            _infoItem("ID", admin!['id']),
-            _infoItem("Email", admin!['email']),
+            _infoItem("Email", admin!['email'] ?? "email"),
             SizedBox(
               height: 15,
             ),
-            IconButton(
-                onPressed: () async {
-                  context.go('/roleSelection');
-                },
-                icon: Icon(
-                  Icons.logout,
-                  color: Colors.white,
-                ))
+            Center(
+              child: IconButton(
+                  onPressed: () async {
+                    context.go('/roleSelection');
+                  },
+                  icon: Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                  )),
+            )
           ],
         ),
       ),

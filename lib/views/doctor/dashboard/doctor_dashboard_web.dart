@@ -319,17 +319,7 @@ class _DashboardWebViewState extends State<DashboardWebView> {
                         )
                             : Row(
                           children: [
-                            Expanded(
-                              child: Buttons(
-                                "View Ideas",
-                                    () {
-                                  context.push(
-                                    '/drPendingIdeas',
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 20),
+
                             Expanded(
                               child: Buttons(
                                 "Add Ideas",

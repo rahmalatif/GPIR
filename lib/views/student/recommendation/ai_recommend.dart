@@ -24,11 +24,14 @@ class _AiRecommendMobileState extends State<AiRecommendMobile> {
   final List<String> tracks = [
     "AI",
     "Mobile",
-    "Backend",
+    "Backend Development",
+    "Frontend Development",
     "Embedded",
     "UI/UX",
     "Web Dev",
-    "Cyber Security",
+    "IoT",
+    "Cybersecurity",
+    "Cloud"
   ];
 
   String selectedTrack = "Mobile";

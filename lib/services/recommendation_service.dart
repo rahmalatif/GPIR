@@ -27,7 +27,11 @@ class RecommendationService {
       print("RECOMMEND RESPONSE: "
           "${response.body}");
 
-      final data = jsonDecode(response.body);
+      final data =
+      jsonDecode(response.body);
+
+      return data['ideas']
+          ?? [];
 
       return data['ideas'] ?? [];
     } catch (e) {

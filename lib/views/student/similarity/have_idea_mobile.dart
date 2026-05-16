@@ -16,7 +16,7 @@ class HaveIdeaMobileView extends StatefulWidget {
 
 class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
   final _formKey = GlobalKey<FormState>();
-
+  bool hasTeam = false;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController introController = TextEditingController();
   final TextEditingController specController = TextEditingController();
@@ -36,6 +36,19 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
       member.dispose();
     }
     super.dispose();
+  }
+  Future<void> checkIfHasTeam() async {
+
+    final prefs =
+    await SharedPreferences
+        .getInstance();
+
+    hasTeam =
+        prefs.getBool(
+          'hasTeam',
+        ) ?? false;
+
+    setState(() {});
   }
 
   void generateTeamFields(int count) {
@@ -68,6 +81,8 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
     super.initState();
 
     fillRecommendedIdea();
+
+    checkIfHasTeam();
   }
 
   @override
@@ -139,8 +154,9 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                 techController,
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(8),
+              if (!hasTeam)
+                Padding(
+                  padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -213,8 +229,10 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                   ],
                 ),
               ),
-              Column(
-                children: List.generate(
+              if (!hasTeam)
+                Column(
+                  children:
+                  List.generate(
                   teamMembers.length,
                   (index) {
                     return Padding(
@@ -280,26 +298,35 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                         return;
                       }
 
-                      final exists = teamMembers.any(
-                        (m) =>
-                            int.parse(
-                              m.collegeCodeController.text.trim(),
-                            ) ==
-                            currentCollegeCode,
-                      );
+                      if (!hasTeam) {
 
-                      print("LEADER EXISTS: $exists");
-
-                      if (!exists) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Leader must be included in team members",
-                            ),
-                          ),
+                        final exists =
+                        teamMembers.any(
+                              (m) =>
+                          int.parse(
+                            m.collegeCodeController
+                                .text
+                                .trim(),
+                          ) ==
+                              currentCollegeCode,
                         );
 
-                        return;
+                        if (!exists) {
+
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
+
+                            const SnackBar(
+
+                              content: Text(
+                                "Leader must be included in team members",
+                              ),
+                            ),
+                          );
+
+                          return;
+                        }
                       }
 
                       final idea = ProjectIdea(
@@ -314,8 +341,13 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                             .map((e) => e.trim())
                             .toList(),
                         year: DateTime.now().year,
-                        team: TeamData(
-                          leaderCollegeCode: currentCollegeCode,
+                        team: hasTeam
+                            ? TeamData(
+                                leaderCollegeCode: currentCollegeCode,
+                                members: [],
+                              )
+                            : TeamData(
+                                leaderCollegeCode: currentCollegeCode,
                           members: teamMembers.map((member) {
                             return TeamMemberData(
                               collegeCode: int.parse(

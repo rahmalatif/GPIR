@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../services/recommend_select_service.dart';
+
 class ProjectsRecommendationMobileView extends StatelessWidget {
   final List<dynamic> ideas;
 
@@ -98,7 +100,7 @@ class ProjectsRecommendationMobileView extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             idea['description'] ?? "",
-            maxLines: 3,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Colors.grey,
@@ -136,11 +138,36 @@ class ProjectsRecommendationMobileView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              onPressed: () {
-                context.go(
-                  '/haveIdea',
-                  extra: idea,
+              onPressed: () async {
+                final success = await RecommendSelectService.selectIdea(
+                  idea['_id'],
                 );
+
+                if (success) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Idea Selected ✅",
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    context.push(
+                      '/haveIdea',
+                      extra: idea,
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Something went wrong",
+                      ),
+                    ),
+                  );
+                }
               },
               child: const Text(
                 "Use This Idea",

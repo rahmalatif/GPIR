@@ -194,7 +194,7 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             hasProject ? project['title'] ?? "" : "No project submitted yet",
@@ -205,42 +205,48 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            hasProject
-                ? "Supervised By: "
-                    "${project['doctor_id']?['name'] ?? 'Not Assigned'}"
-                : "Supervised By: Not assigned yet",
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-            ),
+          Row(
+            children: [
+              Text(
+                hasProject
+                    ? "Supervised By: "
+                        "${project['doctor_id']?['name'] ?? 'Not Assigned'}"
+                    : "Supervised By: Not assigned yet",
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                ),
+              ),
+              Spacer(),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff4699A8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 18,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: hasProject
+                    ? () {
+                  context.go('/studentProject');
+                }
+                    : null,
+                child: const Text(
+                  "View Details",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
           ),
 
           const SizedBox(height: 25),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xff4699A8),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 18,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: hasProject
-                ? () {
-                    context.go('/studentProject');
-                  }
-                : null,
-            child: const Text(
-              "View Details",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-          ),
+
         ],
       ),
     );

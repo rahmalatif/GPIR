@@ -1,37 +1,32 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../services/auth_service.dart';
 import '../../model/doctor.dart';
 
-class DoctorProfileView extends StatelessWidget {
+class DoctorProfileView extends StatefulWidget {
   const DoctorProfileView({super.key});
 
   @override
+  State<DoctorProfileView> createState() => _DoctorProfileViewState();
+}
+
+class _DoctorProfileViewState extends State<DoctorProfileView> {
+  Map<String, dynamic>? doctor;
+  void initState() {
+    super.initState();
+
+    getDoctorData();
+  }
+  void getDoctorData() {
+    doctor = {
+      "name": AuthService.name,
+      "email": AuthService.email,
+    };
+  }
+
+  @override
   Widget build(BuildContext context) {
-    //   final uid = FirebaseAuth.instance.currentUser!.uid;
-
-    /* return FutureBuilder(
-      future: ,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (!snapshot.data!.exists) {
-          return const Scaffold(
-            body: Center(child: Text("Doctor data not found")),
-          );
-        }
-
-        final data = snapshot.data!.value as Map;
-        final doctor = Doctor.fromJson(
-          Map<String, dynamic>.from(data),
-          uid,
-        );*/
-
-
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       body: Padding(
@@ -57,7 +52,7 @@ class DoctorProfileView extends StatelessWidget {
 
             Center(
               child: Text(
-                "name",
+                doctor!['name']??"Name",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -66,11 +61,9 @@ class DoctorProfileView extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
 
-            _infoItem("ID", "uid"),
             const SizedBox(height: 16),
-            _infoItem("Email", "email"),
+            _infoItem("Email", doctor!['name'] ??"email"),
             SizedBox(height: 15,),
             IconButton(
               onPressed: () async {
