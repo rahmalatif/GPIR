@@ -8,7 +8,7 @@ import '../../../services/ta_dashboard_services.dart';
 import '../../model/user_model.dart';
 
 class TADashboardWebView extends StatefulWidget {
-  final UserModel user;
+  final UserModel? user;
 
   const TADashboardWebView({
     super.key,
@@ -46,8 +46,6 @@ class _TADashboardWebViewState extends State<TADashboardWebView> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
-    final isTablet = screenWidth < 1100;
 
     final isMobile = screenWidth < 700;
 
@@ -296,33 +294,6 @@ class _TADashboardWebViewState extends State<TADashboardWebView> {
                         const SizedBox(
                           height: 30,
                         ),
-                        isMobile
-                            ? Column(
-                                children: [
-                                  ButtonsTA(
-                                    "Add Ideas",
-                                    () {
-                                      context.push(
-                                        '/taAddIdea',
-                                      );
-                                    },
-                                  ),
-                                ],
-                              )
-                            : Row(
-                                children: [
-                                  Expanded(
-                                    child: ButtonsTA(
-                                      "Add Ideas",
-                                      () {
-                                        context.push(
-                                          '/taAddIdea',
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
                       ],
                     ),
                   ),

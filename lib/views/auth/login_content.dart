@@ -83,7 +83,7 @@ class _LoginContentState
         );
         break;
 
-      case 'teacher assistant':
+      case 'ta':
         context.go(
           '/taDashboard',
           extra: user,

@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../services/auth_service.dart';
 import '../../../services/ta_dashboard_services.dart';
+import '../../model/user_model.dart';
 
 class TADashboardMobileView extends StatefulWidget {
+  final UserModel? user;
   const TADashboardMobileView({
-    super.key,
+    super.key, this.user,
   });
 
   @override
-  State<TADashboardMobileView> createState() =>
-      _TADashboardMobileViewState();
+  State<TADashboardMobileView> createState() => _TADashboardMobileViewState();
 }
 
-class _TADashboardMobileViewState
-    extends State<TADashboardMobileView> {
+class _TADashboardMobileViewState extends State<TADashboardMobileView> {
   late Future<Map<String, dynamic>> dashboardFuture;
 
   String greeting(String name) {
@@ -34,9 +35,7 @@ class _TADashboardMobileViewState
   void initState() {
     super.initState();
 
-    dashboardFuture =
-        TeacherAssistantDashboardService
-            .getDashboard();
+    dashboardFuture = TeacherAssistantDashboardService.getDashboard();
   }
 
   @override
@@ -44,23 +43,18 @@ class _TADashboardMobileViewState
     return FutureBuilder(
       future: dashboardFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState ==
-            ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            backgroundColor:
-            Color(0xFF0D0F1A),
+            backgroundColor: Color(0xFF0D0F1A),
             body: Center(
-              child:
-              CircularProgressIndicator(),
+              child: CircularProgressIndicator(),
             ),
           );
         }
 
-        if (!snapshot.hasData ||
-            snapshot.data!.isEmpty) {
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Scaffold(
-            backgroundColor:
-            Color(0xFF0D0F1A),
+            backgroundColor: Color(0xFF0D0F1A),
             body: Center(
               child: Text(
                 "No dashboard data",
@@ -76,36 +70,23 @@ class _TADashboardMobileViewState
 
         final ta = data['ta'] ?? {};
 
-        final pendingProjects =
-            data['pendingProjects']
-                ?.toString() ??
-                "0";
+        final pendingProjects = data['pendingProjects']?.toString() ?? "0";
 
-        final acceptedProjects =
-            data['acceptedProjects']
-                ?.toString() ??
-                "0";
+        final acceptedProjects = data['acceptedProjects']?.toString() ?? "0";
 
-        final recentIdeas =
-            data['recentIdeas']
-            as List<dynamic>? ??
-                [];
+        final recentIdeas = data['recentIdeas'] as List<dynamic>? ?? [];
 
         return Scaffold(
-          backgroundColor:
-          const Color(0xFF0D0F1A),
+          backgroundColor: const Color(0xFF0D0F1A),
           appBar: AppBar(
-            backgroundColor:
-            const Color(0xFF0D0F1A),
+            backgroundColor: const Color(0xFF0D0F1A),
             title: Text(
               greeting(
-                ta['name'] ??
-                    "Teacher Assistant",
+                AuthService.name ?? "Teacher Assistant",
               ),
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight:
-                FontWeight.w600,
+                fontWeight: FontWeight.w600,
               ),
             ),
             actions: [
@@ -122,8 +103,7 @@ class _TADashboardMobileViewState
             ],
           ),
           body: Padding(
-            padding:
-            const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(18),
             child: Column(
               children: [
                 const SizedBox(
@@ -150,35 +130,24 @@ class _TADashboardMobileViewState
                   height: 15,
                 ),
                 TextField(
-                  decoration:
-                  InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Search',
-                    hintStyle:
-                    const TextStyle(
-                      color:
-                      Colors.grey,
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
                     ),
-                    prefixIcon:
-                    const Icon(
+                    prefixIcon: const Icon(
                       Icons.search,
-                      color:
-                      Colors.grey,
+                      color: Colors.grey,
                     ),
                     filled: true,
-                    fillColor:
-                    const Color(
+                    fillColor: const Color(
                       0xFF1A1D2E,
                     ),
-                    border:
-                    OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius
-                          .circular(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
                         14,
                       ),
-                      borderSide:
-                      BorderSide
-                          .none,
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
@@ -186,18 +155,13 @@ class _TADashboardMobileViewState
                   height: 30,
                 ),
                 const Align(
-                  alignment:
-                  Alignment
-                      .centerLeft,
+                  alignment: Alignment.centerLeft,
                   child: Text(
                     "Recent Ideas",
                     style: TextStyle(
-                      color:
-                      Colors.white,
+                      color: Colors.white,
                       fontSize: 18,
-                      fontWeight:
-                      FontWeight
-                          .bold,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -206,73 +170,46 @@ class _TADashboardMobileViewState
                 ),
                 Expanded(
                   child: ListView(
-                    children:
-                    recentIdeas
-                        .isEmpty
+                    children: recentIdeas.isEmpty
                         ? [
-                      const Center(
-                        child:
-                        Padding(
-                          padding:
-                          EdgeInsets.all(
-                            20,
-                          ),
-                          child:
-                          Text(
-                            "No ideas yet",
-                            style:
-                            TextStyle(
-                              color:
-                              Colors.grey,
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                  20,
+                                ),
+                                child: Text(
+                                  "No ideas yet",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ]
-                        : recentIdeas
-                        .map(
-                          (
-                          idea,
-                          ) {
-                        return Padding(
-                          padding:
-                          const EdgeInsets.only(
-                            bottom:
-                            12,
-                          ),
-                          child:
-                          _projects(
-                            idea,
-                            idea['ta_status'] ??
-                                "pending",
-                            idea['title'] ??
-                                "",
-                            idea['year']
-                                ?.toString() ??
-                                "",
-                            context,
-                          ),
-                        );
-                      },
-                    ).toList(),
+                          ]
+                        : recentIdeas.map(
+                            (
+                              idea,
+                            ) {
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: 12,
+                                ),
+                                child: _projects(
+                                  idea,
+                                  idea['ta_status'] ?? "pending",
+                                  idea['title'] ?? "",
+                                  idea['year']?.toString() ?? "",
+                                  context,
+                                ),
+                              );
+                            },
+                          ).toList(),
                   ),
                 ),
                 const SizedBox(
                   height: 30,
                 ),
-                Row(
-                  children: [
-                    Buttons(
-                      "Add Ideas",
-                          () {
-                        context
-                            .push(
-                          '/taAddIdea',
-                        );
-                      },
-                    ),
-                  ],
-                ),
+
               ],
             ),
           ),
@@ -282,10 +219,10 @@ class _TADashboardMobileViewState
   }
 
   Widget _projectcard(
-      String projectType,
-      String number,
-      BuildContext context,
-      ) {
+    String projectType,
+    String number,
+    BuildContext context,
+  ) {
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -295,31 +232,22 @@ class _TADashboardMobileViewState
         },
         child: Container(
           height: 100,
-          padding:
-          const EdgeInsets.all(18),
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color:
-            const Color(0xFF1A1D2E),
-            borderRadius:
-            BorderRadius.circular(
+            color: const Color(0xFF1A1D2E),
+            borderRadius: BorderRadius.circular(
               18,
             ),
           ),
           child: Column(
-            mainAxisAlignment:
-            MainAxisAlignment
-                .center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 number,
-                style:
-                const TextStyle(
-                  color:
-                  Colors.cyan,
+                style: const TextStyle(
+                  color: Colors.cyan,
                   fontSize: 20,
-                  fontWeight:
-                  FontWeight
-                      .bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(
@@ -327,16 +255,11 @@ class _TADashboardMobileViewState
               ),
               Text(
                 projectType,
-                textAlign:
-                TextAlign.center,
-                style:
-                const TextStyle(
-                  color:
-                  Colors.white,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 14,
-                  fontWeight:
-                  FontWeight
-                      .bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -347,95 +270,68 @@ class _TADashboardMobileViewState
   }
 
   Widget _projects(
-      dynamic idea,
-      String status,
-      String name,
-      String date,
-      BuildContext context,
-      ) {
-    final normalizedStatus =
-    status
-        .toLowerCase()
-        .trim();
+    dynamic idea,
+    String status,
+    String name,
+    String date,
+    BuildContext context,
+  ) {
+    final normalizedStatus = status.toLowerCase().trim();
 
-    String displayStatus =
-        "Pending";
+    String displayStatus = "Pending";
 
-    Color statusColor =
-        Colors.orange;
+    Color statusColor = Colors.orange;
 
-    if (normalizedStatus ==
-        "approved") {
-      displayStatus =
-      "Accepted\nFrom TA";
+    if (normalizedStatus == "approved") {
+      displayStatus = "Accepted\nFrom TA";
 
-      statusColor =
-          Colors.green;
+      statusColor = Colors.green;
     }
 
-    if (normalizedStatus ==
-        "rejected") {
-      displayStatus =
-      "Rejected";
+    if (normalizedStatus == "rejected") {
+      displayStatus = "Rejected";
 
-      statusColor =
-          Colors.red;
+      statusColor = Colors.red;
     }
 
     return Container(
-      padding:
-      const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color:
-        const Color(0xFF1A1D2E),
-        borderRadius:
-        BorderRadius.circular(
+        color: const Color(0xFF1A1D2E),
+        borderRadius: BorderRadius.circular(
           20,
         ),
       ),
       child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment
-            .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Expanded(
                 child: Text(
                   name,
-                  style:
-                  const TextStyle(
-                    color:
-                    Colors.white,
-                    fontSize:
-                    20,
-                    fontWeight:
-                    FontWeight
-                        .bold,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               Container(
-                padding:
-                const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 14,
                   vertical: 8,
                 ),
-                decoration:
-                BoxDecoration(
-                  color:
-                  statusColor,
-                  borderRadius:
-                  BorderRadius.circular(
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  borderRadius: BorderRadius.circular(
                     20,
                   ),
                 ),
                 child: Text(
                   displayStatus,
-                  style:
-                  const TextStyle(
-                    color:
-                    Colors.white,
+                  style: const TextStyle(
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -451,38 +347,28 @@ class _TADashboardMobileViewState
             children: [
               Text(
                 "Date: $date",
-                style:
-                const TextStyle(
-                  color:
-                  Colors.grey,
+                style: const TextStyle(
+                  color: Colors.grey,
                 ),
               ),
               const Spacer(),
               TextButton(
-                onPressed:
-                    () async {
-                  await context
-                      .push(
+                onPressed: () async {
+                  await context.push(
                     '/taIdeaDetails',
-                    extra:
-                    idea['_id'],
+                    extra: idea['_id'],
                   );
 
                   setState(() {
                     dashboardFuture =
-                        TeacherAssistantDashboardService
-                            .getDashboard();
+                        TeacherAssistantDashboardService.getDashboard();
                   });
                 },
-                child:
-                const Text(
+                child: const Text(
                   "View",
-                  style:
-                  TextStyle(
-                    color:
-                    Colors.cyan,
-                    fontSize:
-                    16,
+                  style: TextStyle(
+                    color: Colors.cyan,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -494,32 +380,27 @@ class _TADashboardMobileViewState
   }
 
   Widget Buttons(
-      String text,
-      VoidCallback onTap,
-      ) {
+    String text,
+    VoidCallback onTap,
+  ) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           height: 48,
-          decoration:
-          BoxDecoration(
-            color:
-            const Color(
+          decoration: BoxDecoration(
+            color: const Color(
               0xFF1A1D2E,
             ),
-            borderRadius:
-            BorderRadius.circular(
+            borderRadius: BorderRadius.circular(
               14,
             ),
           ),
           child: Center(
             child: Text(
               text,
-              style:
-              const TextStyle(
-                color:
-                Colors.white,
+              style: const TextStyle(
+                color: Colors.white,
               ),
             ),
           ),

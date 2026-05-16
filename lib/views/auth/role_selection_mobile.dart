@@ -36,8 +36,10 @@ class RoleSelectionMobileView extends StatelessWidget {
               _selectButton(context, "🎓 Student", "student"),
               const SizedBox(height: 30),
               _selectButton(context, "💼 Doctor", "doctor"),
-              const SizedBox(height: 30,),
-              _selectButton(context, "🧑‍🏫 Teacher Assistant", "Teacher Assistant"),
+              const SizedBox(
+                height: 30,
+              ),
+              _selectButton(context, "🧑‍🏫 Teacher Assistant", "ta"),
               const SizedBox(height: 30),
               _selectButton(context, "🧾 Admin", "admin"),
               const SizedBox(height: 30),

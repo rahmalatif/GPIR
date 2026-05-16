@@ -1,19 +1,26 @@
-
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
+import 'auth_service.dart';
+
 class TeacherAssistantDashboardService {
-  static const String baseUrl =
-      'YOUR_BASE_URL/api/projects/ta/dashboard';
+  static const String baseUrl = "https://graduation-backend-orcin.vercel.app";
 
   static Future<Map<String, dynamic>> getDashboard() async {
     try {
       final response = await http.get(
-        Uri.parse(baseUrl),
+        Uri.parse(
+          '$baseUrl/api/projects/ta/dashboard',
+        ),
         headers: {
-          'Content-Type': 'application/json',
+
+          'Authorization':
+          'Bearer ${AuthService.token}',
+
+          'Content-Type':
+          'application/json',
         },
       );
 

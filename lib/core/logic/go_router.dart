@@ -31,6 +31,7 @@ import 'package:graduation_project_recommender/views/model/project_idea.dart';
 import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/student/dashboard/student_project_details.dart';
 import 'package:graduation_project_recommender/views/teacher_assistant/dashboard/ta_dashboard_responsive.dart';
+import 'package:graduation_project_recommender/views/teacher_assistant/projects/ta_project_details_responsive.dart';
 import '../../views/admin/admin_dashboard.dart';
 import '../../views/admin/admin_notifications.dart';
 import '../../views/admin/approved_projects.dart';
@@ -231,6 +232,17 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
+    GoRoute(
+      path: '/taIdeaDetails',
+      builder: (context, state) {
+        final projectId = state.extra as String;
+
+        return TaProjectDetailsResponsive(
+          projectId: projectId,
+        );
+      },
+    ),
+
 // ================= DOCTOR =================
 
     GoRoute(
@@ -365,6 +377,7 @@ final GoRouter appRouter = GoRouter(
         ),
       ],
     ),
+
     ShellRoute(
       builder: (context, state, child) => StudentNavBar(child: child),
       routes: [
