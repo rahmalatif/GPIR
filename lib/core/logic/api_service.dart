@@ -5,7 +5,8 @@ import '../../views/model/student.dart';
 import '../../views/model/user_model.dart';
 
 class ApiService {
-  static const String baseUrl = "https://graduation-backend-orcin.vercel.app";
+  static const String baseUrl =
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<http.Response> register({
     required String name,

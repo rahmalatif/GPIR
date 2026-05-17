@@ -5,11 +5,11 @@ import '../../../services/doctor_dashboard_service.dart';
 import '../../model/user_model.dart';
 
 class DashboardWebView extends StatefulWidget {
-  final UserModel user;
+
 
   const DashboardWebView({
     super.key,
-    required this.user,
+
   });
 
   @override

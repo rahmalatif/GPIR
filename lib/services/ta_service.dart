@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TAService {
-  static const String baseUrl = "https://graduation-backend-orcin.vercel.app";
+  static const String baseUrl =
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<List<dynamic>> getTAs() async {
     try {

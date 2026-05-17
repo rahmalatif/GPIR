@@ -7,11 +7,11 @@ import 'doctor_dashboard_mobile.dart';
 import 'doctor_dashboard_web.dart';
 
 class DashboardResponsive extends StatelessWidget {
-  final UserModel user;
+
 
   const DashboardResponsive({
     super.key,
-    required this.user,
+
   });
 
   @override
@@ -19,7 +19,7 @@ class DashboardResponsive extends StatelessWidget {
     return ResponsiveLayout(
       mobile: DashboardMobileView(),
       web: DashboardWebView(
-        user: user,
+
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RecommendationService {
-  static const String baseUrl = "https://graduation-backend-orcin.vercel.app";
+  static const String baseUrl = "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<List<dynamic>> recommendIdeas({
     required List<String> specializations,

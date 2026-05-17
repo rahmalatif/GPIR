@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/design/app_image.dart';
+import '../../../services/leave_team_service.dart';
 import '../../../services/student_dashboard_service.dart';
 
 class StudentDashboardMobile extends StatefulWidget {
@@ -144,9 +145,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                 const SizedBox(
                   height: 30,
                 ),
-                buildTeamCard(
-                  team,
-                ),
+                buildTeamCard(team, context),
                 const SizedBox(
                   height: 15,
                 ),
@@ -294,6 +293,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
 
   Widget buildTeamCard(
     dynamic team,
+    BuildContext context,
   ) {
     final members = team['members'] as List<dynamic>? ?? [];
 
@@ -302,51 +302,106 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
         width: 350,
         child: Card(
           color: const Color(0xff1D1D2E),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
                   "Team Members",
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
                   ),
                 ),
-              ),
-              ...members.map(
-                (m) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 8,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        m['name'] ?? "",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+                const SizedBox(height: 12),
+                ...members.map(
+                  (m) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 6,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          m['name'] ?? "",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        m['specialization'] ?? "",
-                        style: const TextStyle(
-                          color: Colors.grey,
+                        const Spacer(),
+                        Text(
+                          m['specialization'] ?? "",
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final success = await LeaveTeamService.leaveTeam();
+
+                      if (success) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Left team successfully",
+                              ),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+
+                          context.go(
+                            '/studentDashboard',
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Failed to leave team",
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      "Leave Team",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
   Widget buildSupervisorCard(
     dynamic supervisor,
     dynamic ta,

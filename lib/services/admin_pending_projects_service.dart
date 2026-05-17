@@ -9,7 +9,7 @@ class AdminPendingProjectsService {
 
   static const String baseUrl =
 
-      "https://graduation-backend-orcin.vercel.app";
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<List<dynamic>>
   getPendingProjects() async {

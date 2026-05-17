@@ -6,6 +6,7 @@ import 'package:graduation_project_recommender/views/auth/register_responsive.da
 import 'package:graduation_project_recommender/views/auth/responsive_role_selection.dart';
 import 'package:graduation_project_recommender/views/auth/role_selection_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea/add_idea_mobile.dart';
+import 'package:graduation_project_recommender/views/doctor/add_idea/doctor_ideas_responsive.dart';
 import 'package:graduation_project_recommender/views/doctor/dashboard/doctor_dashboard_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/notifications/doctor_notifications.dart';
 import 'package:graduation_project_recommender/views/doctor/projects/pending_ideas_mobile.dart';
@@ -40,6 +41,7 @@ import '../../views/admin/pending_projects.dart';
 import '../../views/admin/project_id.dart';
 import '../../views/auth/login_mobile.dart';
 import '../../views/doctor/add_idea/add_idea_responsive.dart';
+import '../../views/doctor/add_idea/doctor_ideas_mobile.dart';
 import '../../views/doctor/dashboard/doctor_dashboard_responsive.dart';
 import '../../views/doctor/profile/profile.dart';
 import '../../views/doctor/projects/pending_ideas_responsive.dart';
@@ -278,6 +280,14 @@ final GoRouter appRouter = GoRouter(
         return DoctorNotificationsView(doctorId: doctorId);
       },
     ),
+    GoRoute(
+
+      path: '/doctorMyIdeas',
+
+      builder: (context, state) =>
+
+      const DoctorIdeasResponsive(),
+    ),
 
 // ================= ADMIN =================
 
@@ -290,7 +300,6 @@ final GoRouter appRouter = GoRouter(
       path: '/adminApprovedProjects',
       builder: (context, state) => const AdminApprovedProjectsView(),
     ),
-
     GoRoute(
         path: '/projectId',
         builder: (context, state) {
@@ -348,19 +357,13 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state, child) => DoctorNavBar(child: child),
       routes: [
         GoRoute(
+
           path: '/doctorDashboard',
+
           builder: (context, state) {
-            final extra = state.extra;
 
-            if (extra == null || extra is! UserModel) {
-              return const LoginMobileView(
-                role: 'doctor',
-              );
-            }
-
-            return DashboardResponsive(
-              user: extra,
-            );
+            return const
+            DashboardResponsive();
           },
         ),
         GoRoute(

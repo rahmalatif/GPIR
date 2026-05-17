@@ -9,7 +9,7 @@ class AdminDashboardService {
 
   static const String baseUrl =
 
-      "https://graduation-backend-orcin.vercel.app";
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<Map<String, dynamic>>
   getDashboard() async {

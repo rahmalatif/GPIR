@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 
 class DoctorProjectStatusService {
-  static const String baseUrl = "https://graduation-backend-orcin.vercel.app";
+  static const String baseUrl = "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<bool> updateProjectStatus({
     required String projectId,

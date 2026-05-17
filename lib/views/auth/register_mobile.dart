@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../services/auth_service.dart';
 
 class RegisterMobileView extends StatefulWidget {
@@ -16,10 +17,15 @@ class RegisterMobileView extends StatefulWidget {
 
 class _RegisterMobileViewState extends State<RegisterMobileView> {
   late final TextEditingController nameController;
+
   late final TextEditingController emailController;
+
   late final TextEditingController passwordController;
+
   late final TextEditingController idController;
+
   late final TextEditingController phonecontroller;
+
   late final TextEditingController specializationController;
 
   bool isLoading = false;
@@ -31,21 +37,32 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
     super.initState();
 
     nameController = TextEditingController();
+
     emailController = TextEditingController();
+
     passwordController = TextEditingController();
+
     idController = TextEditingController();
+
     phonecontroller = TextEditingController();
+
     specializationController = TextEditingController();
   }
 
   @override
   void dispose() {
     nameController.dispose();
+
     emailController.dispose();
+
     passwordController.dispose();
+
     idController.dispose();
+
     phonecontroller.dispose();
+
     specializationController.dispose();
+
     super.dispose();
   }
 
@@ -53,59 +70,85 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
     if (nameController.text.isEmpty ||
         passwordController.text.isEmpty ||
         phonecontroller.text.isEmpty ||
-        (isStudent && idController.text.isEmpty) ||
-        (!isStudent && emailController.text.isEmpty) ||
-        (!isStudent && specializationController.text.isEmpty)) {
-      showMessage("Please fill all fields");
+        idController.text.isEmpty) {
+      showMessage(
+        "Please fill all fields",
+      );
+
       return;
     }
 
-    final parsedId = isStudent ? int.tryParse(idController.text) : null;
+    final parsedId = int.tryParse(
+      idController.text,
+    );
 
     final phone = phonecontroller.text;
 
-    if (isStudent && parsedId == null) {
-      showMessage("ID must be a number");
+    if (parsedId == null) {
+      showMessage(
+        "ID must be a number",
+      );
+
       return;
     }
 
-    if (isStudent && parsedId! < 10000000) {
-      showMessage("Student ID must be at least 8 digits");
+    if (parsedId < 10000000) {
+      showMessage(
+        "Student ID must be at least 8 digits",
+      );
+
       return;
     }
 
-    setState(() => isLoading = true);
+    setState(() {
+      isLoading = true;
+    });
 
     try {
       final result = await AuthService.register(
         name: nameController.text,
         password: passwordController.text,
         role: widget.role,
-        email: isStudent ? null : emailController.text,
+        email: null,
         id: parsedId,
         phonenumber: phone,
-        specialization: isStudent ? null : specializationController.text,
+        specialization: null,
       );
 
       final userName = result.name ?? "User";
 
-      showMessage("Welcome $userName");
+      showMessage(
+        "Welcome $userName",
+      );
 
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
-      context.go('/login', extra: widget.role);
+      context.go(
+        '/login',
+        extra: widget.role,
+      );
     } catch (e) {
       print("ERROR: $e");
 
-      showMessage(e.toString());
+      showMessage(
+        e.toString(),
+      );
     }
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
-    setState(() => isLoading = false);
+    setState(() {
+      isLoading = false;
+    });
   }
 
-  void showMessage(String message) {
+  void showMessage(
+    String message,
+  ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -115,6 +158,25 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
 
   @override
   Widget build(BuildContext context) {
+    // =========================
+    // ONLY STUDENTS CAN REGISTER
+    // =========================
+
+    if (widget.role != "student") {
+      return const Scaffold(
+        backgroundColor: Color(0xFF0D0F1A),
+        body: Center(
+          child: Text(
+            "Only students can register",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       body: SingleChildScrollView(
@@ -138,22 +200,11 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
               ),
               const SizedBox(height: 20),
               _input(
-                isStudent ? "Student ID" : "Email",
+                "Student ID",
                 false,
-                isStudent ? idController : emailController,
-                keyboardType: isStudent
-                    ? TextInputType.number
-                    : TextInputType.emailAddress,
+                idController,
+                keyboardType: TextInputType.number,
               ),
-              if (!isStudent) ...[
-                const SizedBox(height: 20),
-                _input(
-                  "Specialization",
-                  false,
-                  specializationController,
-                  keyboardType: TextInputType.text,
-                ),
-              ],
               const SizedBox(height: 20),
               _input(
                 "Phone",
@@ -204,6 +255,7 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
                   ),
                 ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -219,7 +271,9 @@ Widget _input(
   required TextInputType keyboardType,
 }) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 30),
+    padding: const EdgeInsets.symmetric(
+      horizontal: 30,
+    ),
     child: TextField(
       controller: controller,
       obscureText: isPassword,

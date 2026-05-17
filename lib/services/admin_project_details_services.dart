@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 
 class AdminProjectDetailsService {
-  static const String baseUrl = "https://graduation-backend-orcin.vercel.app";
+  static const String baseUrl =
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<Map<String, dynamic>> getProjectDetails(
     String id,
@@ -43,31 +44,21 @@ class AdminProjectDetailsService {
 
   static Future<bool> approveProject(
     String id,
-      String projectCode,
+    String projectCode,
   ) async {
     try {
       final token = AuthService.token;
 
-      final response =
-      await http.put(
-
+      final response = await http.put(
         Uri.parse(
           '$baseUrl/api/projects/admin-approve/$id',
         ),
-
         headers: {
-
-          'Authorization':
-          'Bearer $token',
-
-          'Content-Type':
-          'application/json',
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
         },
-
         body: jsonEncode({
-
-          "project_code":
-          projectCode,
+          "project_code": projectCode,
         }),
       );
 
