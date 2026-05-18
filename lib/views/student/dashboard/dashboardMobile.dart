@@ -16,6 +16,8 @@ class StudentDashboardMobile extends StatefulWidget {
 }
 
 class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
+  late Future<Map<String, dynamic>> dashboardFuture;
+
   void haveAnIdeaOnTap() => context.go('/haveIdea');
 
   void aiRecommendIdea() => context.go('/aiRecommend');
@@ -32,6 +34,13 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
     }
 
     return 'Good Evening,\n$name';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    dashboardFuture = DashboardService.getDashboard();
   }
 
   @override
@@ -60,7 +69,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
         ],
       ),
       body: FutureBuilder(
-        future: DashboardService.getDashboard(),
+        future: dashboardFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -353,33 +362,11 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () async {
-                      final success = await LeaveTeamService.leaveTeam();
-
-                      if (success) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Left team successfully",
-                              ),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-
-                          context.go(
-                            '/studentDashboard',
-                          );
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Failed to leave team",
-                            ),
-                          ),
-                        );
-                      }
+                    onPressed: () {
+                      showLeaveDialog(
+                        context,
+                        team,
+                      );
                     },
                     icon: const Icon(
                       Icons.logout,
@@ -399,6 +386,241 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
           ),
         ),
       ),
+    );
+  }
+
+  void showChooseLeaderDialog(
+    BuildContext context,
+    dynamic team,
+  ) {
+    final members = team['members'] as List<dynamic>? ?? [];
+
+    String? selectedLeaderId;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFF1A1D2E),
+              title: const Text(
+                "Choose New Leader",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              content: DropdownButton<String>(
+                dropdownColor: const Color(0xFF1A1D2E),
+                value: selectedLeaderId,
+                hint: const Text(
+                  "Select member",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                items: members.map((m) {
+                  return DropdownMenuItem<String>(
+                    value: m['_id'],
+                    child: Text(
+                      m['name'] ?? "",
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedLeaderId = value;
+                  });
+                },
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(
+                      dialogContext,
+                    );
+                  },
+                  child: const Text(
+                    "Cancel",
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (selectedLeaderId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please select a leader",
+                          ),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                    Navigator.pop(
+                      dialogContext,
+                    );
+
+                    try {
+                      final success = await LeaveTeamService.leaveTeam(
+                        newLeaderId: selectedLeaderId,
+                      );
+
+                      if (!context.mounted) {
+                        return;
+                      }
+
+                      if (success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Leader changed successfully",
+                            ),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+
+                        Future.delayed(
+                          const Duration(milliseconds: 200),
+                          () {
+                            if (context.mounted) {
+                              setState(() {
+
+                                dashboardFuture =
+                                    DashboardService
+                                        .getDashboard();
+                              });
+                            }
+                          },
+                        );
+                      }
+                    } catch (e) {
+                      if (!context.mounted) {
+                        return;
+                      }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            e.toString(),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    "Confirm",
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void showLeaveDialog(
+    BuildContext context,
+    dynamic team,
+  ) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1A1D2E),
+          title: const Text(
+            "Leave Team",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          content: const Text(
+            "Are you sure you want to leave the team?",
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(
+                  dialogContext,
+                );
+              },
+              child: const Text(
+                "Cancel",
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              onPressed: () async {
+                Navigator.pop(
+                  dialogContext,
+                );
+
+                try {
+                  final success = await LeaveTeamService.leaveTeam();
+
+                  if (!context.mounted) {
+                    return;
+                  }
+
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Left team successfully",
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    Future.delayed(
+                      const Duration(milliseconds: 200),
+                      () {
+                        if (context.mounted) {
+                          setState(() {
+
+                            dashboardFuture =
+                                DashboardService
+                                    .getDashboard();
+                          });
+                        }
+                      },
+                    );
+                  }
+                } catch (e) {
+                  if (!context.mounted) {
+                    return;
+                  }
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        e.toString().contains(
+                                  "Leader must choose new leader",
+                                )
+                            ? "You must choose a new leader first"
+                            : "Failed to leave team",
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: const Text(
+                "Leave",
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
