@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/design/app_image.dart';
+import '../../core/logic/app_snackbar.dart';
+import '../../core/logic/error_handler.dart';
 import '../../services/auth_service.dart';
 import '../model/user_model.dart';
 
@@ -23,7 +25,7 @@ class _LoginContentState extends State<LoginContent> {
   late final TextEditingController passwordController;
 
   bool isLoading = false;
-
+  bool obscurePassword = true;
   @override
   void initState() {
     super.initState();
@@ -86,14 +88,6 @@ class _LoginContentState extends State<LoginContent> {
     }
   }
 
-  void showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,11 +120,95 @@ class _LoginContentState extends State<LoginContent> {
                 isStudent ? TextInputType.number : TextInputType.emailAddress,
           ),
           const SizedBox(height: 20),
-          _InputText(
-            "Password",
-            true,
-            passwordController,
-            keyboardType: TextInputType.text,
+          Padding(
+
+            padding:
+            const EdgeInsets.symmetric(
+              horizontal: 30,
+            ),
+
+            child: TextField(
+
+              controller:
+              passwordController,
+
+              obscureText:
+              obscurePassword,
+
+              keyboardType:
+              TextInputType.visiblePassword,
+
+              style:
+              const TextStyle(
+                color: Colors.white,
+              ),
+
+              decoration:
+              InputDecoration(
+
+                hintText:
+                "Password",
+
+                hintStyle:
+                const TextStyle(
+                  color:
+                  Colors.white70,
+                ),
+
+                suffixIcon:
+                IconButton(
+
+                  onPressed: () {
+
+                    setState(() {
+
+                      obscurePassword =
+                      !obscurePassword;
+                    });
+                  },
+
+                  icon: Icon(
+
+                    obscurePassword
+
+                        ? Icons.visibility_off
+
+                        : Icons.visibility,
+
+                    color:
+                    Colors.white70,
+                  ),
+                ),
+
+                enabledBorder:
+                OutlineInputBorder(
+
+                  borderRadius:
+                  BorderRadius.circular(
+                      30),
+
+                  borderSide:
+                  const BorderSide(
+                    color:
+                    Color(0xFF4699A8),
+                  ),
+                ),
+
+                focusedBorder:
+                OutlineInputBorder(
+
+                  borderRadius:
+                  BorderRadius.circular(
+                      30),
+
+                  borderSide:
+                  const BorderSide(
+                    color:
+                    Colors.lightBlueAccent,
+                  ),
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 60),
           ElevatedButton(
@@ -142,59 +220,137 @@ class _LoginContentState extends State<LoginContent> {
               ),
             ),
             onPressed: () async {
-              final input = emailController.text.trim();
 
-              final password = passwordController.text.trim();
+              final input =
+              emailController.text.trim();
 
-              if (input.isEmpty || password.isEmpty) {
-                showError(
+              final password =
+              passwordController.text.trim();
+
+              // =========================
+              // VALIDATION
+              // =========================
+
+              if (input.isEmpty ||
+                  password.isEmpty) {
+
+                showAppSnackBar(
+
+                  context,
+
+                  message:
                   "Please fill all fields",
                 );
 
                 return;
               }
 
-              setState(() {
-                isLoading = true;
-              });
+              // =========================
+              // STUDENT ID VALIDATION
+              // =========================
 
-              try {
-                final result = await AuthService.login(
-                  role: widget.role,
-                  password: password,
-                  email: isStudent ? null : input,
-                  id: isStudent ? int.tryParse(input) : null,
+              if (isStudent &&
+                  int.tryParse(input) == null) {
+
+                showAppSnackBar(
+
+                  context,
+
+                  message:
+                  "Student ID must be numbers only",
                 );
 
-                if (widget.role == "student") {
-                  context.go(
-                    '/studentDashboard',
-                    extra: result,
-                  );
-                } else {
-                  final user = result as UserModel;
-
-                  navigateBasedOnRole(
-                    context,
-                    user,
-                  );
-                }
-              } catch (e) {
-                showError(
-                  e.toString().replaceAll(
-                        "Exception: ",
-                        "",
-                      ),
-                );
-              }
-
-              if (!mounted) {
                 return;
               }
 
               setState(() {
-                isLoading = false;
+
+                isLoading = true;
               });
+
+              try {
+
+                final result =
+                await AuthService.login(
+
+                  role:
+                  widget.role,
+
+                  password:
+                  password,
+
+                  email:
+                  isStudent
+                      ? null
+                      : input,
+
+                  id:
+                  isStudent
+                      ? int.tryParse(input)
+                      : null,
+                );
+
+                if (!mounted) {
+                  return;
+                }
+
+                // =========================
+                // STUDENT
+                // =========================
+
+                if (widget.role == "student") {
+
+                  context.go(
+
+                    '/studentDashboard',
+
+                    extra:
+                    result,
+                  );
+
+                } else {
+
+                  final user =
+                  result as UserModel;
+
+                  navigateBasedOnRole(
+
+                    context,
+
+                    user,
+                  );
+                }
+
+              } catch (e) {
+
+                final message =
+
+                ErrorHandler.getMessage(
+                  e,
+                );
+
+                if (!mounted) {
+                  return;
+                }
+
+                showAppSnackBar(
+
+                  context,
+
+                  message: message,
+                );
+
+              } finally {
+
+                if (!mounted) {
+                  return;
+                }
+
+                setState(() {
+
+                  isLoading = false;
+                });
+              }
             },
             child: isLoading
                 ? const CircularProgressIndicator(

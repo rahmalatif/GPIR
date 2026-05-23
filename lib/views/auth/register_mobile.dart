@@ -29,8 +29,8 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
   late final TextEditingController specializationController;
 
   bool isLoading = false;
-
   bool get isStudent => widget.role == "student";
+  bool obscurePassword = true;
 
   @override
   void initState() {
@@ -67,10 +67,10 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
   }
 
   void register() async {
-    if (nameController.text.isEmpty ||
-        passwordController.text.isEmpty ||
-        phonecontroller.text.isEmpty ||
-        idController.text.isEmpty) {
+    if (nameController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty ||
+        phonecontroller.text.trim().isEmpty ||
+        idController.text.trim().isEmpty) {
       showMessage(
         "Please fill all fields",
       );
@@ -79,20 +79,20 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
     }
 
     final parsedId = int.tryParse(
-      idController.text,
+      idController.text.trim(),
     );
 
-    final phone = phonecontroller.text;
+    final phone = phonecontroller.text.trim();
 
     if (parsedId == null) {
       showMessage(
-        "ID must be a number",
+        "Student ID must be numbers only",
       );
 
       return;
     }
 
-    if (parsedId < 10000000) {
+    if (parsedId.toString().length < 8) {
       showMessage(
         "Student ID must be at least 8 digits",
       );
@@ -100,14 +100,64 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
       return;
     }
 
+    if (phone.length != 11) {
+      showMessage(
+        "Phone number must be 11 digits",
+      );
+
+      return;
+    }
+
+    if (!phone.startsWith("01")) {
+      showMessage(
+        "Invalid phone number",
+      );
+
+      return;
+    }
+
+
+    final password = passwordController.text.trim();
+
+    if (password.length < 6) {
+      showMessage(
+        "Password must be at least 6 characters",
+      );
+
+      return;
+    }
+
+    if (!RegExp(r'[A-Z]').hasMatch(password)) {
+      showMessage(
+        "Password must contain uppercase letter",
+      );
+
+      return;
+    }
+
+    if (!RegExp(r'[0-9]').hasMatch(password)) {
+      showMessage(
+        "Password must contain a number",
+      );
+
+      return;
+    }
+
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password)) {
+      showMessage(
+        "Password must contain special character",
+      );
+
+      return;
+    }
     setState(() {
       isLoading = true;
     });
 
     try {
       final result = await AuthService.register(
-        name: nameController.text,
-        password: passwordController.text,
+        name: nameController.text.trim(),
+        password: passwordController.text.trim(),
         role: widget.role,
         email: null,
         id: parsedId,
@@ -117,33 +167,51 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
 
       final userName = result.name ?? "User";
 
-      showMessage(
-        "Welcome $userName",
-      );
-
       if (!mounted) {
         return;
       }
+
+      showMessage(
+        "Welcome $userName",
+      );
 
       context.go(
         '/login',
         extra: widget.role,
       );
     } catch (e) {
-      print("ERROR: $e");
+      print("REGISTER ERROR: $e");
+
+      String errorMessage = "Something went wrong";
+
+      final error = e.toString();
+
+      if (error.contains("already exists")) {
+        errorMessage = "Account already exists";
+      } else if (error.contains("phone")) {
+        errorMessage = "Invalid phone number";
+      } else if (error.contains("network")) {
+        errorMessage = "No internet connection";
+      } else if (error.contains("timeout")) {
+        errorMessage = "Request timeout";
+      }
+
+      if (!mounted) {
+        return;
+      }
 
       showMessage(
-        e.toString(),
+        errorMessage,
       );
-    }
+    } finally {
+      if (!mounted) {
+        return;
+      }
 
-    if (!mounted) {
-      return;
+      setState(() {
+        isLoading = false;
+      });
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   void showMessage(
@@ -158,10 +226,6 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
 
   @override
   Widget build(BuildContext context) {
-    // =========================
-    // ONLY STUDENTS CAN REGISTER
-    // =========================
-
     if (widget.role != "student") {
       return const Scaffold(
         backgroundColor: Color(0xFF0D0F1A),
@@ -213,11 +277,49 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 20),
-              _input(
-                "Password",
-                true,
-                passwordController,
-                keyboardType: TextInputType.visiblePassword,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                ),
+                child: TextField(
+                  controller: passwordController,
+                  obscureText: obscurePassword,
+                  keyboardType: TextInputType.visiblePassword,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: "Password",
+                    hintStyle: const TextStyle(
+                      color: Colors.white70,
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                      icon: Icon(
+                        obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF4699A8),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Colors.lightBlueAccent,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 50),
               isLoading
