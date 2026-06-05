@@ -52,6 +52,28 @@ class _ChattingViewState extends State<ChattingView> {
         });
       }
     }
+
+    final notifications = await FirebaseFirestore.instance
+        .collection('notifications')
+        .where(
+          'receiverId',
+          isEqualTo: widget.currentUserId,
+        )
+        .where(
+          'senderId',
+          isEqualTo: widget.receiverId,
+        )
+        .where(
+          'isRead',
+          isEqualTo: false,
+        )
+        .get();
+
+    for (var doc in notifications.docs) {
+      await doc.reference.update({
+        'isRead': true,
+      });
+    }
   }
 
   @override
@@ -229,10 +251,6 @@ class _ChattingViewState extends State<ChattingView> {
                     backgroundColor: Color(0xFF1897F3),
                     child: IconButton(
                       onPressed: () async {
-                        print("CURRENT USER = ${widget.currentUserId}");
-                        print("RECEIVER USER = ${widget.receiverId}");
-                        print("CHAT ID = $chatId");
-
                         if (message.text.trim().isEmpty) return;
 
                         String text = message.text.trim();
@@ -263,6 +281,17 @@ class _ChattingViewState extends State<ChattingView> {
                           'lastMessage': text,
                           'lastMessageTime': Timestamp.now(),
                         }, SetOptions(merge: true));
+                        await FirebaseFirestore.instance
+                            .collection('notifications')
+                            .add({
+                          'receiverId': widget.receiverId,
+                          'senderId': widget.currentUserId,
+                          'senderName': widget.myName,
+                          'message': text,
+                          'type': 'chat',
+                          'isRead': false,
+                          'time': Timestamp.now(),
+                        });
                       },
                       icon: const Icon(
                         Icons.send_rounded,

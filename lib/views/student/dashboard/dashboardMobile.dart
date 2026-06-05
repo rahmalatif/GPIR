@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/design/app_image.dart';
+import '../../../core/design/notification_badge.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/leave_team_service.dart';
 import '../../../services/student_dashboard_service.dart';
@@ -58,15 +59,10 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
         backgroundColor: const Color(0xFF0D0F1A),
         actions: [
           IconButton(
+            icon: NotificationBadge(),
             onPressed: () {
-              context.go(
-                '/studentNotifications',
-              );
+              context.go('/studentNotifications');
             },
-            icon: const Icon(
-              Icons.notifications,
-            ),
-            color: Colors.white,
           ),
         ],
       ),
@@ -491,10 +487,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                           () {
                             if (context.mounted) {
                               setState(() {
-
                                 dashboardFuture =
-                                    DashboardService
-                                        .getDashboard();
+                                    DashboardService.getDashboard();
                               });
                             }
                           },
@@ -589,10 +583,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                       () {
                         if (context.mounted) {
                           setState(() {
-
-                            dashboardFuture =
-                                DashboardService
-                                    .getDashboard();
+                            dashboardFuture = DashboardService.getDashboard();
                           });
                         }
                       },
@@ -660,11 +651,11 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                     CircleAvatar(
                       backgroundColor: const Color(0xff4699A8),
                       child: IconButton(
-                        icon: const Icon(
-                          Icons.chat_bubble,
-                          color: Colors.white,
-                          size: 18,
-                        ),
+                          icon: const Icon(
+                            Icons.chat_bubble,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -677,8 +668,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                                 ),
                               ),
                             );
-                          }
-                      ),
+                          }),
                     )
                   ],
                 ),
@@ -722,8 +712,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                             ),
                           ),
                         );
-                      }
-                  ),
+                      }),
                 )
               ],
             ),

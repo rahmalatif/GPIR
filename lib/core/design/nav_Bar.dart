@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'chat_badge.dart';
+
 class StudentNavBar extends StatelessWidget {
   final Widget child;
 
@@ -49,7 +51,13 @@ class StudentNavBar extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble),
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: const [
+                Icon(Icons.chat),
+                ChatBadge(),
+              ],
+            ),
             label: 'Chat',
           ),
           BottomNavigationBarItem(

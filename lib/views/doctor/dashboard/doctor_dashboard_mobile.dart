@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/design/notification_badge.dart';
 import '../../../services/doctor_dashboard_service.dart';
 import '../../model/DR_project.dart';
 
@@ -90,14 +91,10 @@ class _DashboardMobileViewState extends State<DashboardMobileView> {
             ),
             actions: [
               IconButton(
+                icon: NotificationBadge(),
                 onPressed: () {
-                  context.go(
-                    '/doctorNotifications',
-                  );
+                  context.go('/doctorNotifications');
                 },
-                icon: const Icon(
-                  Icons.notifications,
-                ),
               ),
             ],
           ),

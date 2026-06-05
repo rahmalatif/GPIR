@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/design/notification_badge.dart';
 import '../../../services/doctor_dashboard_service.dart';
 import '../../model/user_model.dart';
 
 class DashboardWebView extends StatefulWidget {
-
-
   const DashboardWebView({
     super.key,
-
   });
 
   @override
@@ -77,29 +75,35 @@ class _DashboardWebViewState extends State<DashboardWebView> {
 
         final doctor = data['doctor'] ?? {};
 
-        final pendingProjects =
-            data['pendingProjects']?.toString() ?? "0";
+        final pendingProjects = data['pendingProjects']?.toString() ?? "0";
 
-        final acceptedProjects =
-            data['acceptedProjects']?.toString() ?? "0";
+        final acceptedProjects = data['acceptedProjects']?.toString() ?? "0";
 
-        final recentIdeas =
-            data['recentIdeas'] as List<dynamic>? ?? [];
+        final recentIdeas = data['recentIdeas'] as List<dynamic>? ?? [];
 
         return RefreshIndicator(
           onRefresh: () async {
             setState(() {
-              dashboardFuture =
-                  DoctorDashboardService.getDashboard();
+              dashboardFuture = DoctorDashboardService.getDashboard();
             });
           },
           child: Scaffold(
             backgroundColor: const Color(0xFF0D0F1A),
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: const Color(0xFF0D0F1A),
+              actions: [
+                IconButton(
+                  icon: NotificationBadge(),
+                  onPressed: () {
+                    context.go('/doctorNotifications');
+                  },
+                ),
+              ],
+            ),
             body: Center(
               child: SizedBox(
-                width: screenWidth > 1400
-                    ? 1300
-                    : screenWidth * 0.95,
+                width: screenWidth > 1400 ? 1300 : screenWidth * 0.95,
                 child: Padding(
                   padding: EdgeInsets.all(
                     isMobile ? 16 : 30,
@@ -107,119 +111,80 @@ class _DashboardWebViewState extends State<DashboardWebView> {
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     child: Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         isMobile
                             ? Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              greeting(
-                                doctor['name'] ??
-                                    "Doctor",
-                              ),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize:
-                                isMobile ? 24 : 32,
-                                fontWeight:
-                                FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            Align(
-                              alignment:
-                              Alignment.centerRight,
-                              child: IconButton(
-                                onPressed: () {
-                                  context.go(
-                                    '/doctorNotifications',
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.notifications,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    greeting(
+                                      doctor['name'] ?? "Doctor",
+                                    ),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: isMobile ? 24 : 32,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 15),
+
+                                ],
+                              )
                             : Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                greeting(
-                                  doctor['name'] ??
-                                      "Doctor",
-                                ),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: isMobile
-                                      ? 24
-                                      : 32,
-                                  fontWeight:
-                                  FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                context.go(
-                                  '/doctorNotifications',
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.notifications,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                          ],
-                        ),
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      greeting(
+                                        doctor['name'] ?? "Doctor",
+                                      ),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: isMobile ? 24 : 32,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
 
+                                ],
+                              ),
                         const SizedBox(height: 30),
-
                         isMobile
                             ? Column(
-                          children: [
-                            _projectcard(
-                              "Pending projects",
-                              pendingProjects,
-                              context,
-                            ),
-                            const SizedBox(height: 20),
-                            _projectcard(
-                              "Accepted",
-                              acceptedProjects,
-                              context,
-                            ),
-                          ],
-                        )
+                                children: [
+                                  _projectcard(
+                                    "Pending projects",
+                                    pendingProjects,
+                                    context,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  _projectcard(
+                                    "Accepted",
+                                    acceptedProjects,
+                                    context,
+                                  ),
+                                ],
+                              )
                             : Row(
-                          children: [
-                            Expanded(
-                              child: _projectcard(
-                                "Pending projects",
-                                pendingProjects,
-                                context,
+                                children: [
+                                  Expanded(
+                                    child: _projectcard(
+                                      "Pending projects",
+                                      pendingProjects,
+                                      context,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: _projectcard(
+                                      "Accepted",
+                                      acceptedProjects,
+                                      context,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(width: 20),
-                            Expanded(
-                              child: _projectcard(
-                                "Accepted",
-                                acceptedProjects,
-                                context,
-                              ),
-                            ),
-                          ],
-                        ),
-
                         const SizedBox(height: 25),
-
                         TextField(
                           decoration: InputDecoration(
                             hintText: 'Search',
@@ -231,18 +196,14 @@ class _DashboardWebViewState extends State<DashboardWebView> {
                               color: Colors.grey,
                             ),
                             filled: true,
-                            fillColor:
-                            const Color(0xFF1A1D2E),
+                            fillColor: const Color(0xFF1A1D2E),
                             border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(14),
                               borderSide: BorderSide.none,
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 30),
-
                         const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -254,84 +215,73 @@ class _DashboardWebViewState extends State<DashboardWebView> {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 20),
-
                         GridView.count(
                           shrinkWrap: true,
-                          physics:
-                          const NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           crossAxisCount: screenWidth > 1400
                               ? 3
                               : screenWidth > 900
-                              ? 2
-                              : 1,
+                                  ? 2
+                                  : 1,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
-                          childAspectRatio:
-                          screenWidth > 1200
+                          childAspectRatio: screenWidth > 1200
                               ? 2.4
                               : screenWidth > 800
-                              ? 2
-                              : 1.6,
+                                  ? 2
+                                  : 1.6,
                           children: recentIdeas.isEmpty
                               ? [
-                            const Center(
-                              child: Text(
-                                "No ideas yet",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ]
+                                  const Center(
+                                    child: Text(
+                                      "No ideas yet",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ]
                               : recentIdeas.map(
-                                (idea) {
-                              return _projects(
-                                idea,
-                                idea['doctor_status'] ??
-                                    "pending",
-                                idea['title'] ?? "",
-                                idea['year']
-                                    ?.toString() ??
-                                    "",
-                                context,
-                              );
-                            },
-                          ).toList(),
+                                  (idea) {
+                                    return _projects(
+                                      idea,
+                                      idea['doctor_status'] ?? "pending",
+                                      idea['title'] ?? "",
+                                      idea['year']?.toString() ?? "",
+                                      context,
+                                    );
+                                  },
+                                ).toList(),
                         ),
-
                         const SizedBox(height: 30),
-
                         isMobile
                             ? Column(
-                          children: [
-
-                            Buttons(
-                              "Add Ideas",
-                                  () {
-                                context.push(
-                                  '/addIdea',
-                                );
-                              },
-                            ),
-                          ],
-                        )
-                            : Row(
-                          children: [
-
-                            Expanded(
-                              child: Buttons(
-                                "Add Ideas",
+                                children: [
+                                  Buttons(
+                                    "Add Ideas",
                                     () {
-                                  context.push(
-                                    '/addIdea',
-                                  );
-                                },
+                                      context.push(
+                                        '/addIdea',
+                                      );
+                                    },
+                                  ),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  Expanded(
+                                    child: Buttons(
+                                      "Add Ideas",
+                                      () {
+                                        context.push(
+                                          '/addIdea',
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
@@ -346,10 +296,10 @@ class _DashboardWebViewState extends State<DashboardWebView> {
 }
 
 Widget _projectcard(
-    String projectType,
-    String number,
-    BuildContext context,
-    ) {
+  String projectType,
+  String number,
+  BuildContext context,
+) {
   return GestureDetector(
     onTap: () {
       context.push(
@@ -398,14 +348,13 @@ Widget _projectcard(
 }
 
 Widget _projects(
-    dynamic idea,
-    String status,
-    String name,
-    String date,
-    BuildContext context,
-    ) {
-  final normalizedStatus =
-  status.toLowerCase().trim();
+  dynamic idea,
+  String status,
+  String name,
+  String date,
+  BuildContext context,
+) {
+  final normalizedStatus = status.toLowerCase().trim();
 
   String displayStatus = "Pending";
 
@@ -437,8 +386,7 @@ Widget _projects(
       ],
     ),
     child: Column(
-      crossAxisAlignment:
-      CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -462,8 +410,7 @@ Widget _projects(
               ),
               decoration: BoxDecoration(
                 color: statusColor,
-                borderRadius:
-                BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 displayStatus,
@@ -508,9 +455,9 @@ Widget _projects(
 }
 
 Widget Buttons(
-    String text,
-    VoidCallback onTap,
-    ) {
+  String text,
+  VoidCallback onTap,
+) {
   return GestureDetector(
     onTap: onTap,
     child: Container(

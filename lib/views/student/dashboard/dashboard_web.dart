@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/design/app_image.dart';
+import '../../../core/design/notification_badge.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/leave_team_service.dart';
 import '../../../services/student_dashboard_service.dart';
@@ -59,13 +60,10 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
+              icon: NotificationBadge(),
               onPressed: () {
                 context.go('/studentNotifications');
               },
-              icon: const Icon(
-                Icons.notifications,
-                color: Colors.white,
-              ),
             ),
           ),
         ],

@@ -8,9 +8,7 @@ import 'package:graduation_project_recommender/views/auth/role_selection_mobile.
 import 'package:graduation_project_recommender/views/chat/chatting.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea/add_idea_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea/doctor_ideas_responsive.dart';
-import 'package:graduation_project_recommender/views/doctor/chats/chatting.dart';
 import 'package:graduation_project_recommender/views/doctor/dashboard/doctor_dashboard_mobile.dart';
-import 'package:graduation_project_recommender/views/doctor/notifications/doctor_notifications.dart';
 import 'package:graduation_project_recommender/views/doctor/projects/pending_ideas_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/projects/project_details_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/projects/projects_mobile.dart';
@@ -22,6 +20,7 @@ import 'package:graduation_project_recommender/views/library/library_profile.dar
 import 'package:graduation_project_recommender/views/library/library_project_details.dart';
 import 'package:graduation_project_recommender/views/model/library.dart';
 import 'package:graduation_project_recommender/views/model/student.dart';
+import 'package:graduation_project_recommender/views/notification/notifications_responsive.dart';
 import 'package:graduation_project_recommender/views/splash.dart';
 import 'package:graduation_project_recommender/views/student/dashboard/dashboardMobile.dart';
 import 'package:graduation_project_recommender/views/student/similarity/have_idea_mobile.dart';
@@ -57,7 +56,6 @@ import '../../views/model/team.dart';
 import '../../views/model/user_model.dart';
 import '../../views/student/dashboard/dashboard_responsive.dart';
 import '../../views/student/dashboard/edit_team.dart';
-import '../../views/student/notification/student_notifications_responsive.dart';
 import '../../views/student/profile/st_profile_responsive.dart';
 import '../../views/student/projectAssigend/project_assigned_mobile.dart';
 import '../../views/student/projectAssigend/project_assigned_responsive.dart';
@@ -72,7 +70,6 @@ import '../../views/student/similarity/have_idea_responsive.dart';
 import '../../views/student/similarity/send_idea_to_dr_responsive.dart';
 import '../../views/student/similarity/similarity_check_responsive.dart';
 import '../../views/student/profile/st_profile_mobile.dart';
-import '../../views/student/notification/student_notifications.dart';
 
 import '../../views/teacher_assistant/profile/ta_profile.dart';
 import '../design/admin_nav_bar.dart';
@@ -279,8 +276,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/doctorNotifications',
       builder: (context, state) {
-        final doctorId = state.extra as String;
-        return DoctorNotificationsView(doctorId: doctorId);
+        return StudentNotificationsResponsive();
       },
     ),
     GoRoute(

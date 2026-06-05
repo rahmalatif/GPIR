@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'chat_badge.dart';
+
 class DoctorNavBar extends StatelessWidget {
   final Widget child;
 
@@ -65,7 +67,13 @@ class DoctorNavBar extends StatelessWidget {
             label: 'add project',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble),
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: const [
+                Icon(Icons.chat),
+                ChatBadge(),
+              ],
+            ),
             label: 'Chat',
           ),
           BottomNavigationBarItem(

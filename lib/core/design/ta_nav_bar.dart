@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'chat_badge.dart';
+
 class TANavBar extends StatelessWidget {
   final Widget child;
 
@@ -49,8 +51,14 @@ class TANavBar extends StatelessWidget {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
-              label: 'Chats',
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: const [
+                  Icon(Icons.chat),
+                  ChatBadge(),
+                ],
+              ),
+              label: 'Chat',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
