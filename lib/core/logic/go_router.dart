@@ -5,8 +5,10 @@ import 'package:graduation_project_recommender/views/auth/login_responsive.dart'
 import 'package:graduation_project_recommender/views/auth/register_responsive.dart';
 import 'package:graduation_project_recommender/views/auth/responsive_role_selection.dart';
 import 'package:graduation_project_recommender/views/auth/role_selection_mobile.dart';
+import 'package:graduation_project_recommender/views/chat/chatting.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea/add_idea_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/add_idea/doctor_ideas_responsive.dart';
+import 'package:graduation_project_recommender/views/doctor/chats/chatting.dart';
 import 'package:graduation_project_recommender/views/doctor/dashboard/doctor_dashboard_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/notifications/doctor_notifications.dart';
 import 'package:graduation_project_recommender/views/doctor/projects/pending_ideas_mobile.dart';
@@ -22,7 +24,6 @@ import 'package:graduation_project_recommender/views/model/library.dart';
 import 'package:graduation_project_recommender/views/model/student.dart';
 import 'package:graduation_project_recommender/views/splash.dart';
 import 'package:graduation_project_recommender/views/student/dashboard/dashboardMobile.dart';
-import 'package:graduation_project_recommender/views/student/chatting/student_chat.dart';
 import 'package:graduation_project_recommender/views/student/similarity/have_idea_mobile.dart';
 import 'package:graduation_project_recommender/views/student/similarity/similarity_check_mobile.dart';
 import 'package:graduation_project_recommender/views/student/similarity/choose_supervisor_mobile.dart';
@@ -40,6 +41,7 @@ import '../../views/admin/idea_details.dart';
 import '../../views/admin/pending_projects.dart';
 import '../../views/admin/project_id.dart';
 import '../../views/auth/login_mobile.dart';
+import '../../views/chat/chats.dart';
 import '../../views/doctor/add_idea/add_idea_responsive.dart';
 import '../../views/doctor/add_idea/doctor_ideas_mobile.dart';
 import '../../views/doctor/dashboard/doctor_dashboard_responsive.dart';
@@ -72,10 +74,12 @@ import '../../views/student/similarity/similarity_check_responsive.dart';
 import '../../views/student/profile/st_profile_mobile.dart';
 import '../../views/student/notification/student_notifications.dart';
 
+import '../../views/teacher_assistant/profile/ta_profile.dart';
 import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
 import '../design/library_nav_bar.dart';
 import '../design/nav_Bar.dart';
+import '../design/ta_nav_bar.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
@@ -146,7 +150,17 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-
+    GoRoute(
+      path: '/Chatting',
+      builder: (context, state) {
+        return const ChattingView(
+          myName: '',
+          currentUserId: '',
+          receiverId: '',
+          receiverName: '',
+        );
+      },
+    ),
     GoRoute(
       path: '/chooseTA',
       builder: (context, state) {
@@ -224,17 +238,6 @@ final GoRouter appRouter = GoRouter(
 //=========================TA=============================
 
     GoRoute(
-      path: '/taDashboard',
-      builder: (context, state) {
-        final user = state.extra as UserModel;
-
-        return TADashboardResponsive(
-          user: user,
-        );
-      },
-    ),
-
-    GoRoute(
       path: '/taIdeaDetails',
       builder: (context, state) {
         final projectId = state.extra as String;
@@ -281,12 +284,8 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
-
       path: '/doctorMyIdeas',
-
-      builder: (context, state) =>
-
-      const DoctorIdeasResponsive(),
+      builder: (context, state) => const DoctorIdeasResponsive(),
     ),
 
 // ================= ADMIN =================
@@ -329,7 +328,29 @@ final GoRouter appRouter = GoRouter(
     ),
 
 // ================= NAVIGATION =================
+    ShellRoute(
+      builder: (context, state, child) => TANavBar(child: child),
+      routes: [
+        GoRoute(
+          path: '/taDashboard',
+          builder: (context, state) {
+            final user = state.extra as UserModel;
 
+            return TADashboardResponsive(
+              user: user,
+            );
+          },
+        ),
+        GoRoute(
+          path: '/taChats',
+          builder: (_, __) => const ChatsView(),
+        ),
+        GoRoute(
+          path: '/taProfile',
+          builder: (_, __) => const TAProfileView(),
+        ),
+      ],
+    ),
     ShellRoute(
       builder: (context, state, child) => LibraryNavBar(child: child),
       routes: [
@@ -357,13 +378,9 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state, child) => DoctorNavBar(child: child),
       routes: [
         GoRoute(
-
           path: '/doctorDashboard',
-
           builder: (context, state) {
-
-            return const
-            DashboardResponsive();
+            return const DashboardResponsive();
           },
         ),
         GoRoute(
@@ -371,6 +388,10 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) {
             return const ProjectsResponsive();
           },
+        ),
+        GoRoute(
+          path: '/doctorChats',
+          builder: (_, __) => const ChatsView(),
         ),
         GoRoute(
           path: '/doctorProfile',
@@ -391,9 +412,9 @@ final GoRouter appRouter = GoRouter(
           },
         ),
         GoRoute(
-          path: '/studentChat',
+          path: '/studentChats',
           builder: (context, state) {
-            return const StudentChatView();
+            return const ChatsView();
           },
         ),
         GoRoute(

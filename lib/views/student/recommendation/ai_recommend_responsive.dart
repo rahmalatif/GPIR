@@ -1,4 +1,4 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import '../../../core/design/responsive_layout.dart';
 import 'ai_recommend.dart';
@@ -14,4 +14,4 @@ class AiRecommendResponsive extends StatelessWidget {
       web: AiRecommendWeb(),
     );
   }
-}*/
+}

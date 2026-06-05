@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/design/app_image.dart';
+import '../../../services/auth_service.dart';
 import '../../../services/leave_team_service.dart';
 import '../../../services/student_dashboard_service.dart';
+import '../../chat/chatting.dart';
 
 class StudentDashboardMobile extends StatefulWidget {
   const StudentDashboardMobile({
@@ -663,9 +665,19 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                           color: Colors.white,
                           size: 18,
                         ),
-                        onPressed: () {
-                          context.push('/studentChat');
-                        },
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ChattingView(
+                                  currentUserId: AuthService.userId!,
+                                  myName: AuthService.name!,
+                                  receiverId: supervisor['_id'],
+                                  receiverName: supervisor['name'],
+                                ),
+                              ),
+                            );
+                          }
                       ),
                     )
                   ],
@@ -689,6 +701,30 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                     color: Colors.grey,
                   ),
                 ),
+                const Spacer(),
+                CircleAvatar(
+                  backgroundColor: const Color(0xff4699A8),
+                  child: IconButton(
+                      icon: const Icon(
+                        Icons.chat_bubble,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChattingView(
+                              currentUserId: AuthService.userId!,
+                              myName: AuthService.name!,
+                              receiverId: ta["_id"],
+                              receiverName: ta["name"],
+                            ),
+                          ),
+                        );
+                      }
+                  ),
+                )
               ],
             ),
           ),

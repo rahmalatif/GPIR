@@ -1,10 +1,7 @@
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../core/logic/api_service.dart';
 import '../core/logic/cache_helper.dart';
-
 import '../views/model/student.dart';
 import '../views/model/user_model.dart';
 
@@ -14,6 +11,8 @@ class AuthService {
   static String? name;
   static int? studentId;
   static bool isLeader = false;
+  static String? userId;
+  static String? role;
 
   static Future<dynamic> register({
     required String name,
@@ -87,34 +86,43 @@ class AuthService {
         final student = Student.fromJson(
           data["student"],
         );
+
+        AuthService.userId = student.id;
+        AuthService.name = student.name;
+        AuthService.role = "student";
+
         studentId = student.collegeCode;
-        print(
-          "LOGIN COLLEGE CODE: "
-          "${student.collegeCode}",
+
+        await prefs.setString(
+          'userId',
+          student.id,
         );
 
-        await prefs.setInt(
-          'collegeCode',
-          student.collegeCode!,
-        );
-
-        final savedCode = prefs.getInt('collegeCode');
-
-        print(
-          "SAVED COLLEGE CODE: $savedCode",
+        await prefs.setString(
+          'role',
+          'student',
         );
 
         return student;
       }
 
       if (data["user"] != null) {
-        final user = UserModel.fromJson(
-          data["user"],
-        );
+        final user = UserModel.fromJson(data["user"]);
 
+        AuthService.userId = user.id;
+        AuthService.role = user.role;
         AuthService.email = user.email;
         AuthService.name = user.name;
 
+        await prefs.setString(
+          'userId',
+          user.id,
+        );
+
+        await prefs.setString(
+          'role',
+          user.role,
+        );
         return user;
       }
     } else {

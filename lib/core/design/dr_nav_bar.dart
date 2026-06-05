@@ -12,8 +12,9 @@ class DoctorNavBar extends StatelessWidget {
 
     if (location.startsWith('/doctorDashboard')) return 0;
     if (location.startsWith('/doctorProjects')) return 1;
-    if (location.startsWith('/doctorMyIdeas')) return 1;
-    if (location.startsWith('/doctorProfile')) return 3;
+    if (location.startsWith('/doctorMyIdeas')) return 2;
+    if (location.startsWith('/doctorChats')) return 3;
+    if (location.startsWith('/doctorProfile')) return 4;
 
     return 0;
   }
@@ -41,6 +42,9 @@ class DoctorNavBar extends StatelessWidget {
             case 2:
               context.go('/doctorMyIdeas');
             case 3:
+              context.go('/doctorChats');
+              break;
+            case 4:
               context.go('/doctorProfile');
               break;
           }
@@ -59,6 +63,10 @@ class DoctorNavBar extends StatelessWidget {
               Icons.add_box_sharp,
             ),
             label: 'add project',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

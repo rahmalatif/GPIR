@@ -34,7 +34,7 @@ class StudentNavBar extends StatelessWidget {
               context.go('/studentDashboard');
               break;
             case 1:
-              context.go('/studentChat');
+              context.go('/studentChats');
               break;
             case 2:
               context.go('/studentProject');

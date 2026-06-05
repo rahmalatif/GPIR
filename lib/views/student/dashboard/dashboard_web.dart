@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/design/app_image.dart';
+import '../../../services/auth_service.dart';
 import '../../../services/leave_team_service.dart';
 import '../../../services/student_dashboard_service.dart';
+import '../../chat/chatting.dart';
 
 class StudentDashboardWeb extends StatefulWidget {
   const StudentDashboardWeb({super.key});
@@ -675,15 +677,29 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
               CircleAvatar(
                 backgroundColor: const Color(0xff4699A8),
                 child: IconButton(
-                  icon: const Icon(
-                    Icons.chat_bubble,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                  onPressed: () {
-                    context.push('/studentChat');
-                  },
-                ),
+                    icon: const Icon(
+                      Icons.chat_bubble,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    onPressed: () {
+                      print("CURRENT = ${AuthService.userId}");
+                      print("MY NAME = ${AuthService.name}");
+
+                      print("SUPERVISOR ID = ${supervisor['_id']}");
+                      print("SUPERVISOR NAME = ${supervisor['name']}");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChattingView(
+                            currentUserId: AuthService.userId!,
+                            myName: AuthService.name!,
+                            receiverId: supervisor['_id'],
+                            receiverName: supervisor['name'],
+                          ),
+                        ),
+                      );
+                    }),
               ),
             ],
           ),
@@ -697,12 +713,43 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            ta['name'] ?? "Not Assigned",
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-            ),
+          Row(
+            children: [
+              Text(
+                ta['name'] ?? "Not Assigned",
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                ),
+              ),
+              Spacer(),
+              CircleAvatar(
+                backgroundColor: const Color(0xff4699A8),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.chat_bubble,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                  onPressed: () {
+                    print("CURRENT USER = ${AuthService.userId}");
+                    print("SUPERVISOR = $supervisor");
+                    print("TA = $ta");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChattingView(
+                          currentUserId: AuthService.userId!,
+                          myName: AuthService.name!,
+                          receiverId: ta['_id'],
+                          receiverName: ta['name'],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
           ),
         ],
       ),

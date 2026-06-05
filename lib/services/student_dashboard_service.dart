@@ -1,61 +1,41 @@
 import 'dart:convert';
 
-import 'package:http/http.dart'
-as http;
+import 'package:http/http.dart' as http;
 
 import 'auth_service.dart';
 
 class DashboardService {
-
   static const String baseUrl =
-
       "https://graduationbackend-production-ec83.up.railway.app";
 
-  static Future<Map<String, dynamic>>
-  getDashboard() async {
-
+  static Future<Map<String, dynamic>> getDashboard() async {
     try {
+      final token = AuthService.token;
 
-      final token =
-          AuthService.token;
+      print("DASHBOARD TOKEN: "
+          "$token");
 
-      print(
-          "DASHBOARD TOKEN: "
-              "$token");
-
-      final response =
-      await http.get(
-
+      final response = await http.get(
         Uri.parse(
           '$baseUrl/api/students/dashboard',
         ),
-
         headers: {
-
-          'Authorization':
-          'Bearer $token',
-
-          'Content-Type':
-          'application/json',
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
         },
       );
 
-      print(
-          "DASHBOARD STATUS: "
-              "${response.statusCode}");
+      print("DASHBOARD STATUS: "
+          "${response.statusCode}");
 
-      print(
-          "DASHBOARD RESPONSE: "
-              "${response.body}");
+      print("DASHBOARD RESPONSE: "
+          "${response.body}");
 
       return jsonDecode(
         response.body,
       );
-
     } catch (e) {
-
-      print(
-          "DASHBOARD ERROR: $e");
+      print("DASHBOARD ERROR: $e");
 
       return {};
     }

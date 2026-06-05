@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:graduation_project_recommender/views/student/chatting/student_chat.dart';
 
 import 'chatting.dart';
@@ -165,3 +165,4 @@ class Chat extends StatelessWidget {
     );
   }
 }
+*/
