@@ -104,8 +104,8 @@ class _ChatsViewState extends State<ChatsView> {
           return ListView.builder(
             itemCount: chats.length,
             itemBuilder: (context, index) {
-              print("CHAT INDEX = $index");
               var chat = chats[index];
+              String chatId = chat.id;
 
               List participants = chat['participants'];
 
@@ -127,60 +127,104 @@ class _ChatsViewState extends State<ChatsView> {
               String formattedTime =
                   "${time.hour > 12 ? time.hour - 12 : time.hour}:${time.minute.toString().padLeft(2, '0')} ${time.hour >= 12 ? 'PM' : 'AM'}";
 
-              return Card(
-                color: const Color(0xFF1B1E2B),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: const Color(0xFF1897F3),
-                    child: Text(
-                      (names[otherUserId] ?? "U")
-                          .toString()
-                          .substring(0, 1)
-                          .toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+              return StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('chats')
+                    .doc(chatId)
+                    .collection('messages')
+                    .where(
+                      'senderId',
+                      isNotEqualTo: currentUserId,
+                    )
+                    .where(
+                      'isSeen',
+                      isEqualTo: false,
+                    )
+                    .snapshots(),
+                builder: (context, unreadSnapshot) {
+                  print("CHAT = ${names[otherUserId]} "
+                      "UNREAD = ${unreadSnapshot.data?.docs.length}");
+
+                  int unreadCount = unreadSnapshot.data?.docs.length ?? 0;
+                  return Card(
+                    color: const Color(0xFF1B1E2B),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: const Color(0xFF1897F3),
+                        child: Text(
+                          (names[otherUserId] ?? "U")
+                              .toString()
+                              .substring(0, 1)
+                              .toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
+                      title: Text(
+                        names[otherUserId] ?? otherUserId,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        chat['lastMessage'] ?? '',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            formattedTime,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                          if (unreadCount > 0)
+                            Container(
+                              margin: const EdgeInsets.only(top: 4),
+                              padding: const EdgeInsets.all(6),
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                "$unreadCount",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ChattingView(
+                                    currentUserId: AuthService.userId!,
+                                    myName: AuthService.name!,
+                                    receiverId: otherUserId,
+                                    receiverName: names[otherUserId] ?? "User",
+                                  )),
+                        );
+                      },
                     ),
-                  ),
-                  title: Text(
-                    names[otherUserId] ?? otherUserId,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    chat['lastMessage'] ?? '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(formattedTime),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ChattingView(
-                                currentUserId: AuthService.userId!,
-                                myName: AuthService.name!,
-                                receiverId: otherUserId,
-                                receiverName: names[otherUserId] ?? "User",
-                              )),
-                    );
-                  },
-                ),
+                  );
+                },
               );
             },
           );

@@ -24,6 +24,7 @@ dependencies:
   percent_indicator: ^4.2.5
   http: ^1.6.0
   firebase_messaging: ^16.1.1
+  flutter_local_notifications: ^19.4.0
   firebase_core: ^4.0.0
   cloud_firestore: ^6.1.2
   chat_bubbles: ^1.6.0

@@ -685,35 +685,37 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  ta['name'] ?? "Not Assigned",
-                  style: const TextStyle(
-                    color: Colors.grey,
+                Row(children: [
+                  Text(
+                    ta['name'] ?? "Not Assigned",
+                    style: const TextStyle(
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                CircleAvatar(
-                  backgroundColor: const Color(0xff4699A8),
-                  child: IconButton(
-                      icon: const Icon(
-                        Icons.chat_bubble,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ChattingView(
-                              currentUserId: AuthService.userId!,
-                              myName: AuthService.name!,
-                              receiverId: ta["_id"],
-                              receiverName: ta["name"],
+                  const Spacer(),
+                  CircleAvatar(
+                    backgroundColor: const Color(0xff4699A8),
+                    child: IconButton(
+                        icon: const Icon(
+                          Icons.chat_bubble,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ChattingView(
+                                currentUserId: AuthService.userId!,
+                                myName: AuthService.name!,
+                                receiverId: ta["_id"],
+                                receiverName: ta["name"],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                )
+                          );
+                        }),
+                  )
+                ])
               ],
             ),
           ),

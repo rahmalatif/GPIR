@@ -2,6 +2,7 @@ import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../services/auth_service.dart';
 import '../model/chatModel.dart';
 
 class ChattingView extends StatefulWidget {
@@ -33,6 +34,7 @@ class _ChattingViewState extends State<ChattingView> {
   late final String chatId;
 
   Future<void> markMessagesAsSeen() async {
+    print("MARK AS SEEN CALLED");
     final messages = await FirebaseFirestore.instance
         .collection('chats')
         .doc(chatId)
@@ -72,6 +74,33 @@ class _ChattingViewState extends State<ChattingView> {
     for (var doc in notifications.docs) {
       await doc.reference.update({
         'isRead': true,
+      });
+    }
+    if (AuthService.role == "student") {
+      await FirebaseFirestore.instance
+          .collection('chats')
+          .doc(chatId)
+          .update({
+        'unread_student': 0,
+      });
+    }
+
+    if (AuthService.role == "doctor") {
+      await FirebaseFirestore.instance
+          .collection('chats')
+          .doc(chatId)
+          .update({
+        'unread_doctor': 0,
+      });
+    }
+
+
+    if (AuthService.role == "teachingAssistant") {
+      await FirebaseFirestore.instance
+          .collection('chats')
+          .doc(chatId)
+          .update({
+        'unread_ta': 0,
       });
     }
   }
@@ -258,17 +287,6 @@ class _ChattingViewState extends State<ChattingView> {
                         await FirebaseFirestore.instance
                             .collection('chats')
                             .doc(chatId)
-                            .collection('messages')
-                            .add({
-                          'text': text,
-                          'senderId': widget.currentUserId,
-                          'time': Timestamp.now(),
-                          'isSeen': false,
-                        });
-
-                        await FirebaseFirestore.instance
-                            .collection('chats')
-                            .doc(chatId)
                             .set({
                           'participants': [
                             widget.currentUserId,
@@ -280,6 +298,10 @@ class _ChattingViewState extends State<ChattingView> {
                           },
                           'lastMessage': text,
                           'lastMessageTime': Timestamp.now(),
+
+                          'unread_student': 0,
+                          'unread_doctor': 0,
+                          'unread_ta': 0,
                         }, SetOptions(merge: true));
                         await FirebaseFirestore.instance
                             .collection('notifications')
@@ -291,6 +313,24 @@ class _ChattingViewState extends State<ChattingView> {
                           'type': 'chat',
                           'isRead': false,
                           'time': Timestamp.now(),
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('chats')
+                            .doc(chatId)
+                            .update({
+                          'unread_doctor': FieldValue.increment(1),
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('chats')
+                            .doc(chatId)
+                            .update({
+                          'unread_student': FieldValue.increment(1),
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('chats')
+                            .doc(chatId)
+                            .update({
+                          'unread_student': FieldValue.increment(1),
                         });
                       },
                       icon: const Icon(

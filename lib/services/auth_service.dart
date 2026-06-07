@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/logic/api_service.dart';
 import '../core/logic/cache_helper.dart';
@@ -93,6 +94,13 @@ class AuthService {
 
         studentId = student.collegeCode;
 
+        studentId = student.collegeCode;
+
+        await prefs.setInt(
+          'collegeCode',
+          student.collegeCode,
+        );
+
         await prefs.setString(
           'userId',
           student.id,
@@ -102,8 +110,9 @@ class AuthService {
           'role',
           'student',
         );
-
+        print("SAVED COLLEGE CODE: ${student.collegeCode}");
         return student;
+
       }
 
       if (data["user"] != null) {
@@ -113,7 +122,14 @@ class AuthService {
         AuthService.role = user.role;
         AuthService.email = user.email;
         AuthService.name = user.name;
+        final fcmToken =
+        await FirebaseMessaging.instance.getToken();
 
+        if (fcmToken != null) {
+          await ApiService.saveFcmToken(
+            fcmToken,
+          );
+        }
         await prefs.setString(
           'userId',
           user.id,

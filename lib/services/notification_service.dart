@@ -1,31 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'auth_service.dart';
 
 class NotificationService {
-  static final _db = FirebaseFirestore.instance;
+  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
-  static Future send({
-    required String userId,
-    required String title,
-    required String body,
-    required String type,
-    required String projectId,
-  }) async {
-    await _db.collection("notifications").add({
-      "userId": userId,
-      "title": title,
-      "body": body,
-      "type": type,
-      "projectId": projectId,
-      "seen": false,
-      "createdAt": Timestamp.now(),
-    });
+  static Future<void> saveTokenToFirestore() async {
+    String? token = await _messaging.getToken();
+
+    if (token == null || AuthService.userId == null) {
+      return;
+    }
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(AuthService.userId)
+        .set({
+      'name': AuthService.name,
+      'role': AuthService.role,
+      'fcmToken': token,
+    }, SetOptions(merge: true));
+
+    print("TOKEN SAVED");
   }
 
-  static Stream<QuerySnapshot> stream(String userId) {
-    return _db
-        .collection("notifications")
-        .where("userId", isEqualTo: userId)
-        .orderBy("createdAt", descending: true)
-        .snapshots();
+  static Future<void> initialize() async {
+    NotificationSettings settings = await _messaging.requestPermission();
+
+    print(
+      "NOTIFICATION PERMISSION: "
+      "${settings.authorizationStatus}",
+    );
+
+    String? token = await _messaging.getToken();
+
+    print("FCM TOKEN = $token");
+
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      (RemoteMessage message) {
+        print("NOTIFICATION CLICKED");
+
+        print(message.data);
+      },
+    );
   }
 }

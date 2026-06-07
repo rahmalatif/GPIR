@@ -147,4 +147,29 @@ class ApiService {
       response.body,
     );
   }
+
+  static Future<void> saveFcmToken(
+    String token,
+  ) async {
+    final response = await http.post(
+      Uri.parse(
+        '$baseUrl/api/users/fcm-token',
+      ),
+      headers: {
+        'Authorization': 'Bearer ${AuthService.token}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "token": token,
+      }),
+    );
+
+    print(
+      "FCM SAVE STATUS = ${response.statusCode}",
+    );
+
+    print(
+      "FCM SAVE RESPONSE = ${response.body}",
+    );
+  }
 }

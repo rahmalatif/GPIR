@@ -37,6 +37,7 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
     }
     super.dispose();
   }
+
   Future<void> checkIfHasTeam() async {
 
     final prefs =
@@ -246,6 +247,7 @@ class _HaveIdeaMobileViewState extends State<HaveIdeaMobileView> {
                             child: _InputTextInline(
                               "College Code",
                               teamMembers[index].collegeCodeController,
+
                             ),
                           ),
                           const SizedBox(width: 10),
