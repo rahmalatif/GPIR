@@ -10,7 +10,8 @@ class NotificationsMobileView extends StatefulWidget {
   });
 
   @override
-  State<NotificationsMobileView> createState() => _NotificationsMobileViewState();
+  State<NotificationsMobileView> createState() =>
+      _NotificationsMobileViewState();
 }
 
 class _NotificationsMobileViewState extends State<NotificationsMobileView> {
@@ -24,13 +25,13 @@ class _NotificationsMobileViewState extends State<NotificationsMobileView> {
     final notifications = await FirebaseFirestore.instance
         .collection('notifications')
         .where(
-      'receiverId',
-      isEqualTo: AuthService.userId,
-    )
+          'receiverId',
+          isEqualTo: AuthService.userId,
+        )
         .where(
-      'isRead',
-      isEqualTo: false,
-    )
+          'isRead',
+          isEqualTo: false,
+        )
         .get();
 
     for (var doc in notifications.docs) {
@@ -39,6 +40,7 @@ class _NotificationsMobileViewState extends State<NotificationsMobileView> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +51,13 @@ class _NotificationsMobileViewState extends State<NotificationsMobileView> {
           "Notifications",
           style: TextStyle(color: Colors.white),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.pop();
+              },
+              icon: Icon(Icons.arrow_back_ios_sharp))
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

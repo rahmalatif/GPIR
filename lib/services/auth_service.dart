@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/logic/api_service.dart';
 import '../core/logic/cache_helper.dart';
@@ -111,8 +112,15 @@ class AuthService {
           'student',
         );
         print("SAVED COLLEGE CODE: ${student.collegeCode}");
-        return student;
+        if (!kIsWeb) {
+          final fcmToken = await FirebaseMessaging.instance.getToken();
 
+          if (fcmToken != null) {
+            await ApiService.saveFcmToken(fcmToken);
+          }
+        }
+
+        return student;
       }
 
       if (data["user"] != null) {
@@ -122,13 +130,12 @@ class AuthService {
         AuthService.role = user.role;
         AuthService.email = user.email;
         AuthService.name = user.name;
-        final fcmToken =
-        await FirebaseMessaging.instance.getToken();
+        if (!kIsWeb) {
+          final fcmToken = await FirebaseMessaging.instance.getToken();
 
-        if (fcmToken != null) {
-          await ApiService.saveFcmToken(
-            fcmToken,
-          );
+          if (fcmToken != null) {
+            await ApiService.saveFcmToken(fcmToken);
+          }
         }
         await prefs.setString(
           'userId',

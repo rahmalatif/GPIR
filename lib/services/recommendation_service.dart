@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RecommendationService {
-  static const String baseUrl = "https://graduationbackend-production-ec83.up.railway.app";
+  static const String baseUrl =
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<List<dynamic>> recommendIdeas({
     required List<String> specializations,
@@ -27,11 +28,9 @@ class RecommendationService {
       print("RECOMMEND RESPONSE: "
           "${response.body}");
 
-      final data =
-      jsonDecode(response.body);
+      final data = jsonDecode(response.body);
 
-      return data['ideas']
-          ?? [];
+      return data['ideas'] ?? [];
 
       return data['ideas'] ?? [];
     } catch (e) {

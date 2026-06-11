@@ -35,7 +35,7 @@ class LibraryNavBar extends StatelessWidget {
             case 0:
               context.go('/libraryDashboard');
               break;
-            case 1 :
+            case 1:
               context.go('/libraryAddProject');
             case 2:
               context.go('/libraryAllProject');
@@ -43,14 +43,7 @@ class LibraryNavBar extends StatelessWidget {
             case 3:
               context.go(
                 '/libraryProfile',
-                extra: Library(
-                  id: "LIB001",
-                  name: "Naglaa",
-                  email: "library@test.com",
-                ),
               );
-
-
           }
         },
         items: const [
@@ -60,11 +53,11 @@ class LibraryNavBar extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: 'Projects',
+            label: 'add',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.padding_rounded),
-            label: 'Chat',
+            icon: Icon(Icons.featured_play_list),
+            label: 'projects',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

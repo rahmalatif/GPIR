@@ -13,11 +13,13 @@ import 'package:graduation_project_recommender/views/doctor/projects/pending_ide
 import 'package:graduation_project_recommender/views/doctor/projects/project_details_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/projects/projects_mobile.dart';
 import 'package:graduation_project_recommender/views/doctor/projects/reject_idea_mobile.dart';
-import 'package:graduation_project_recommender/views/library/add_new_project.dart';
-import 'package:graduation_project_recommender/views/library/all_project.dart';
-import 'package:graduation_project_recommender/views/library/library_dashboard.dart';
-import 'package:graduation_project_recommender/views/library/library_profile.dart';
-import 'package:graduation_project_recommender/views/library/library_project_details.dart';
+import 'package:graduation_project_recommender/views/library/add_project/add_new_project.dart';
+import 'package:graduation_project_recommender/views/library/all_project/all_project.dart';
+import 'package:graduation_project_recommender/views/library/all_project/library_project_details_responsive.dart';
+import 'package:graduation_project_recommender/views/library/dashboard/library_dashboard.dart';
+import 'package:graduation_project_recommender/views/library/profile/library_profile.dart';
+import 'package:graduation_project_recommender/views/library/all_project/library_project_details.dart';
+import 'package:graduation_project_recommender/views/library/profile/library_profile_responsive.dart';
 import 'package:graduation_project_recommender/views/model/library.dart';
 import 'package:graduation_project_recommender/views/model/student.dart';
 import 'package:graduation_project_recommender/views/notification/notifications_responsive.dart';
@@ -49,6 +51,8 @@ import '../../views/doctor/projects/pending_ideas_responsive.dart';
 import '../../views/doctor/projects/project_details_responsive.dart';
 import '../../views/doctor/projects/projects_responsive.dart';
 import '../../views/doctor/projects/reject_idea_responsive.dart';
+import '../../views/library/add_project/add_project_responsive.dart';
+import '../../views/library/all_project/all_project_responsive.dart';
 import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
 import '../../views/model/library_project.dart';
@@ -318,8 +322,11 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/libraryProjectDetails',
       builder: (context, state) {
-        final library = state.extra as LibraryProject;
-        return LibraryProjectDetails(project: library);
+        final project = state.extra as Map<String, dynamic>;
+
+        return LibraryProjectDetailsResponsive(
+          project: project,
+        );
       },
     ),
 
@@ -353,6 +360,24 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/libraryDashboard',
           builder: (context, state) => const LibraryDashboardView(),
+        ),
+        GoRoute(
+          path: '/libraryAddProject',
+          builder: (context, state) {
+            return const addProjectResponsive();
+          },
+        ),
+        GoRoute(
+          path: '/libraryAllProject',
+          builder: (context, state) {
+            return const AllProjectResponsive();
+          },
+        ),
+        GoRoute(
+          path: '/libraryProfile',
+          builder: (context, state) {
+            return const LibraryProfileResponsive();
+          },
         ),
       ],
     ),

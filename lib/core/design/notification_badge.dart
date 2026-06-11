@@ -25,7 +25,7 @@ class NotificationBadge extends StatelessWidget {
         return Stack(
           clipBehavior: Clip.none,
           children: [
-            const Icon(Icons.notifications),
+            const Icon(Icons.notifications , color: Colors.white,),
             if (count > 0)
               Positioned(
                 right: -6,

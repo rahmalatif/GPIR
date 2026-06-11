@@ -77,29 +77,19 @@ class _ChattingViewState extends State<ChattingView> {
       });
     }
     if (AuthService.role == "student") {
-      await FirebaseFirestore.instance
-          .collection('chats')
-          .doc(chatId)
-          .update({
+      await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
         'unread_student': 0,
       });
     }
 
     if (AuthService.role == "doctor") {
-      await FirebaseFirestore.instance
-          .collection('chats')
-          .doc(chatId)
-          .update({
+      await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
         'unread_doctor': 0,
       });
     }
 
-
     if (AuthService.role == "teachingAssistant") {
-      await FirebaseFirestore.instance
-          .collection('chats')
-          .doc(chatId)
-          .update({
+      await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
         'unread_ta': 0,
       });
     }
@@ -298,11 +288,21 @@ class _ChattingViewState extends State<ChattingView> {
                           },
                           'lastMessage': text,
                           'lastMessageTime': Timestamp.now(),
-
                           'unread_student': 0,
                           'unread_doctor': 0,
                           'unread_ta': 0,
                         }, SetOptions(merge: true));
+                        await FirebaseFirestore.instance
+                            .collection('chats')
+                            .doc(chatId)
+                            .collection('messages')
+                            .add({
+                          'text': text,
+                          'senderId': widget.currentUserId,
+                          'senderName': widget.myName,
+                          'time': Timestamp.now(),
+                          'isSeen': false,
+                        });
                         await FirebaseFirestore.instance
                             .collection('notifications')
                             .add({
@@ -326,12 +326,7 @@ class _ChattingViewState extends State<ChattingView> {
                             .update({
                           'unread_student': FieldValue.increment(1),
                         });
-                        await FirebaseFirestore.instance
-                            .collection('chats')
-                            .doc(chatId)
-                            .update({
-                          'unread_student': FieldValue.increment(1),
-                        });
+
                       },
                       icon: const Icon(
                         Icons.send_rounded,

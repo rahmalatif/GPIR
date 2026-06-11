@@ -151,10 +151,12 @@ class ApiService {
   static Future<void> saveFcmToken(
     String token,
   ) async {
+    final endpoint = AuthService.role == "student"
+        ? "/api/students/fcm-token"
+        : "/api/users/fcm-token";
+
     final response = await http.post(
-      Uri.parse(
-        '$baseUrl/api/users/fcm-token',
-      ),
+      Uri.parse('$baseUrl$endpoint'),
       headers: {
         'Authorization': 'Bearer ${AuthService.token}',
         'Content-Type': 'application/json',
