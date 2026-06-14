@@ -23,6 +23,8 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
 
   void aiRecommendIdea() => context.go('/aiRecommend');
 
+  void findTeam() => context.go('/findTeam');
+
   String greeting(String name) {
     final hour = DateTime.now().hour;
 
@@ -260,16 +262,30 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
   Widget buildOptions() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildOptionCard(
-            image: 'assets/png/idea.png',
-            text: "Have an Idea",
-            onTap: haveAnIdeaOnTap,
+          Expanded(
+            child: buildOptionCard(
+              image: 'assets/png/idea.png',
+              text: "Have an Idea",
+              onTap: haveAnIdeaOnTap,
+            ),
           ),
           const SizedBox(width: 40),
-          buildOptionCard(
-            image: 'assets/png/ai.png',
-            text: "Recommend Idea",
-            onTap: aiRecommendIdea,
+          Expanded(
+            child: buildOptionCard(
+              image: 'assets/png/ai.png',
+              text: "Recommend Idea",
+              onTap: aiRecommendIdea,
+            ),
+          ),
+          SizedBox(
+            width: 16,
+          ),
+          Expanded(
+            child: buildOptionCard(
+              image: 'assets/png/team.jpg',
+              text: "Find Team",
+              onTap: findTeam,
+            ),
           ),
         ],
       );
@@ -283,7 +299,8 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
       onTap: onTap,
       child: Container(
         height: 220,
-        width: 260,
+
+        width: double.infinity,
         decoration: BoxDecoration(
           color: const Color(0xff1D1D2E),
           border: Border.all(
@@ -322,82 +339,79 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
     final members = team['members'] as List<dynamic>? ?? [];
 
     return Center(
-      child: SizedBox(
-        width: 350,
-        child: Card(
-          color: const Color(0xff1D1D2E),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Team Members",
-                  style: TextStyle(
-                    fontSize: 18,
+      child: Card(
+        color: const Color(0xff1D1D2E),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Team Members",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ...members.map(
+                (m) => Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        m['name'] ?? "",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        m['specialization'] ?? "",
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    showLeaveDialog(
+                      context,
+                      team,
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.logout,
                     color: Colors.white,
                   ),
-                ),
-                const SizedBox(height: 12),
-                ...members.map(
-                  (m) => Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 6,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          m['name'] ?? "",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          m['specialization'] ?? "",
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {
-                      showLeaveDialog(
-                        context,
-                        team,
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.logout,
+                  label: const Text(
+                    "Leave Team",
+                    style: TextStyle(
                       color: Colors.white,
-                    ),
-                    label: const Text(
-                      "Leave Team",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

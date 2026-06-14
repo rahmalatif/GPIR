@@ -31,10 +31,7 @@ class _AllProjectsViewState extends State<AllProjectsWebView> {
           "All Projects",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-        ),
+
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

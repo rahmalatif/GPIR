@@ -87,13 +87,7 @@ class _LibraryProfileViewState extends State<LibraryProfileView> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                _infoItem(
-                  "ID",
-                  user["_id"] ?? "",
-                ),
+
                 const SizedBox(
                   height: 16,
                 ),

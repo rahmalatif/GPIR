@@ -3,6 +3,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/core/design/app_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -12,21 +13,54 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-
-  @override
   @override
   void initState() {
     super.initState();
-
-    Timer(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      context.go('/roleSelection');
-    });
+    checkLogin();
   }
 
+  Future<void> checkLogin() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    final prefs = await SharedPreferences.getInstance();
+
+    final token = prefs.getString('token');
+    final role = prefs.getString('role');
+
+    if (!mounted) return;
+
+    if (token != null && token.isNotEmpty) {
+      switch (role) {
+        case 'student':
+          context.go('/studentDashboard');
+          break;
+
+        case 'doctor':
+          context.go('/doctorDashboard');
+          break;
+
+        case 'ta':
+          context.go('/taDashboard');
+          break;
+
+        case 'library':
+          context.go('/libraryDashboard');
+          break;
+
+        case 'admin':
+          context.go('/adminDashboard');
+          break;
+
+        default:
+          context.go('/roleSelection');
+      }
+    } else {
+      context.go('/roleSelection');
+    }
+  }
 
   void _navigateOnTap() {
-   context.go( '/roleSelection');
+    context.go('/roleSelection');
   }
 
   @override
@@ -44,5 +78,3 @@ class _SplashViewState extends State<SplashView> {
     );
   }
 }
-
-

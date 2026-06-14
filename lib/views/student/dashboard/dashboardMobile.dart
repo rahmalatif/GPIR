@@ -25,6 +25,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
 
   void aiRecommendIdea() => context.go('/aiRecommend');
 
+  void findTeam() => context.go('/findTeam');
+
   String greeting(String name) {
     final hour = DateTime.now().hour;
 
@@ -124,9 +126,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 Text(
                   today,
                   style: const TextStyle(
@@ -134,24 +134,16 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                     fontSize: 16,
                   ),
                 ),
-
                 const SizedBox(height: 25),
-
                 buildStatusCard(project),
-
                 const SizedBox(height: 20),
-
                 if (!hasProject) buildOptions(),
-
                 if (!hasProject) const SizedBox(height: 20),
-
                 if (hasTeam) ...[
                   buildTeamCard(team, context),
                   const SizedBox(height: 20),
                 ],
-
                 buildSupervisorCard(supervisor, ta),
-
                 const SizedBox(height: 20),
               ],
             ),
@@ -211,8 +203,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                   ),
                   onPressed: hasProject
                       ? () {
-                    context.go('/studentProject');
-                  }
+                          context.go('/studentProject');
+                        }
                       : null,
                   child: const Text(
                     "View Details",
@@ -231,25 +223,35 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
   }
 
   Widget buildOptions() => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Expanded(
-        child: buildOptionCard(
-          image: 'assets/png/idea.png',
-          text: "Have an Idea",
-          onTap: haveAnIdeaOnTap,
-        ),
-      ),
-      const SizedBox(width: 16),
-      Expanded(
-        child: buildOptionCard(
-          image: 'assets/png/ai.png',
-          text: "Recommend Idea",
-          onTap: aiRecommendIdea,
-        ),
-      ),
-    ],
-  );
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: buildOptionCard(
+              image: 'assets/png/idea.png',
+              text: "Have an Idea",
+              onTap: haveAnIdeaOnTap,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: buildOptionCard(
+              image: 'assets/png/ai.png',
+              text: "Recommend Idea",
+              onTap: aiRecommendIdea,
+            ),
+          ),
+          SizedBox(
+            width: 16,
+          ),
+          Expanded(
+            child: buildOptionCard(
+              image: 'assets/png/team.jpg',
+              text: "Find Team",
+              onTap: findTeam,
+            ),
+          ),
+        ],
+      );
 
   Widget buildOptionCard({
     required String image,
@@ -259,7 +261,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 180,
+        height: 140,
         decoration: BoxDecoration(
           color: const Color(0xff1D1D2E),
           border: Border.all(
@@ -271,8 +273,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 70,
-              height: 70,
+              width: 50,
+              height: 50,
               child: AppImage(
                 image: image,
               ),
@@ -316,7 +318,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
               ),
               const SizedBox(height: 12),
               ...members.map(
-                    (m) => Padding(
+                (m) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Row(
                     children: [
@@ -481,9 +483,9 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
   }
 
   void showLeaveDialog(
-      BuildContext context,
-      dynamic team,
-      ) {
+    BuildContext context,
+    dynamic team,
+  ) {
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -559,9 +561,9 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
   }
 
   void showChooseLeaderDialog(
-      BuildContext context,
-      dynamic team,
-      ) {
+    BuildContext context,
+    dynamic team,
+  ) {
     final members = team['members'] as List<dynamic>? ?? [];
     String? selectedLeaderId;
 
@@ -626,7 +628,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                       if (success) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text("Leader changed & Left team successfully"),
+                            content:
+                                Text("Leader changed & Left team successfully"),
                             backgroundColor: Colors.green,
                           ),
                         );

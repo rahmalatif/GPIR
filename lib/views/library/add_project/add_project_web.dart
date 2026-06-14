@@ -4,14 +4,14 @@ import '../../../services/library_add_project.dart';
 import '../../model/library_data.dart';
 import '../../model/library_project.dart';
 
-class AddNewProjectView extends StatefulWidget {
-  const AddNewProjectView({super.key});
+class LibAddNewProjectView extends StatefulWidget {
+  const LibAddNewProjectView({super.key});
 
   @override
-  State<AddNewProjectView> createState() => _AddNewProjectViewState();
+  State<LibAddNewProjectView> createState() => _AddNewProjectViewState();
 }
 
-class _AddNewProjectViewState extends State<AddNewProjectView> {
+class _AddNewProjectViewState extends State<LibAddNewProjectView> {
   final nameController = TextEditingController();
   final idController = TextEditingController();
   final yearController = TextEditingController();

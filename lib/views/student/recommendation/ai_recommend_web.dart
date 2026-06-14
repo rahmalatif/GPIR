@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../services/recommendation_service.dart';
-import '../../model/team.dart';
+import '../../model/find_student.dart';
 import '../similarity/have_idea_mobile.dart'; // يمكنك استبداله أو تركه حسب مسارات مشروعك
 
 class AiRecommendWeb extends StatefulWidget {

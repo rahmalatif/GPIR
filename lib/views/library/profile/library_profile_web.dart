@@ -97,7 +97,6 @@ class _LibraryProfileViewState extends State<LibraryProfileWebView> {
                           const Divider(color: Colors.white10, height: 1),
                           const SizedBox(height: 24),
                         ],
-                        _infoItem("ID", user["_id"] ?? ""),
                         const SizedBox(height: 20),
                         _infoItem("Email", user["email"] ?? ""),
                         const SizedBox(height: 40),

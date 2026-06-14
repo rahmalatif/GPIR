@@ -1,6 +1,6 @@
 /*import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:graduation_project_recommender/views/model/team.dart';
+import 'package:graduation_project_recommender/views/model/find_student.dart';
 
 class EditTeamView extends StatefulWidget {
   final List<TeamMember> members;

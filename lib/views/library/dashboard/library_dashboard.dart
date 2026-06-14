@@ -66,16 +66,26 @@ class _LibraryDashboardViewState extends State<LibraryDashboardView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _projectcard(
-                        'Previous Projects',
-                        totalProjects.toString(),
+                      GestureDetector(
+                        onTap: () {
+                          context.go('/libraryAllProject');
+                        },
+                        child: _projectcard(
+                          'Previous Projects',
+                          totalProjects.toString(),
+                        ),
                       ),
                       const SizedBox(
                         width: 15,
                       ),
-                      _projectcard(
-                        "This Year Projects",
-                        thisYearProjects.toString(),
+                      GestureDetector(
+                        onTap: () {
+                          context.go('/libraryCurrentYearProjects');
+                        },
+                        child: _projectcard(
+                          "This Year Projects",
+                          thisYearProjects.toString(),
+                        ),
                       ),
                     ],
                   ),
@@ -117,9 +127,9 @@ class _LibraryDashboardViewState extends State<LibraryDashboardView> {
 }
 
 Widget _projectcard(
-    String projectType,
-    String number,
-    ) {
+  String projectType,
+  String number,
+) {
   return Container(
     height: 130,
     width: 170,

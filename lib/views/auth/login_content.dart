@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/design/app_image.dart';
 import '../../core/logic/app_snackbar.dart';
@@ -26,6 +27,7 @@ class _LoginContentState extends State<LoginContent> {
 
   bool isLoading = false;
   bool obscurePassword = true;
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +90,6 @@ class _LoginContentState extends State<LoginContent> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final isStudent = widget.role == "student";
@@ -121,90 +122,42 @@ class _LoginContentState extends State<LoginContent> {
           ),
           const SizedBox(height: 20),
           Padding(
-
-            padding:
-            const EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 30,
             ),
-
             child: TextField(
-
-              controller:
-              passwordController,
-
-              obscureText:
-              obscurePassword,
-
-              keyboardType:
-              TextInputType.visiblePassword,
-
-              style:
-              const TextStyle(
+              controller: passwordController,
+              obscureText: obscurePassword,
+              keyboardType: TextInputType.visiblePassword,
+              style: const TextStyle(
                 color: Colors.white,
               ),
-
-              decoration:
-              InputDecoration(
-
-                hintText:
-                "Password",
-
-                hintStyle:
-                const TextStyle(
-                  color:
-                  Colors.white70,
+              decoration: InputDecoration(
+                hintText: "Password",
+                hintStyle: const TextStyle(
+                  color: Colors.white70,
                 ),
-
-                suffixIcon:
-                IconButton(
-
+                suffixIcon: IconButton(
                   onPressed: () {
-
                     setState(() {
-
-                      obscurePassword =
-                      !obscurePassword;
+                      obscurePassword = !obscurePassword;
                     });
                   },
-
                   icon: Icon(
-
-                    obscurePassword
-
-                        ? Icons.visibility_off
-
-                        : Icons.visibility,
-
-                    color:
-                    Colors.white70,
+                    obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.white70,
                   ),
                 ),
-
-                enabledBorder:
-                OutlineInputBorder(
-
-                  borderRadius:
-                  BorderRadius.circular(
-                      30),
-
-                  borderSide:
-                  const BorderSide(
-                    color:
-                    Color(0xFF4699A8),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF4699A8),
                   ),
                 ),
-
-                focusedBorder:
-                OutlineInputBorder(
-
-                  borderRadius:
-                  BorderRadius.circular(
-                      30),
-
-                  borderSide:
-                  const BorderSide(
-                    color:
-                    Colors.lightBlueAccent,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.lightBlueAccent,
                   ),
                 ),
               ),
@@ -220,112 +173,62 @@ class _LoginContentState extends State<LoginContent> {
               ),
             ),
             onPressed: () async {
+              final input = emailController.text.trim();
 
-              final input =
-              emailController.text.trim();
+              final password = passwordController.text.trim();
 
-              final password =
-              passwordController.text.trim();
-
-              // =========================
-              // VALIDATION
-              // =========================
-
-              if (input.isEmpty ||
-                  password.isEmpty) {
-
+              if (input.isEmpty || password.isEmpty) {
                 showAppSnackBar(
-
                   context,
-
-                  message:
-                  "Please fill all fields",
+                  message: "Please fill all fields",
                 );
 
                 return;
               }
 
-              // =========================
-              // STUDENT ID VALIDATION
-              // =========================
-
-              if (isStudent &&
-                  int.tryParse(input) == null) {
-
+              if (isStudent && int.tryParse(input) == null) {
                 showAppSnackBar(
-
                   context,
-
-                  message:
-                  "Student ID must be numbers only",
+                  message: "Student ID must be numbers only",
                 );
 
                 return;
               }
 
               setState(() {
-
                 isLoading = true;
               });
 
               try {
-
-                final result =
-                await AuthService.login(
-
-                  role:
-                  widget.role,
-
-                  password:
-                  password,
-
-                  email:
-                  isStudent
-                      ? null
-                      : input,
-
-                  id:
-                  isStudent
-                      ? int.tryParse(input)
-                      : null,
+                final result = await AuthService.login(
+                  role: widget.role,
+                  password: password,
+                  email: isStudent ? null : input,
+                  id: isStudent ? int.tryParse(input) : null,
                 );
+                final prefs = await SharedPreferences.getInstance();
 
+                await prefs.setBool('isLoggedIn', true);
+                await prefs.setString('role', widget.role);
                 if (!mounted) {
                   return;
                 }
 
-                // =========================
-                // STUDENT
-                // =========================
-
                 if (widget.role == "student") {
-
                   context.go(
-
                     '/studentDashboard',
-
-                    extra:
-                    result,
+                    extra: result,
                   );
-
                 } else {
-
-                  final user =
-                  result as UserModel;
+                  final user = result as UserModel;
 
                   navigateBasedOnRole(
-
                     context,
-
                     user,
                   );
                 }
-
               } catch (e) {
-
-                final message =
-
-                ErrorHandler.getMessage(
+                final message = ErrorHandler.getMessage(
                   e,
                 );
 
@@ -334,20 +237,15 @@ class _LoginContentState extends State<LoginContent> {
                 }
 
                 showAppSnackBar(
-
                   context,
-
                   message: message,
                 );
-
               } finally {
-
                 if (!mounted) {
                   return;
                 }
 
                 setState(() {
-
                   isLoading = false;
                 });
               }

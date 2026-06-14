@@ -24,6 +24,7 @@ import 'package:graduation_project_recommender/views/model/library.dart';
 import 'package:graduation_project_recommender/views/model/student.dart';
 import 'package:graduation_project_recommender/views/notification/notifications_responsive.dart';
 import 'package:graduation_project_recommender/views/splash.dart';
+import 'package:graduation_project_recommender/views/student/FindTeam/findteamresponsive.dart';
 import 'package:graduation_project_recommender/views/student/dashboard/dashboardMobile.dart';
 import 'package:graduation_project_recommender/views/student/similarity/have_idea_mobile.dart';
 import 'package:graduation_project_recommender/views/student/similarity/similarity_check_mobile.dart';
@@ -53,11 +54,14 @@ import '../../views/doctor/projects/projects_responsive.dart';
 import '../../views/doctor/projects/reject_idea_responsive.dart';
 import '../../views/library/add_project/add_project_responsive.dart';
 import '../../views/library/all_project/all_project_responsive.dart';
+import '../../views/library/this_year_project/this_year_responsive.dart';
 import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
 import '../../views/model/library_project.dart';
-import '../../views/model/team.dart';
+import '../../views/model/find_student.dart';
 import '../../views/model/user_model.dart';
+import '../../views/student/FindTeam/inviations.dart';
+import '../../views/student/FindTeam/join_student_mobile.dart';
 import '../../views/student/dashboard/dashboard_responsive.dart';
 import '../../views/student/dashboard/edit_team.dart';
 import '../../views/student/profile/st_profile_responsive.dart';
@@ -151,6 +155,19 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+        path: '/findTeam',
+        builder: (context, state) {
+          return Findteamresponsive();
+        }),
+
+    GoRoute(
+        path: '/teamInvitations',
+        builder: (context, state) {
+          return TeamInvitationsView();
+        }),
+
     GoRoute(
       path: '/Chatting',
       builder: (context, state) {
@@ -288,6 +305,11 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const DoctorIdeasResponsive(),
     ),
 
+    GoRoute(
+      path: '/createStudent',
+      builder: (context, state) => JoinStudentView(),
+    ),
+
 // ================= ADMIN =================
 
     GoRoute(
@@ -329,8 +351,15 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/libraryCurrentYearProjects',
+      builder: (context, state) {
+        return const CurrentYearProjectsResponsive();
+      },
+    ),
 
 // ================= NAVIGATION =================
+
     ShellRoute(
       builder: (context, state, child) => TANavBar(child: child),
       routes: [
@@ -364,7 +393,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/libraryAddProject',
           builder: (context, state) {
-            return const addProjectResponsive();
+            return LibaddProjectResponsive();
           },
         ),
         GoRoute(
