@@ -79,7 +79,9 @@ import '../../views/student/similarity/send_idea_to_dr_responsive.dart';
 import '../../views/student/similarity/similarity_check_responsive.dart';
 import '../../views/student/profile/st_profile_mobile.dart';
 
+import '../../views/student/time_plan.dart';
 import '../../views/teacher_assistant/profile/ta_profile.dart';
+import '../../views/teacher_assistant/timePlan/ta_time_plan.dart';
 import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
 import '../design/library_nav_bar.dart';
@@ -252,7 +254,15 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/timePlan',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final projectId = extra?['project_id'] ?? '';
 
+        return TimePlanView(projectId: projectId);
+      },
+    ),
 //=========================TA=============================
 
     GoRoute(
@@ -265,7 +275,16 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/taTimePlan',
+      builder: (context, state) {
+        final projectId = state.extra as String;
 
+        return TaTimePlanView(
+          projectId: projectId,
+        );
+      },
+    ),
 // ================= DOCTOR =================
 
     GoRoute(

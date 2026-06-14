@@ -181,6 +181,7 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               Text(
                 hasProject
                     ? "Supervised By: ${project['doctor_id']?['name'] ?? 'Not Assigned'}"
@@ -190,31 +191,71 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                   fontSize: 14,
                 ),
               ),
+
               const SizedBox(height: 15),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff4699A8),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff4699A8),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: hasProject
+                          ? () {
+                        context.go('/studentProject');
+                      }
+                          : null,
+                      child: const Text(
+                        "View Details",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ),
-                  onPressed: hasProject
-                      ? () {
-                          context.go('/studentProject');
-                        }
-                      : null,
-                  child: const Text(
-                    "View Details",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+
+                  const SizedBox(width: 10),
+
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff4699A8),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: hasProject
+                          ? () {
+                        context.go(
+                          '/timePlan',
+                          extra: {
+                            'project_id': project['_id'],
+                          },
+                        );
+                      }
+                          : null,
+                      icon: const Icon(
+                        Icons.calendar_month,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      label: const Text(
+                        "TimePlan",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+                ],
+              )
             ],
           ),
         ],

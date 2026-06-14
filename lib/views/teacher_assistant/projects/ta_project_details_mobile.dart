@@ -206,6 +206,36 @@ class _ProjectDetailsMobileViewState extends State<TAProjectDetailsMobileView> {
                     members,
                   ),
                   const SizedBox(height: 30),
+                  const SizedBox(height: 20),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyan,
+                        foregroundColor: Colors.black,
+                        minimumSize: const Size(
+                          double.infinity,
+                          50,
+                        ),
+                      ),
+                      onPressed: () {
+                        context.push(
+                          '/taTimePlan',
+                          extra: widget.projectId,
+                        );
+                      },
+                      icon: const Icon(Icons.calendar_month),
+                      label: const Text(
+                        "View Time Plan",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
                   if (taStatus != "approved")
                     Row(
                       children: [
