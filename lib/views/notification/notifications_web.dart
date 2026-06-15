@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../services/auth_service.dart';
 
 class NotificationsWebView extends StatefulWidget {
@@ -20,13 +21,13 @@ class _NotificationsWebViewState extends State<NotificationsWebView> {
     final notifications = await FirebaseFirestore.instance
         .collection('notifications')
         .where(
-      'receiverId',
-      isEqualTo: AuthService.userId,
-    )
+          'receiverId',
+          isEqualTo: AuthService.userId,
+        )
         .where(
-      'isRead',
-      isEqualTo: false,
-    )
+          'isRead',
+          isEqualTo: false,
+        )
         .get();
 
     for (var doc in notifications.docs) {
@@ -35,17 +36,25 @@ class _NotificationsWebViewState extends State<NotificationsWebView> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0D0F1A),
-        title: const Text(
-          "Notifications",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+          backgroundColor: const Color(0xFF0D0F1A),
+          title: const Text(
+            "Notifications",
+            style: TextStyle(color: Colors.white),
+          ),
+          leading: IconButton(
+              onPressed: () {
+                context.pop();
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ))),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('notifications')

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../services/send_documentayion_reminder.dart';
+
 class LibraryProjectDetailsWebView extends StatelessWidget {
   final Map<String, dynamic> project;
 
@@ -20,7 +22,6 @@ class LibraryProjectDetailsWebView extends StatelessWidget {
           "Project Details",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -35,14 +36,22 @@ class LibraryProjectDetailsWebView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: Text(
-                        project["title"] ?? project["title"] ?? "",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      child: Row(
+                        children: [
+                          Text(
+                            project["title"] ?? project["title"] ?? "",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 30,
+                          ),
+
+                        ],
                       ),
                     ),
                     const SizedBox(height: 30),

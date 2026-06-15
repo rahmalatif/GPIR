@@ -7,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../views/model/project_idea.dart';
 
 class IdeaServices {
-  final String baseUrl = "https://graduationbackend-production-ec83.up.railway.app";
+  final String baseUrl =
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   Future<dynamic> checkSimilarity(
     ProjectIdea idea,

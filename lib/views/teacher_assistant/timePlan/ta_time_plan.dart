@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../services/get_time_plan_service.dart';
+import '../../../services/ta_approve_time_plan.dart';
+import '../../../services/ta_reject_time_plan.dart';
 
 class TaTimePlanView extends StatefulWidget {
   final String projectId;
@@ -34,10 +36,65 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
     getTimePlan();
   }
 
+  Future<void> showRejectDialog() async {
+    final controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("Reject Time Plan"),
+          content: TextField(
+            controller: controller,
+            maxLines: 4,
+            decoration: const InputDecoration(
+              hintText: "Enter rejection reason",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (controller.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Comment is required"),
+                    ),
+                  );
+                  return;
+                }
+
+                final success = await RejectTaTimePlanService.reject(
+                  planId: planId,
+                  comment: controller.text.trim(),
+                );
+
+                Navigator.pop(context);
+
+                if (success) {
+                  await getTimePlan();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Time Plan Rejected"),
+                    ),
+                  );
+                }
+              },
+              child: const Text("Reject"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> getTimePlan() async {
     try {
-      final data =
-      await GetTimePlanService.getTimePlan(widget.projectId);
+      final data = await GetTimePlanService.getTimePlan(widget.projectId);
 
       if (data != null) {
         setState(() {
@@ -73,6 +130,9 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
       case 'rejected_ta':
         return Colors.red;
 
+      case 'pending_doctor':
+        return Colors.blue;
+
       default:
         return Colors.blueGrey;
     }
@@ -98,7 +158,6 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
-
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
         title: const Text(
@@ -106,41 +165,23 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-
       body: SingleChildScrollView(
         child: Column(
           children: [
-
             const SizedBox(height: 15),
 
-            Chip(
-              backgroundColor: getStatusColor(),
-              label: Text(
-                status.toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
             const SizedBox(height: 15),
-
             TableCalendar(
               firstDay: DateTime(2024),
               lastDay: DateTime(2035),
               focusedDay: focusedDay,
-
-              selectedDayPredicate: (day) =>
-                  isSameDay(day, selectedDay),
-
+              selectedDayPredicate: (day) => isSameDay(day, selectedDay),
               onDaySelected: (selected, focused) {
                 setState(() {
                   selectedDay = selected;
                   focusedDay = focused;
                 });
               },
-
               eventLoader: (day) {
                 return tasks.where((task) {
                   return isSameDay(
@@ -150,9 +191,7 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
                 }).toList();
               },
             ),
-
             const SizedBox(height: 20),
-
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Align(
@@ -167,102 +206,100 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
             selectedTasks.isEmpty
                 ? const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                "No Tasks For This Day",
-                style: TextStyle(
-                  color: Colors.white70,
-                ),
-              ),
-            )
-                : ListView.builder(
-              shrinkWrap: true,
-              physics:
-              const NeverScrollableScrollPhysics(),
-              itemCount: selectedTasks.length,
-              itemBuilder: (context, index) {
-                final task = selectedTasks[index];
-
-                return Card(
-                  color: const Color(0xFF1B1E2B),
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      task['title'],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      "No Tasks For This Day",
+                      style: TextStyle(
+                        color: Colors.white70,
                       ),
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                      children: [
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: selectedTasks.length,
+                    itemBuilder: (context, index) {
+                      final task = selectedTasks[index];
 
-                        const SizedBox(height: 8),
+                      return Card(
+                        color: const Color(0xFF1B1E2B),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        child: ListTile(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                task['title'],
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
 
-                        Text(
-                          task['description'],
-                          style: const TextStyle(
-                            color: Colors.white70,
+                              Chip(
+                                backgroundColor: getStatusColor(),
+                                label: Text(
+                                  status.toUpperCase(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 8),
+                              Text(
+                                task['description'],
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Deadline : ${task['deadline'].toString().split(' ')[0]}",
+                                style: const TextStyle(
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-
-                        const SizedBox(height: 8),
-
-                        Text(
-                          "Deadline : ${task['deadline'].toString().split(' ')[0]}",
-                          style: const TextStyle(
-                            color: Colors.orange,
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-
             const SizedBox(height: 25),
 
             Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                controller: commentController,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: "Write Comment",
-                  border: OutlineInputBorder(
-                    borderRadius:
-                    BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Approve API
+                      onPressed: () async {
+                        final success =
+                        await ApproveTaTimePlanService.approve(planId);
+
+                        if (success) {
+                          await getTimePlan();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Time Plan Approved ✅",
+                              ),
+                            ),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
@@ -275,14 +312,10 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 10),
-
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Reject API
-                      },
+                      onPressed: showRejectDialog,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),
@@ -297,7 +330,6 @@ class _TaTimePlanViewState extends State<TaTimePlanView> {
                 ],
               ),
             ),
-
             const SizedBox(height: 30),
           ],
         ),

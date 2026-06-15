@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/views/admin/admin_profile.dart';
+import 'package:graduation_project_recommender/views/admin/student_without_project.dart';
 import 'package:graduation_project_recommender/views/auth/login_responsive.dart';
 import 'package:graduation_project_recommender/views/auth/register_responsive.dart';
 import 'package:graduation_project_recommender/views/auth/responsive_role_selection.dart';
@@ -63,7 +64,6 @@ import '../../views/model/user_model.dart';
 import '../../views/student/FindTeam/inviations.dart';
 import '../../views/student/FindTeam/join_student_mobile.dart';
 import '../../views/student/dashboard/dashboard_responsive.dart';
-import '../../views/student/dashboard/edit_team.dart';
 import '../../views/student/profile/st_profile_responsive.dart';
 import '../../views/student/projectAssigend/project_assigned_mobile.dart';
 import '../../views/student/projectAssigend/project_assigned_responsive.dart';
@@ -440,6 +440,10 @@ final GoRouter appRouter = GoRouter(
           GoRoute(
             path: '/adminProfile',
             builder: (context, state) => const AdminProfileView(),
+          ),
+          GoRoute(
+            path: '/adminTeam',
+            builder: (context, state) => const StudentsWithoutProjectsView(),
           ),
         ]),
 

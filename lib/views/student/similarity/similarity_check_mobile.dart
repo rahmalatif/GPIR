@@ -233,7 +233,7 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
                                     Expanded(
                                       child: Text(
                                         "Doctor: "
-                                        "${project['doctor'] ?? 'Unknown'}",
+                                        "${project['Doctor'] ?? 'Unknown'}",
                                         style: const TextStyle(
                                           color: Colors.grey,
                                         ),
@@ -254,7 +254,26 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
                                     const SizedBox(width: 8),
                                     Text(
                                       "Year: "
-                                      "${project['year'] ?? 'Unknown'}",
+                                      "${project['Year'] ?? 'Unknown'}",
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.grey,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "Teacher Assistant: "
+                                          "${project['TA'] ?? 'Unknown'}",
                                       style: const TextStyle(
                                         color: Colors.grey,
                                       ),
@@ -290,7 +309,7 @@ class _SimilarityCheckMobileViewState extends State<SimilarityCheckMobileView> {
                       height: 55,
                       child: ElevatedButton(
                         onPressed: () {
-                          context.go(
+                          context.push(
                             '/chooseSupervisor',
                             extra: widget.projectIdea,
                           );

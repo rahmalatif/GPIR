@@ -125,7 +125,7 @@ class _SimilarityCheckWebViewState
 
             child: ElevatedButton(
               onPressed: () {
-                context.go(
+                context.push(
                   '/chooseSupervisor',
                   extra:
                   widget.projectIdea,

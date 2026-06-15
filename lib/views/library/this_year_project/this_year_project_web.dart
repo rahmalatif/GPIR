@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../services/library_current_project.dart';
+import '../../../services/send_documentayion_reminder.dart';
 import '../../../services/submit_documentation_services.dart';
 
 class CurrentYearProjectsWebView extends StatefulWidget {
@@ -80,136 +81,37 @@ class _CurrentYearProjectsWebViewState
                                 fontSize: 18,
                               ),
                             ),
-                            CheckboxListTile(
-                              value: project["documentation"] != null,
-                              onChanged: (value) async {
-                                final result = await showDialog<bool>(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      backgroundColor: const Color(0xFF1A1D2E),
-                                      title: const Text(
-                                        "Confirm",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                try {
+                                  await DocumentationReminderService.sendReminder(
+                                    project["_id"],
+                                  );
+
+                                  if (!mounted) return;
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.green,
                                       content: Text(
-                                        value == true
-                                            ? "Are you sure the documentation has been submitted?"
-                                            : "Are you sure you want to mark documentation as not submitted?",
-                                        style: const TextStyle(
-                                          color: Colors.white70,
-                                        ),
+                                        "Documentation reminder sent successfully",
                                       ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(
-                                              context,
-                                              false,
-                                            );
-                                          },
-                                          child: const Text(
-                                            "Cancel",
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.cyan,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(
-                                              context,
-                                              true,
-                                            );
-                                          },
-                                          child: const Text(
-                                            "Confirm",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
+                                    ),
+                                  );
+                                } catch (e) {
+                                  if (!mounted) return;
 
-                                if (result == true && value == true) {
-                                  try {
-                                    await LibrarySubmitDocumentationService
-                                        .submitDocumentation(
-                                      project["_id"],
-                                    );
-                                    final updatedProjects =
-                                    await LibraryCurrentProjectsService
-                                        .getCurrentProjects();
-
-                                    if (!mounted) return;
-
-                                    if (updatedProjects.isEmpty) {
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            "All projects have been submitted",
-                                          ),
-                                        ),
-                                      );
-
-                                      context.go(
-                                        '/libraryDashboard',
-                                      );
-
-                                      return;
-                                    }
-
-                                    setState(() {
-
-                                      projectsFuture =
-                                          Future.value(
-                                            updatedProjects,
-                                          );
-                                    });
-
-                                    if (!mounted) return;
-
-                                    ScaffoldMessenger.of(
-                                      context,
-                                    ).showSnackBar(
-                                      const SnackBar(
-                                        backgroundColor: Colors.green,
-                                        content: Text(
-                                          "Documentation submitted successfully",
-                                        ),
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    if (!mounted) return;
-
-                                    ScaffoldMessenger.of(
-                                      context,
-                                    ).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Colors.red,
-                                        content: Text(
-                                          e.toString(),
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(e.toString()),
+                                    ),
+                                  );
                                 }
                               },
-                              title: const Text(
-                                "Documentation Submitted",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
+                              icon: const Icon(Icons.notifications),
+                              label: const Text("Send Reminder"),
+                            )                          ],
                         ),
                       );
                     },

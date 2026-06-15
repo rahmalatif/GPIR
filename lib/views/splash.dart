@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:graduation_project_recommender/core/design/app_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/auth_service.dart';
+
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -26,7 +28,7 @@ class _SplashViewState extends State<SplashView> {
 
     final token = prefs.getString('token');
     final role = prefs.getString('role');
-
+    await AuthService.loadUserData();
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {

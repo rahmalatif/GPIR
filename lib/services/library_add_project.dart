@@ -9,25 +9,16 @@ class LibraryProjectService {
       "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<void> addOldProject({
-
     required String projectCode,
-
     required String title,
-
     required String description,
-
     required List<String> specialization,
-
     required List<String> tools,
-
     required String doctor,
-
     required String ta,
-
     required int year,
-
     required String futureWork,
-  })async {
+  }) async {
     final response = await http.post(
       Uri.parse(
         "$baseUrl/api/users/library/old-project",
@@ -37,27 +28,17 @@ class LibraryProjectService {
         "Content-Type": "application/json",
       },
       body: jsonEncode({
-
         "project_code": projectCode,
-
         "title": title,
-
         "description": description,
-
-        "Specialization":
-        specialization.join(', '),
-
-        "Tools":
-        tools.join(', '),
-
+        "Specialization": specialization.join(', '),
+        "Tools": tools.join(', '),
         "Doctor": doctor,
-
         "TA": ta,
-
         "Year": year.toString(),
-
         "FutureWork": futureWork,
-      }),    );
+      }),
+    );
 
     print(
       "ADD OLD PROJECT STATUS: "

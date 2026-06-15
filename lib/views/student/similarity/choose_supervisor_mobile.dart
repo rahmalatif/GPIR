@@ -69,7 +69,7 @@ class _ChooseSupervisorMobileViewState
             color: Colors.white,
           ),
           onPressed: () {
-            context.go('/haveIdea');
+            context.pop();
           },
         ),
       ),

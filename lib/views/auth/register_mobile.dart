@@ -29,6 +29,7 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
   late final TextEditingController specializationController;
 
   bool isLoading = false;
+
   bool get isStudent => widget.role == "student";
   bool obscurePassword = true;
 
@@ -116,7 +117,6 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
       return;
     }
 
-
     final password = passwordController.text.trim();
 
     if (password.length < 6) {
@@ -159,7 +159,7 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
         name: nameController.text.trim(),
         password: passwordController.text.trim(),
         role: widget.role,
-        email: null,
+        email: emailController.text.trim(),
         id: parsedId,
         phonenumber: phone,
         specialization: null,
@@ -261,6 +261,13 @@ class _RegisterMobileViewState extends State<RegisterMobileView> {
                 false,
                 nameController,
                 keyboardType: TextInputType.name,
+              ),
+              const SizedBox(height: 20),
+              _input(
+                "Email",
+                false,
+                emailController,
+                keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 20),
               _input(

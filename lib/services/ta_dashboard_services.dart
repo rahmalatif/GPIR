@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 
 class TeacherAssistantDashboardService {
-  static const String baseUrl = "https://graduationbackend-production-ec83.up.railway.app";
+  static const String baseUrl =
+      "https://graduationbackend-production-ec83.up.railway.app";
 
   static Future<Map<String, dynamic>> getDashboard() async {
     try {
@@ -15,12 +16,8 @@ class TeacherAssistantDashboardService {
           '$baseUrl/api/projects/ta/dashboard',
         ),
         headers: {
-
-          'Authorization':
-          'Bearer ${AuthService.token}',
-
-          'Content-Type':
-          'application/json',
+          'Authorization': 'Bearer ${AuthService.token}',
+          'Content-Type': 'application/json',
         },
       );
 

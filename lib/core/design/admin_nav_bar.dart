@@ -12,7 +12,8 @@ class AdminNavBar extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
 
     if (location.startsWith('/adminDashboard')) return 0;
-    if (location.startsWith('/adminProfile')) return 1;
+    if (location.startsWith('/adminTeam')) return 1;
+    if (location.startsWith('/adminProfile')) return 2;
 
     return 0;
   }
@@ -39,14 +40,10 @@ class AdminNavBar extends StatelessWidget {
               break;
 
             case 1:
+              context.go('/adminTeam');
+            case 2:
               context.go(
                 '/adminProfile',
-                extra: UserModel(
-                  id: "ADM001",
-                  name: "Mr. Osama",
-                  email: "admin@test.com",
-                  role: 'admin',
-                ),
               );
               break;
           }
@@ -54,6 +51,10 @@ class AdminNavBar extends StatelessWidget {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_filled),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
             label: 'Home',
           ),
           BottomNavigationBarItem(

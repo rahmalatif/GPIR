@@ -94,9 +94,7 @@ class _ConfirmSubmissionMobileViewState
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
         elevation: 0,
-        leading: const BackButton(
-          color: Colors.white,
-        ),
+
         title: const Text(
           "Confirm Submission",
           style: TextStyle(

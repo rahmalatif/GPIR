@@ -26,7 +26,9 @@ class TAProfileView extends StatelessWidget {
                 radius: 70,
                 backgroundColor: const Color(0xFF1897F3),
                 child: Text(
-                  AuthService.name!.substring(0, 1).toUpperCase(),
+                  (AuthService.name?.isNotEmpty ?? false)
+                      ? AuthService.name![0].toUpperCase()
+                      : "?",
                   style: const TextStyle(
                     fontSize: 50,
                     color: Colors.white,
@@ -37,8 +39,8 @@ class TAProfileView extends StatelessWidget {
               const SizedBox(height: 20),
               Column(
                 children: [
-                  Text(
-                    AuthService.name ?? "",
+              Text(
+              AuthService.name ?? "Unknown User",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 28,

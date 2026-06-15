@@ -20,7 +20,6 @@ class ChooseSupervisorWebView extends StatefulWidget {
 class _ChooseSupervisorWebViewState extends State<ChooseSupervisorWebView> {
   int? selectedIndex;
 
-  // خلي السورس واحد بس عشان متتلخبطش
   List<Doctor> doctorsList = [];
   bool isLoading = true;
 
@@ -47,6 +46,18 @@ class _ChooseSupervisorWebViewState extends State<ChooseSupervisorWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:AppBar(
+        backgroundColor: const Color(0xFF0D0F1A),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            context.pop();
+          },
+        ),
+      ) ,
       backgroundColor: const Color(0xFF0D0F1A),
       body: Center(
         child: SizedBox(
@@ -56,10 +67,7 @@ class _ChooseSupervisorWebViewState extends State<ChooseSupervisorWebView> {
               const SizedBox(height: 30),
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => context.pop(),
-                  ),
+
                   const SizedBox(width: 10),
                   const Text(
                     "Choose Supervisor",
@@ -125,7 +133,7 @@ class _ChooseSupervisorWebViewState extends State<ChooseSupervisorWebView> {
                       return;
                     }
 
-                    context.go(
+                    context.push(
                       '/chooseTA',
                       extra: {
                         'projectIdea': widget.projectIdea,

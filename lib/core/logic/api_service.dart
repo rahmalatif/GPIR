@@ -24,9 +24,10 @@ class ApiService {
       endpoint = "/api/students/add";
       body = {
         "name": name,
+        "email": email,
         "collegeCode": id,
         "password": password,
-        "phone": phonenumber
+        "phone": phonenumber,
       };
     } else {
       endpoint = "/api/users/add";

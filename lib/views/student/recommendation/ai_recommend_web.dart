@@ -56,7 +56,6 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
 
   @override
   Widget build(BuildContext context) {
-    // الحصول على عرض الشاشة لتحديد التصميم responsive
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isLargeScreen = screenWidth > 900;
 
@@ -65,30 +64,34 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF0D0F1A),
-        elevation: 0,
-        title: const Text(
-          "AI Recommender",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+        title: const Center(
+          child: Text(
+            "AI Recommender",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => context.go('/studentDashboard'),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            context.go('/studentDashboard');
+          },
         ),
       ),
       body: Center(
         child: Container(
-          // تحديد أقصى عرض للمحتوى في الويب لكي لا يتمدد بشكل عريض ومزعج للعين
           constraints: const BoxConstraints(maxWidth: 1200),
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // رأس الصفحة (Header)
                 const Text(
                   "Tell us about your team",
                   style: TextStyle(

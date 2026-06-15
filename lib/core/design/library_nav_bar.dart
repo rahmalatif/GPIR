@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../views/model/library.dart';
-
 class LibraryNavBar extends StatelessWidget {
   final Widget child;
 

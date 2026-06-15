@@ -15,6 +15,25 @@ class ProjectsRecommendationWebView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0F1A),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0D0F1A),
+        title: const Text(
+          "Recommended Projects",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            context.go('/aiRecommend');
+          },
+        ),
+      ),
       body: Center(
         child: SizedBox(
           width: 1100,

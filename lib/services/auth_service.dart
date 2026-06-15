@@ -111,6 +111,11 @@ class AuthService {
           'role',
           'student',
         );
+        await prefs.setString(
+          'name',
+          student.name,
+        );
+
         print("SAVED COLLEGE CODE: ${student.collegeCode}");
         if (!kIsWeb) {
           final fcmToken = await FirebaseMessaging.instance.getToken();
@@ -146,6 +151,15 @@ class AuthService {
           'role',
           user.role,
         );
+        await prefs.setString(
+          'name',
+          user.name,
+        );
+
+        await prefs.setString(
+          'email',
+          user.email,
+        );
         return user;
       }
     } else {
@@ -154,4 +168,28 @@ class AuthService {
       );
     }
   }
+  static Future<void> loadUserData() async {
+
+    final prefs =
+    await SharedPreferences.getInstance();
+
+    token =
+        prefs.getString('token');
+
+    userId =
+        prefs.getString('userId');
+
+    role =
+        prefs.getString('role');
+
+    name =
+        prefs.getString('name');
+
+    email =
+        prefs.getString('email');
+
+    studentId =
+        prefs.getInt('collegeCode');
+  }
 }
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../services/add_task_services.dart';
 import '../../services/create_time_plan_service.dart';
 import '../../services/get_time_plan_service.dart';
 
@@ -20,6 +21,7 @@ class _TimePlanScreenState extends State<TimePlanView> {
   String status = '';
   String planId = '';
   List<Map<String, dynamic>> tasks = [];
+  bool isSaving = false;
 
   @override
   void initState() {
@@ -32,20 +34,23 @@ class _TimePlanScreenState extends State<TimePlanView> {
       final data = await GetTimePlanService.getTimePlan(widget.projectId);
 
       if (data != null) {
-        print("Data received in UI: ${data.status} - Tasks count: ${data.tasks.length}");
+        print(
+            "Data received in UI: ${data.status} - Tasks count: ${data.tasks.length}");
 
-        status = data.status;
-        planId = data.id;
-        tasks = data.tasks.map((e) {
-          print("Model = $data");
-          print("Status = ${data?.status}");
-          print("Tasks = ${data?.tasks.length}");
-          return {
-            "title": e.title,
-            "description": e.description,
-            "deadline": DateTime.parse(e.deadline),
-          };
-        }).toList();
+        if (!mounted) return;
+
+        setState(() {
+          status = data.status;
+          planId = data.id;
+
+          tasks = data.tasks.map<Map<String, dynamic>>((e) {
+            return {
+              "title": e.title,
+              "description": e.description,
+              "deadline": DateTime.parse(e.deadline),
+            };
+          }).toList();
+        });
 
         print("Tasks mapped in state: ${tasks.length}");
       } else {
@@ -56,6 +61,7 @@ class _TimePlanScreenState extends State<TimePlanView> {
       print("Error in UI getTimePlan: $e");
     }
 
+    if (!mounted) return;
 
     setState(() {
       isLoading = false;
@@ -74,47 +80,51 @@ class _TimePlanScreenState extends State<TimePlanView> {
         title: const Text("Add Task", style: TextStyle(color: Colors.white)),
         content: StatefulBuilder(
           builder: (context, setDialogState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: "Task Title",
-                    labelStyle: TextStyle(color: Colors.white70),
-                  ),
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
+                        labelText: "Task Title",
+                        labelStyle: TextStyle(color: Colors.white70),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: descriptionController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
+                        labelText: "Description",
+                        labelStyle: TextStyle(color: Colors.white70),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final pickedDate = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2030),
+                        );
+                        if (pickedDate != null) {
+                          setDialogState(() {
+                            deadline = pickedDate;
+                          });
+                        }
+                      },
+                      child: Text(
+                        deadline == null
+                            ? "Choose Deadline"
+                            : deadline.toString().split(' ')[0],
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: descriptionController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    labelText: "Description",
-                    labelStyle: TextStyle(color: Colors.white70),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                ElevatedButton(
-                  onPressed: () async {
-                    final pickedDate = await showDatePicker(
-                      context: context,
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2030),
-                    );
-                    if (pickedDate != null) {
-                      setDialogState(() {
-                        deadline = pickedDate;
-                      });
-                    }
-                  },
-                  child: Text(
-                    deadline == null
-                        ? "Choose Deadline"
-                        : deadline.toString().split(' ')[0],
-                  ),
-                ),
-              ],
+              ),
             );
           },
         ),
@@ -124,20 +134,40 @@ class _TimePlanScreenState extends State<TimePlanView> {
             child: const Text("Cancel"),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (titleController.text.isEmpty ||
                   descriptionController.text.isEmpty ||
                   deadline == null) {
                 return;
               }
-              setState(() {
-                tasks.add({
-                  "title": titleController.text,
-                  "description": descriptionController.text,
-                  "deadline": deadline,
+
+              if (planId.isEmpty) {
+                setState(() {
+                  tasks.add({
+                    "title": titleController.text,
+                    "description": descriptionController.text,
+                    "deadline": deadline,
+                  });
                 });
-              });
-              Navigator.pop(context);
+
+                Navigator.of(context).pop();
+                return;
+              }
+
+              final success = await AddTaskService.addTask(
+                planId: planId,
+                title: titleController.text,
+                description: descriptionController.text,
+                deadline: deadline!.toIso8601String(),
+              );
+
+              if (!mounted) return;
+
+              Navigator.of(context).pop();
+
+              if (success) {
+                await getTimePlan();
+              }
             },
             child: const Text("Save"),
           ),
@@ -192,45 +222,52 @@ class _TimePlanScreenState extends State<TimePlanView> {
             ),
       body: Column(
         children: [
-          TableCalendar(
-            firstDay: DateTime(2024),
-            lastDay: DateTime(2035),
-            focusedDay: focusedDay,
-            selectedDayPredicate: (day) => isSameDay(selectedDay, day),
-            onDaySelected: (selected, focused) {
-              setState(() {
-                selectedDay = selected;
-                focusedDay = focused;
-              });
-            },
-            eventLoader: (day) {
-              return tasks
-                  .where((task) => isSameDay(task["deadline"] as DateTime, day))
-                  .toList();
-            },
-            calendarBuilders: CalendarBuilders(
-              defaultBuilder: (context, day, focusedDay) {
-                final hasTask =
-                    tasks.any((task) => isSameDay(task['deadline'], day));
-                if (hasTask) {
-                  return Container(
-                    margin: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                        color: Colors.teal, shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        '${day.day}',
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  );
-                }
-                return null;
-              },
+          Expanded(
+            child: SingleChildScrollView(
+              child: TableCalendar(
+                rowHeight: 42,
+                firstDay: DateTime(2024),
+                lastDay: DateTime(2035),
+                focusedDay: focusedDay,
+                selectedDayPredicate: (day) => isSameDay(selectedDay, day),
+                onDaySelected: (selected, focused) {
+                  setState(() {
+                    selectedDay = selected;
+                    focusedDay = focused;
+                  });
+                },
+                eventLoader: (day) {
+                  return tasks
+                      .where((task) =>
+                          isSameDay(task["deadline"] as DateTime, day))
+                      .toList();
+                },
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (context, day, focusedDay) {
+                    final hasTask =
+                        tasks.any((task) => isSameDay(task['deadline'], day));
+                    if (hasTask) {
+                      return Container(
+                        margin: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                            color: Colors.teal, shape: BoxShape.circle),
+                        child: Center(
+                          child: Text(
+                            '${day.day}',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    }
+                    return null;
+                  },
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 2),
           Expanded(
             child: selectedTasks.isEmpty
                 ? const Center(
@@ -279,31 +316,31 @@ class _TimePlanScreenState extends State<TimePlanView> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () async {
-                    try {
-                      final formattedTasks = tasks
-                          .map((t) => {
-                                "title": t["title"],
-                                "description": t["description"],
-                                "deadline": (t["deadline"] as DateTime)
-                                    .toIso8601String(),
-                              })
-                          .toList();
+                    if (planId.isNotEmpty) return;
 
-                      await CreateTimePlanService.createTimePlan(
-                        projectId: widget.projectId,
-                        tasks: formattedTasks,
-                      );
-                      await getTimePlan();
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Time Plan Submitted Successfully")),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.toString())),
-                      );
-                    }
+                    final formattedTasks = tasks
+                        .map((t) => {
+                              "title": t["title"],
+                              "description": t["description"],
+                              "deadline":
+                                  (t["deadline"] as DateTime).toIso8601String(),
+                            })
+                        .toList();
+
+                    await CreateTimePlanService.createTimePlan(
+                      projectId: widget.projectId,
+                      tasks: formattedTasks,
+                    );
+
+                    await getTimePlan();
+
+                    if (!mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Time Plan Submitted Successfully"),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.tealAccent,
