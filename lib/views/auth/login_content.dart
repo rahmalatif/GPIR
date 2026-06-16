@@ -70,7 +70,12 @@ class _LoginContentState extends State<LoginContent> {
           extra: user,
         );
         break;
-
+      case 'manager':
+        context.go(
+          '/managerDashboard',
+          extra: user,
+        );
+        break;
       case 'library':
         context.go(
           '/libraryDashboard',

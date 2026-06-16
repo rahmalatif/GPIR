@@ -188,7 +188,7 @@ class _ProjectDetailsMobileViewState extends State<ProjectDetailsMobileView> {
                   const SizedBox(height: 20),
                   _section(
                     "Teaching Assistant",
-                    ta['name'] ?? "Not Assigned",
+                    project['ta']?['name'] ?? "Not Assigned",
                   ),
                   const SizedBox(height: 20),
                   _wrapSection(

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../services/recommendation_service.dart';
 import '../../model/find_student.dart';
-import '../similarity/have_idea_mobile.dart'; // يمكنك استبداله أو تركه حسب مسارات مشروعك
+import '../similarity/have_idea_mobile.dart';
 
 class AiRecommendWeb extends StatefulWidget {
   const AiRecommendWeb({super.key});
@@ -109,8 +109,6 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
                   ),
                 ),
                 const SizedBox(height: 40),
-
-                // بناء التصميم بناءً على حجم الشاشة
                 isLargeScreen
                     ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,12 +133,11 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
     );
   }
 
-  // كارت تحديد حجم الفريق
   Widget _buildTeamSizeCard() {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF14172A), // خلفية أغمق قليلاً لتمييز الكروت بالويب
+        color: const Color(0xFF14172A),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.cyanAccent.withOpacity(0.3)),
       ),
@@ -248,7 +245,6 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
     );
   }
 
-  // كارت إضافة وعرض التخصصات
   Widget _buildSpecializationsCard() {
     return Container(
       padding: const EdgeInsets.all(24),
@@ -275,7 +271,6 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
                 ),
               ),
             ),
-          // تحديد حجم أقصى لقائمة التخصصات مع إمكانية السكرول الداخلي إذا زادت
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 300),
             child: ListView.builder(
@@ -393,7 +388,7 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
       SnackBar(
         content: Text(message, style: const TextStyle(fontSize: 14)),
         behavior: SnackBarBehavior.floating,
-        width: 400, // تحديد عرض الـ SnackBar بالويب لكي لا يأخذ كامل الشاشة بشكل سيء
+        width: 400,
       ),
     );
   }
@@ -402,15 +397,6 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
     final availableTracks = tracks
         .where((track) => !team.any((member) => member.specializationController.text == track))
         .toList();
-
-    String? currentValue;
-    if (availableTracks.contains(selectedTrack)) {
-      currentValue = selectedTrack;
-    } else if (availableTracks.isNotEmpty) {
-      currentValue = availableTracks.first;
-    } else {
-      currentValue = null;
-    }
 
     showDialog(
       context: context,
@@ -425,12 +411,13 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               content: SizedBox(
-                width: 400, // تحديد عرض الـ Dialog في الويب لتنسيق أفضل
+                width: 400,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      value: currentValue,
+                      value: null,
+                      hint: const Text("Select Track", style: TextStyle(color: Colors.grey)),
                       dropdownColor: const Color(0xFF14172A),
                       decoration: const InputDecoration(
                         labelText: "Track",
@@ -447,9 +434,28 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
                       }).toList(),
                       onChanged: (value) {
                         if (value == null) return;
-                        setDialogState(() {
+
+                        if (team.length >= teamSize) {
+                          _showSnackBar("You can't add more members than the team size");
+                          Navigator.pop(context);
+                          return;
+                        }
+
+                        bool exists = team.any((e) => e.specializationController.text == value);
+                        if (exists) {
+                          _showSnackBar("$value already added");
+                          Navigator.pop(context);
+                          return;
+                        }
+
+                        setState(() {
                           selectedTrack = value;
+                          TeamMember member = TeamMember();
+                          member.specializationController.text = value;
+                          team.add(member);
                         });
+
+                        Navigator.pop(context);
                       },
                     )
                   ],
@@ -459,35 +465,6 @@ class _AiRecommendWebState extends State<AiRecommendWeb> {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text("Cancel", style: TextStyle(color: Colors.grey, fontSize: 15)),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.cyanAccent,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  ),
-                  onPressed: () {
-                    if (team.length >= teamSize) {
-                      _showSnackBar("You can't add more members than the team size");
-                      return;
-                    }
-
-                    bool exists = team.any((e) => e.specializationController.text == selectedTrack);
-                    if (exists) {
-                      _showSnackBar("$selectedTrack already added");
-                      return;
-                    }
-
-                    setState(() {
-                      TeamMember member = TeamMember();
-                      member.specializationController.text = selectedTrack;
-                      team.add(member);
-                    });
-
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Add", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             );

@@ -42,15 +42,7 @@ class ProjectsRecommendationWebView extends StatelessWidget {
               const SizedBox(height: 30),
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      context.pop();
-                    },
-                  ),
+
                   const SizedBox(width: 10),
                   const Text(
                     "Recommended Projects",

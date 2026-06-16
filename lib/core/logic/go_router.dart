@@ -56,6 +56,8 @@ import '../../views/doctor/projects/reject_idea_responsive.dart';
 import '../../views/library/add_project/add_project_responsive.dart';
 import '../../views/library/all_project/all_project_responsive.dart';
 import '../../views/library/this_year_project/this_year_responsive.dart';
+import '../../views/manager/access_settings_manager.dart';
+import '../../views/manager/manager_dashboard.dart';
 import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
 import '../../views/model/library_project.dart';
@@ -263,7 +265,7 @@ final GoRouter appRouter = GoRouter(
         return TimePlanView(projectId: projectId);
       },
     ),
-//=========================TA=============================
+    //=========================TA=============================
 
     GoRoute(
       path: '/taIdeaDetails',
@@ -285,7 +287,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-// ================= DOCTOR =================
+    // ================= DOCTOR =================
 
     GoRoute(
       path: '/drPendingIdeas',
@@ -329,7 +331,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => JoinStudentView(),
     ),
 
-// ================= ADMIN =================
+    // ================= ADMIN =================
 
     GoRoute(
       path: '/adminPendingIdeas',
@@ -358,7 +360,7 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-// ================= LIBRARY =================
+    // ================= LIBRARY =================
 
     GoRoute(
       path: '/libraryProjectDetails',
@@ -377,7 +379,17 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-// ================= NAVIGATION =================
+    // ================= MANAGER =================
+    GoRoute(
+      path: '/managerDashboard',
+      builder: (context, state) => const ManagerDashboardView(),
+    ),
+    GoRoute(
+      path: '/accessSettings',
+      builder: (context, state) => const AccessSettingsView(),
+    ),
+
+    // ================= NAVIGATION =================
 
     ShellRoute(
       builder: (context, state, child) => TANavBar(child: child),
@@ -544,7 +556,12 @@ void routeByRole(
         extra: user,
       );
       break;
-
+    case 'manager':
+      context.go(
+        '/managerDashboard',
+        extra: user,
+      );
+      break;
     default:
       context.go('/login');
   }

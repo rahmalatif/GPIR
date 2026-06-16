@@ -60,19 +60,17 @@ class _CurrentYearProjectsViewState extends State<CurrentYearProjectsView> {
 
               final projects = snapshot.data ?? [];
 
-              return ListView.separated(
+              return ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: projects.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 20),
                 itemBuilder: (context, index) {
                   final project = projects[index];
 
                   return Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       color: const Color(0xFF1A1D2E),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,26 +80,7 @@ class _CurrentYearProjectsViewState extends State<CurrentYearProjectsView> {
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          "Code: ${project["project_code"]}",
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          "Doctor: ${project["doctor"]}",
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 12,
                         ),
                         ElevatedButton.icon(
                           onPressed: () async {

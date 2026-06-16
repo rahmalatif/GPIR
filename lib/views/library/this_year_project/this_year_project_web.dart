@@ -84,7 +84,8 @@ class _CurrentYearProjectsWebViewState
                             ElevatedButton.icon(
                               onPressed: () async {
                                 try {
-                                  await DocumentationReminderService.sendReminder(
+                                  await DocumentationReminderService
+                                      .sendReminder(
                                     project["_id"],
                                   );
 
@@ -111,7 +112,8 @@ class _CurrentYearProjectsWebViewState
                               },
                               icon: const Icon(Icons.notifications),
                               label: const Text("Send Reminder"),
-                            )                          ],
+                            )
+                          ],
                         ),
                       );
                     },

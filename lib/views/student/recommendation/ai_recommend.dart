@@ -243,7 +243,7 @@ class _AiRecommendMobileState extends State<AiRecommendMobile> {
                         ),
                         trailing: IconButton(
                           icon:
-                              const Icon(Icons.delete, color: Colors.redAccent),
+                          const Icon(Icons.delete, color: Colors.redAccent),
                           onPressed: () {
                             setState(() {
                               team[index].specializationController.dispose();
@@ -307,7 +307,7 @@ class _AiRecommendMobileState extends State<AiRecommendMobile> {
 
                           final tracksList = getSelectedTracks();
                           final ideas =
-                              await RecommendationService.recommendIdeas(
+                          await RecommendationService.recommendIdeas(
                             specializations: tracksList,
                           );
 
@@ -340,19 +340,10 @@ class _AiRecommendMobileState extends State<AiRecommendMobile> {
         .where(
           (track) => !team.any(
             (member) => member.specializationController.text == track,
-          ),
-        )
+      ),
+    )
         .toList();
 
-    String? currentValue;
-
-    if (availableTracks.contains(selectedTrack)) {
-      currentValue = selectedTrack;
-    } else if (availableTracks.isNotEmpty) {
-      currentValue = availableTracks.first;
-    } else {
-      currentValue = null;
-    }
     showDialog(
       context: context,
       builder: (context) {
@@ -368,7 +359,8 @@ class _AiRecommendMobileState extends State<AiRecommendMobile> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   DropdownButtonFormField<String>(
-                    value: currentValue,
+                    value: null,
+                    hint: const Text("Select Track", style: TextStyle(color: Colors.grey)),
                     dropdownColor: const Color(0xFF0D0F1A),
                     decoration: const InputDecoration(
                       labelText: "Track",
@@ -391,9 +383,30 @@ class _AiRecommendMobileState extends State<AiRecommendMobile> {
                     onChanged: (value) {
                       if (value == null) return;
 
-                      setDialogState(() {
+                      if (team.length >= teamSize) {
+                        _showSnackBar("You can't add more members than the team size");
+                        Navigator.pop(context);
+                        return;
+                      }
+
+                      bool exists = team.any(
+                            (e) => e.specializationController.text == value,
+                      );
+
+                      if (exists) {
+                        _showSnackBar("$value already added");
+                        Navigator.pop(context);
+                        return;
+                      }
+
+                      setState(() {
                         selectedTrack = value;
+                        TeamMember member = TeamMember();
+                        member.specializationController.text = value;
+                        team.add(member);
                       });
+
+                      Navigator.pop(context);
                     },
                   )
                 ],
@@ -403,37 +416,6 @@ class _AiRecommendMobileState extends State<AiRecommendMobile> {
                   onPressed: () => Navigator.pop(context),
                   child: const Text("Cancel",
                       style: TextStyle(color: Colors.grey)),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.cyanAccent,
-                    foregroundColor: Colors.black,
-                  ),
-                  onPressed: () {
-                    if (team.length >= teamSize) {
-                      _showSnackBar(
-                          "You can't add more members than the team size");
-                      return;
-                    }
-
-                    bool exists = team.any(
-                      (e) => e.specializationController.text == selectedTrack,
-                    );
-
-                    if (exists) {
-                      _showSnackBar("$selectedTrack already added");
-                      return;
-                    }
-
-                    setState(() {
-                      TeamMember member = TeamMember();
-                      member.specializationController.text = selectedTrack;
-                      team.add(member);
-                    });
-
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Add"),
                 ),
               ],
             );
