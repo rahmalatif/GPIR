@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../services/access_settings_manager.dart';
+
 class AccessSettingsView extends StatefulWidget {
   const AccessSettingsView({super.key});
 
@@ -9,26 +11,47 @@ class AccessSettingsView extends StatefulWidget {
 
 class _AccessSettingsViewState extends State<AccessSettingsView> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _minTeamController =
+  TextEditingController();
 
-  final TextEditingController _doctorsController = TextEditingController();
-  final TextEditingController _teamsController = TextEditingController();
-  final TextEditingController _studentsController = TextEditingController();
-  final TextEditingController _deadlineController = TextEditingController();
+  final TextEditingController _maxTeamController =
+  TextEditingController();
 
+  final TextEditingController _deadlineController =
+  TextEditingController();
+
+  @override
   @override
   void initState() {
     super.initState();
-    _doctorsController.text = "5";
-    _teamsController.text = "10";
-    _studentsController.text = "6";
-    _deadlineController.text = "2026-07-01";
-  }
 
+    loadSettings();
+  }
+  Future<void> loadSettings() async {
+    try {
+      final settings =
+      await SystemSettingsService.getSettings();
+
+      _minTeamController.text =
+          settings["min_team_size"].toString();
+
+      _maxTeamController.text =
+          settings["max_team_size"].toString();
+
+      _deadlineController.text =
+          settings["documentation_deadline"]
+              .toString()
+              .split('T')
+              .first;
+
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
   @override
   void dispose() {
-    _doctorsController.dispose();
-    _teamsController.dispose();
-    _studentsController.dispose();
+
     _deadlineController.dispose();
     super.dispose();
   }
@@ -88,25 +111,32 @@ class _AccessSettingsViewState extends State<AccessSettingsView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildInputField(
-                label: "Max Doctors Count",
-                controller: _doctorsController,
-                icon: Icons.person_rounded,
-                keyboardType: TextInputType.number,
-              ),
+
               const SizedBox(height: 20),
               _buildInputField(
-                label: "Max Teams Count",
-                controller: _teamsController,
-                icon: Icons.group_work_rounded,
+                label: "Min Team Size",
+                controller: _minTeamController,
+                icon: Icons.group,
                 keyboardType: TextInputType.number,
               ),
+
               const SizedBox(height: 20),
+
               _buildInputField(
-                label: "Max Students per Team",
-                controller: _studentsController,
-                icon: Icons.groups_rounded,
+                label: "Max Team Size",
+                controller: _maxTeamController,
+                icon: Icons.groups,
                 keyboardType: TextInputType.number,
+              ),
+
+              const SizedBox(height: 20),
+
+              _buildInputField(
+                label: "Documentation Deadline",
+                controller: _deadlineController,
+                icon: Icons.calendar_month_rounded,
+                readOnly: true,
+                onTap: () => _selectDate(context),
               ),
               const SizedBox(height: 20),
               _buildInputField(
@@ -121,9 +151,42 @@ class _AccessSettingsViewState extends State<AccessSettingsView> {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.of(context).pop();
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) {
+                      return;
+                    }
+
+                    try {
+                      await SystemSettingsService.updateSettings(
+                        minTeamSize: int.parse(
+                          _minTeamController.text,
+                        ),
+                        maxTeamSize: int.parse(
+                          _maxTeamController.text,
+                        ),
+                        documentationDeadline:
+                        _deadlineController.text,
+                      );
+
+                      if (!mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Settings updated successfully",
+                          ),
+                        ),
+                      );
+                    } catch (e) {
+                      if (!mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            e.toString(),
+                          ),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(

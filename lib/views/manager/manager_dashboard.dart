@@ -137,6 +137,7 @@ class _ManagerDashboardViewState extends State<ManagerDashboardView> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+
                                 ],
                               ),
                               Icon(
@@ -154,7 +155,18 @@ class _ManagerDashboardViewState extends State<ManagerDashboardView> {
                 const SizedBox(height: 40),
                 Column(
                   children: [
-
+                    _buttons(
+                      title: "Manage Staff",
+                      onTap: () {
+                        context.push('/manageStaff');
+                      },
+                    ),
+                    _buttons(
+                      title: "View TAs Projects",
+                      onTap: () {
+                        context.push('/manageTas');
+                      },
+                    ),
                     const SizedBox(height: 12),
                     _buttons(
                       title: "View All Projects",

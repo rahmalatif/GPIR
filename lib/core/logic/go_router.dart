@@ -21,6 +21,7 @@ import 'package:graduation_project_recommender/views/library/dashboard/library_d
 import 'package:graduation_project_recommender/views/library/profile/library_profile.dart';
 import 'package:graduation_project_recommender/views/library/all_project/library_project_details.dart';
 import 'package:graduation_project_recommender/views/library/profile/library_profile_responsive.dart';
+import 'package:graduation_project_recommender/views/manager/manager_doctor_view.dart';
 import 'package:graduation_project_recommender/views/model/library.dart';
 import 'package:graduation_project_recommender/views/model/student.dart';
 import 'package:graduation_project_recommender/views/notification/notifications_responsive.dart';
@@ -57,6 +58,7 @@ import '../../views/library/add_project/add_project_responsive.dart';
 import '../../views/library/all_project/all_project_responsive.dart';
 import '../../views/library/this_year_project/this_year_responsive.dart';
 import '../../views/manager/access_settings_manager.dart';
+import '../../views/manager/manage_tas.dart';
 import '../../views/manager/manager_dashboard.dart';
 import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
@@ -148,6 +150,14 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
+    GoRoute(
+      path: '/manageStaff',
+      builder: (context, state) => const ManageDoctorView(),
+    ),
+    GoRoute(
+      path: '/manageTas',
+      builder: (context, state) => const ManageTasView(),
+    ),
     GoRoute(
       path: '/similarityCheck',
       builder: (context, state) {
