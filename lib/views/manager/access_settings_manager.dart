@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../services/access_settings_manager.dart';
 
@@ -131,13 +132,7 @@ class _AccessSettingsViewState extends State<AccessSettingsView> {
 
               const SizedBox(height: 20),
 
-              _buildInputField(
-                label: "Documentation Deadline",
-                controller: _deadlineController,
-                icon: Icons.calendar_month_rounded,
-                readOnly: true,
-                onTap: () => _selectDate(context),
-              ),
+
               const SizedBox(height: 20),
               _buildInputField(
                 label: "Documentation Deadline",
@@ -169,7 +164,7 @@ class _AccessSettingsViewState extends State<AccessSettingsView> {
                       );
 
                       if (!mounted) return;
-
+context.go('/managerDashboard');
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(

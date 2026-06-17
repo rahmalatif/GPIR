@@ -60,6 +60,7 @@ import '../../views/library/this_year_project/this_year_responsive.dart';
 import '../../views/manager/access_settings_manager.dart';
 import '../../views/manager/manage_tas.dart';
 import '../../views/manager/manager_dashboard.dart';
+import '../../views/manager/manager_profile.dart';
 import '../../views/model/DR_project.dart';
 import '../../views/model/admin_project.dart';
 import '../../views/model/library_project.dart';
@@ -89,6 +90,7 @@ import '../../views/teacher_assistant/timePlan/ta_time_plan.dart';
 import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
 import '../design/library_nav_bar.dart';
+import '../design/manager_nav_bar.dart';
 import '../design/nav_Bar.dart';
 import '../design/ta_nav_bar.dart';
 
@@ -390,17 +392,34 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // ================= MANAGER =================
-    GoRoute(
-      path: '/managerDashboard',
-      builder: (context, state) => const ManagerDashboardView(),
-    ),
+
     GoRoute(
       path: '/accessSettings',
       builder: (context, state) => const AccessSettingsView(),
     ),
 
     // ================= NAVIGATION =================
+    ShellRoute(
+      builder: (context, state, child) {
+        return ManagerNavBar(
+          child: child,
+        );
+      },
+      routes: [
+        GoRoute(
+          path: '/managerDashboard',
+          builder: (context, state) =>
+          const ManagerDashboardView(),
+        ),
 
+
+        GoRoute(
+          path: '/managerProfile',
+          builder: (context, state) =>
+          const ManagerProfileView(),
+        ),
+      ],
+    ),
     ShellRoute(
       builder: (context, state, child) => TANavBar(child: child),
       routes: [
@@ -453,6 +472,7 @@ final GoRouter appRouter = GoRouter(
     ),
 
     ShellRoute(
+
         builder: (context, state, child) => AdminNavBar(child: child),
         routes: [
           GoRoute(

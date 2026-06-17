@@ -161,19 +161,14 @@ class _ManagerDashboardViewState extends State<ManagerDashboardView> {
                         context.push('/manageStaff');
                       },
                     ),
+                    SizedBox(height: 10,),
                     _buttons(
                       title: "View TAs Projects",
                       onTap: () {
                         context.push('/manageTas');
                       },
                     ),
-                    const SizedBox(height: 12),
-                    _buttons(
-                      title: "View All Projects",
-                      onTap: () {
-                        context.go('/managerAllProjects');
-                      },
-                    ),
+
                   ],
                 ),
               ],
