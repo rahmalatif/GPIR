@@ -227,6 +227,8 @@ class _LoginContentState extends State<LoginContent> {
                 } else {
                   final user = result as UserModel;
 
+                  AuthService.currentUser = user;
+
                   navigateBasedOnRole(
                     context,
                     user,

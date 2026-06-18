@@ -235,6 +235,11 @@ final GoRouter appRouter = GoRouter(
       path: '/studentNotifications',
       builder: (context, state) => const StudentNotificationsResponsive(),
     ),
+    GoRoute(
+      path: '/taNotifications',
+      builder: (context, state) => const StudentNotificationsResponsive(),
+    ),
+
 
     GoRoute(
       path: '/studentProfile',
@@ -408,15 +413,11 @@ final GoRouter appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/managerDashboard',
-          builder: (context, state) =>
-          const ManagerDashboardView(),
+          builder: (context, state) => const ManagerDashboardView(),
         ),
-
-
         GoRoute(
           path: '/managerProfile',
-          builder: (context, state) =>
-          const ManagerProfileView(),
+          builder: (context, state) => const ManagerProfileView(),
         ),
       ],
     ),
@@ -426,11 +427,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/taDashboard',
           builder: (context, state) {
-            final user = state.extra as UserModel;
-
-            return TADashboardResponsive(
-              user: user,
-            );
+            return const TADashboardResponsive();
           },
         ),
         GoRoute(
@@ -472,7 +469,6 @@ final GoRouter appRouter = GoRouter(
     ),
 
     ShellRoute(
-
         builder: (context, state, child) => AdminNavBar(child: child),
         routes: [
           GoRoute(

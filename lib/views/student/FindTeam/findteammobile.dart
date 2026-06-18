@@ -65,7 +65,7 @@ class _FindStudentMobileViewState extends State<FindStudentMobileView> {
       backgroundColor: const Color(0xFF0D0F1A),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D0F1A),
-        title: Text(
+        title: const Text(
           'Find Teammates',
           style: TextStyle(
             fontSize: 14,
@@ -116,105 +116,124 @@ class _FindStudentMobileViewState extends State<FindStudentMobileView> {
             onPressed: () {
               context.go('/studentDashboard');
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: Colors.white,
             )),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  if (!isLookingForTeam)
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          context.go('/createStudent');
-                        },
-                        icon: const Icon(Icons.person_add),
-                        label: const Text('Join Search'),
-                      ),
-                    ),
-                  const SizedBox(width: 10),
-                  if (isLookingForTeam)
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          try {
-                            await StopLookingForTeamService.stopLooking();
+        child: RefreshIndicator(
+          color: const Color(0xFF00E5FF),
+          onRefresh: () async {
+            final studentsData = FindStudentService.getStudents();
+            final invitationsData = GetInvitationsService.getInvitations();
 
-                            await getStudents();
-
-                            setState(() {
-                              isLookingForTeam = false;
-                            });
-
-                            if (!mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Removed from available students",
-                                ),
-                              ),
-                            );
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(e.toString()),
-                              ),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
+            try {
+              students = await studentsData;
+              isLookingForTeam = students.any(
+                    (student) => student.id == AuthService.userId,
+              );
+              await invitationsData;
+              setState(() {});
+            } catch (e) {
+              debugPrint(e.toString());
+            }
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    if (!isLookingForTeam)
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            context.go('/createStudent');
+                          },
+                          icon: const Icon(Icons.person_add),
+                          label: const Text('Join Search'),
                         ),
-                        icon: const Icon(Icons.close),
-                        label: const Text('Stop Search'),
                       ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 25),
-              const Text(
-                'Available Students',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 10),
-              isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: students.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 16),
-                      itemBuilder: (context, index) {
-                        final student = students[index];
+                    const SizedBox(width: 10),
+                    if (isLookingForTeam)
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            try {
+                              await StopLookingForTeamService.stopLooking();
 
-                        return _buildStudentCard(
-                          id: student.id,
-                          name: student.name,
-                          specialization: student.specialization,
-                          phone: student.phone,
-                          collegeCode: student.collegeCode.toString(),
-                        );
-                      },
-                    ),
-              const SizedBox(height: 25),
-              _buildRegisterBanner(),
-              const SizedBox(height: 20),
-            ],
+                              await getStudents();
+
+                              setState(() {
+                                isLookingForTeam = false;
+                              });
+
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Removed from available students",
+                                  ),
+                                ),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          icon: const Icon(Icons.close),
+                          label: const Text('Stop Search'),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 25),
+                const Text(
+                  'Available Students',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                isLoading
+                    ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+                    : ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: students.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 16),
+                  itemBuilder: (context, index) {
+                    final student = students[index];
+
+                    return _buildStudentCard(
+                      id: student.id,
+                      name: student.name,
+                      specialization: student.specialization,
+                      phone: student.phone,
+                      collegeCode: student.collegeCode.toString(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 25),
+                _buildRegisterBanner(),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),

@@ -7,11 +7,9 @@ import 'ta_dashboard_mobile.dart';
 import 'ta_dashboard_web.dart';
 
 class TADashboardResponsive extends StatelessWidget {
-  final UserModel user;
 
   const TADashboardResponsive({
     super.key,
-    required this.user,
   });
 
   @override
@@ -19,7 +17,7 @@ class TADashboardResponsive extends StatelessWidget {
     return ResponsiveLayout(
       mobile: const TADashboardMobileView(),
       web: TADashboardWebView(
-        user: user,
+
       ),
     );
   }

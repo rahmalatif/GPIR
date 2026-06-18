@@ -224,46 +224,39 @@ class _TADashboardMobileViewState extends State<TADashboardMobileView> {
     BuildContext context,
   ) {
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          context.push(
-            '/taProjects',
-          );
-        },
-        child: Container(
-          height: 100,
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1A1D2E),
-            borderRadius: BorderRadius.circular(
-              18,
+      child: Container(
+        height: 100,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1D2E),
+          borderRadius: BorderRadius.circular(
+            18,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              number,
+              style: const TextStyle(
+                color: Colors.cyan,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                number,
-                style: const TextStyle(
-                  color: Colors.cyan,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              projectType,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                projectType,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

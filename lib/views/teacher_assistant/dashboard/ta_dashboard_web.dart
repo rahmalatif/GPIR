@@ -8,11 +8,9 @@ import '../../../services/ta_dashboard_services.dart';
 import '../../model/user_model.dart';
 
 class TADashboardWebView extends StatefulWidget {
-  final UserModel? user;
 
   const TADashboardWebView({
     super.key,
-    required this.user,
   });
 
   @override

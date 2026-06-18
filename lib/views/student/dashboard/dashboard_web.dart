@@ -112,44 +112,55 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
 
           final hasProject = project.isNotEmpty;
 
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1200),
-              child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      greeting(student['name'] ?? "Student"),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w600,
+          return RefreshIndicator(
+            color: const Color(0xff4699A8),
+            onRefresh: () async {
+              final newData = DashboardService.getDashboard();
+              setState(() {
+                dashboardFuture = newData;
+              });
+              await newData;
+            },
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        greeting(student['name'] ?? "Student"),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 34,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      today,
-                      style:
-                          const TextStyle(color: Colors.white70, fontSize: 20),
-                    ),
-                    const SizedBox(height: 35),
-                    buildStatusCard(project),
-                    const SizedBox(height: 30),
-                    if (!hasProject) buildOptions(),
-                    if (!hasProject) const SizedBox(height: 35),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: buildTeamCard(team, context)),
-                        const SizedBox(width: 20),
-                        Expanded(child: buildSupervisorCard(supervisor, ta)),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                  ],
+                      const SizedBox(height: 10),
+                      Text(
+                        today,
+                        style:
+                        const TextStyle(color: Colors.white70, fontSize: 20),
+                      ),
+                      const SizedBox(height: 35),
+                      buildStatusCard(project),
+                      const SizedBox(height: 30),
+                      if (!hasProject) buildOptions(),
+                      if (!hasProject) const SizedBox(height: 35),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: buildTeamCard(team, context)),
+                          const SizedBox(width: 20),
+                          Expanded(child: buildSupervisorCard(supervisor, ta)),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -191,15 +202,15 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff4699A8),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
+                  const EdgeInsets.symmetric(horizontal: 30, vertical: 18),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: hasProject
                     ? () async {
-                        await context.push('/studentProject');
-                        _refreshDashboard();
-                      }
+                  await context.push('/studentProject');
+                  _refreshDashboard();
+                }
                     : null,
                 child: const Text("View Details",
                     style: TextStyle(color: Colors.white, fontSize: 16)),
@@ -213,32 +224,32 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
   }
 
   Widget buildOptions() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-              child: buildOptionCard(
-                  image: 'assets/png/idea.png',
-                  text: "Have an Idea",
-                  onTap: haveAnIdeaOnTap)),
-          const SizedBox(width: 40),
-          Expanded(
-              child: buildOptionCard(
-                  image: 'assets/png/ai.png',
-                  text: "Recommend Idea",
-                  onTap: aiRecommendIdea)),
-          const SizedBox(width: 16),
-          Expanded(
-              child: buildOptionCard(
-                  image: 'assets/png/team.jpg',
-                  text: "Find Team",
-                  onTap: findTeam)),
-        ],
-      );
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Expanded(
+          child: buildOptionCard(
+              image: 'assets/png/idea.png',
+              text: "Have an Idea",
+              onTap: haveAnIdeaOnTap)),
+      const SizedBox(width: 40),
+      Expanded(
+          child: buildOptionCard(
+              image: 'assets/png/ai.png',
+              text: "Recommend Idea",
+              onTap: aiRecommendIdea)),
+      const SizedBox(width: 16),
+      Expanded(
+          child: buildOptionCard(
+              image: 'assets/png/team.jpg',
+              text: "Find Team",
+              onTap: findTeam)),
+    ],
+  );
 
   Widget buildOptionCard(
       {required String image,
-      required String text,
-      required VoidCallback onTap}) {
+        required String text,
+        required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -276,18 +287,18 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
                   style: TextStyle(fontSize: 18, color: Colors.white)),
               const SizedBox(height: 12),
               ...members.map((m) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Row(
-                      children: [
-                        Text(m['name'] ?? "",
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 16)),
-                        const Spacer(),
-                        Text(m['specialization'] ?? "",
-                            style: const TextStyle(color: Colors.grey)),
-                      ],
-                    ),
-                  )),
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    Text(m['name'] ?? "",
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 16)),
+                    const Spacer(),
+                    Text(m['specialization'] ?? "",
+                        style: const TextStyle(color: Colors.grey)),
+                  ],
+                ),
+              )),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -360,7 +371,7 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
                     try {
                       setState(() {
                         dashboardFuture = null;
-                      }); // وضع التحميل فوراً
+                      });
                       final success = await LeaveTeamService.leaveTeam(
                           newLeaderId: selectedLeaderId);
 
@@ -372,7 +383,6 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
                               content: Text("Leader changed successfully"),
                               backgroundColor: Colors.green),
                         );
-                        // تأخير نصف ثانية لضمان تحديث الـ Database على السيرفر
                         await Future.delayed(const Duration(milliseconds: 500));
                         _refreshDashboard();
                       } else {
@@ -402,7 +412,7 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
         return AlertDialog(
           backgroundColor: const Color(0xFF1A1D2E),
           title:
-              const Text("Leave Team", style: TextStyle(color: Colors.white)),
+          const Text("Leave Team", style: TextStyle(color: Colors.white)),
           content: const Text("Are you sure you want to leave the team?",
               style: TextStyle(color: Colors.grey)),
           actions: [
@@ -417,7 +427,7 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
                 try {
                   setState(() {
                     dashboardFuture = null;
-                  }); // وضع التحميل فوراً
+                  });
                   final success = await LeaveTeamService.leaveTeam();
 
                   if (!context.mounted) return;
@@ -428,7 +438,6 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
                           content: Text("Left team successfully"),
                           backgroundColor: Colors.green),
                     );
-                    // تأخير نصف ثانية لضمان تحديث الـ Database على السيرفر لجلب الحالة والبروجكت الجديد
                     await Future.delayed(const Duration(milliseconds: 500));
                     _refreshDashboard();
                   } else {
@@ -475,7 +484,7 @@ class _StudentDashboardWebState extends State<StudentDashboardWeb> {
               Expanded(
                   child: Text(supervisor['name'] ?? "Not Assigned",
                       style:
-                          const TextStyle(color: Colors.grey, fontSize: 16))),
+                      const TextStyle(color: Colors.grey, fontSize: 16))),
               CircleAvatar(
                 backgroundColor: const Color(0xff4699A8),
                 child: IconButton(

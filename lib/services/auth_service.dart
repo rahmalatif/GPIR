@@ -8,6 +8,7 @@ import '../views/model/student.dart';
 import '../views/model/user_model.dart';
 
 class AuthService {
+  static UserModel? currentUser;
   static String? token;
   static String? email;
   static String? name;
@@ -58,6 +59,7 @@ class AuthService {
     required String role,
     String? email,
     int? id,
+
   }) async {
     final response = await ApiService.login(
       password: password,

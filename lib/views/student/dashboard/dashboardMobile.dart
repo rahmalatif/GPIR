@@ -83,7 +83,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
       body: FutureBuilder(
         future: dashboardFuture,
         builder: (context, snapshot) {
-          if (dashboardFuture == null || snapshot.connectionState == ConnectionState.waiting) {
+          if (dashboardFuture == null ||
+              snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(
                 color: Color(0xff4699A8),
@@ -91,7 +92,9 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
             );
           }
 
-          if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+          if (snapshot.hasError ||
+              !snapshot.hasData ||
+              snapshot.data!.isEmpty) {
             return const Center(
               child: Text(
                 "No dashboard data",
@@ -114,8 +117,12 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
           return RefreshIndicator(
             color: const Color(0xff4699A8),
             onRefresh: () async {
-              _refreshDashboard();
-              await dashboardFuture;
+              // التعديل هنا: بنعمل ريفرش ناعم من غير ما نخلي الـ Future بـ null في النص
+              final newData = DashboardService.getDashboard();
+              setState(() {
+                dashboardFuture = newData;
+              });
+              await newData;
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -125,10 +132,15 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                 children: [
                   Text(
                     greeting(student['name'] ?? "Student"),
-                    style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 8),
-                  Text(today, style: const TextStyle(color: Colors.white70, fontSize: 16)),
+                  Text(today,
+                      style:
+                          const TextStyle(color: Colors.white70, fontSize: 16)),
                   const SizedBox(height: 25),
                   buildStatusCard(project),
                   const SizedBox(height: 20),
@@ -164,7 +176,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
         children: [
           Text(
             hasProject ? project['title'] ?? "" : "No project submitted yet",
-            style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 15),
           Column(
@@ -184,15 +197,17 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xff4699A8),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                       onPressed: hasProject
                           ? () async {
-                        await context.push('/studentProject');
-                        _refreshDashboard();
-                      }
+                              await context.push('/studentProject');
+                              _refreshDashboard();
+                            }
                           : null,
-                      child: const Text("View Details", style: TextStyle(color: Colors.white, fontSize: 16)),
+                      child: const Text("View Details",
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -201,16 +216,20 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xff4699A8),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                       onPressed: hasProject
                           ? () async {
-                        await context.push('/timePlan', extra: {'projectId': project['_id']});
-                        _refreshDashboard();
-                      }
+                              await context.push('/timePlan',
+                                  extra: {'projectId': project['_id']});
+                              _refreshDashboard();
+                            }
                           : null,
-                      icon: const Icon(Icons.calendar_month, color: Colors.white, size: 18),
-                      label: const Text("TimePlan", style: TextStyle(color: Colors.white, fontSize: 16)),
+                      icon: const Icon(Icons.calendar_month,
+                          color: Colors.white, size: 18),
+                      label: const Text("TimePlan",
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                   ),
                 ],
@@ -223,17 +242,32 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
   }
 
   Widget buildOptions() => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Expanded(child: buildOptionCard(image: 'assets/png/idea.png', text: "Have an Idea", onTap: haveAnIdeaOnTap)),
-      const SizedBox(width: 16),
-      Expanded(child: buildOptionCard(image: 'assets/png/ai.png', text: "Recommend Idea", onTap: aiRecommendIdea)),
-      const SizedBox(width: 16),
-      Expanded(child: buildOptionCard(image: 'assets/png/team.jpg', text: "Find Team", onTap: findTeam)),
-    ],
-  );
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+              child: buildOptionCard(
+                  image: 'assets/png/idea.png',
+                  text: "Have an Idea",
+                  onTap: haveAnIdeaOnTap)),
+          const SizedBox(width: 16),
+          Expanded(
+              child: buildOptionCard(
+                  image: 'assets/png/ai.png',
+                  text: "Recommend Idea",
+                  onTap: aiRecommendIdea)),
+          const SizedBox(width: 16),
+          Expanded(
+              child: buildOptionCard(
+                  image: 'assets/png/team.jpg',
+                  text: "Find Team",
+                  onTap: findTeam)),
+        ],
+      );
 
-  Widget buildOptionCard({required String image, required String text, required VoidCallback onTap}) {
+  Widget buildOptionCard(
+      {required String image,
+      required String text,
+      required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -248,7 +282,9 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
           children: [
             SizedBox(width: 50, height: 50, child: AppImage(image: image)),
             const SizedBox(height: 12),
-            Text(text, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 16)),
+            Text(text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, fontSize: 16)),
           ],
         ),
       ),
@@ -268,17 +304,26 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Team Members", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+              const Text("Team Members",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
               const SizedBox(height: 12),
               ...members.map((m) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    Expanded(child: Text(m['name'] ?? "", style: const TextStyle(color: Colors.white, fontSize: 15))),
-                    Text(m['specialization'] ?? "", style: const TextStyle(color: Colors.grey, fontSize: 14)),
-                  ],
-                ),
-              )),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Text(m['name'] ?? "",
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 15))),
+                        Text(m['specialization'] ?? "",
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 14)),
+                      ],
+                    ),
+                  )),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
@@ -286,11 +331,14 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                   onPressed: () => showLeaveDialog(context, team),
                   icon: const Icon(Icons.logout, color: Colors.white, size: 18),
-                  label: const Text("Leave Team", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  label: const Text("Leave Team",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -304,20 +352,30 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: const Color(0xff1D1D2E), borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+          color: const Color(0xff1D1D2E),
+          borderRadius: BorderRadius.circular(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Your Supervisor', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)),
+          const Text('Your Supervisor',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500)),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: Text(supervisor['name'] ?? "Not Assigned", style: const TextStyle(color: Colors.grey, fontSize: 15))),
+              Expanded(
+                  child: Text(supervisor['name'] ?? "Not Assigned",
+                      style:
+                          const TextStyle(color: Colors.grey, fontSize: 15))),
               CircleAvatar(
                 radius: 18,
                 backgroundColor: const Color(0xff4699A8),
                 child: IconButton(
-                    icon: const Icon(Icons.chat_bubble, color: Colors.white, size: 16),
+                    icon: const Icon(Icons.chat_bubble,
+                        color: Colors.white, size: 16),
                     onPressed: () async {
                       await Navigator.push(
                         context,
@@ -336,16 +394,24 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
             ],
           ),
           const SizedBox(height: 25),
-          const Text('Teaching Assistant', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)),
+          const Text('Teaching Assistant',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500)),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: Text(ta['name'] ?? "Not Assigned", style: const TextStyle(color: Colors.grey, fontSize: 15))),
+              Expanded(
+                  child: Text(ta['name'] ?? "Not Assigned",
+                      style:
+                          const TextStyle(color: Colors.grey, fontSize: 15))),
               CircleAvatar(
                 radius: 18,
                 backgroundColor: const Color(0xff4699A8),
                 child: IconButton(
-                  icon: const Icon(Icons.chat_bubble, color: Colors.white, size: 16),
+                  icon: const Icon(Icons.chat_bubble,
+                      color: Colors.white, size: 16),
                   onPressed: () async {
                     await Navigator.push(
                       context,
@@ -375,26 +441,33 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
       builder: (dialogContext) {
         return AlertDialog(
           backgroundColor: const Color(0xFF1A1D2E),
-          title: const Text("Leave Team", style: TextStyle(color: Colors.white)),
-          content: const Text("Are you sure you want to leave the team?", style: TextStyle(color: Colors.grey)),
+          title:
+              const Text("Leave Team", style: TextStyle(color: Colors.white)),
+          content: const Text("Are you sure you want to leave the team?",
+              style: TextStyle(color: Colors.grey)),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text("Cancel")),
+            TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: const Text("Cancel")),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               onPressed: () async {
                 Navigator.pop(dialogContext);
 
                 try {
-                  setState(() { dashboardFuture = null; }); // وضع التحميل فوراً
+                  setState(() {
+                    dashboardFuture = null;
+                  });
                   final success = await LeaveTeamService.leaveTeam();
 
                   if (!context.mounted) return;
 
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Left team successfully"), backgroundColor: Colors.green),
+                      const SnackBar(
+                          content: Text("Left team successfully"),
+                          backgroundColor: Colors.green),
                     );
-                    // تأخير نصف ثانية لضمان تحديث الـ Database على السيرفر لجلب الحالة والبروجكت الجديد
                     await Future.delayed(const Duration(milliseconds: 500));
                     _refreshDashboard();
                   } else {
@@ -409,7 +482,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                     return;
                   }
 
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(e.toString())));
                 }
               },
               child: const Text("Leave"),
@@ -431,15 +505,18 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
           builder: (context, setDialogState) {
             return AlertDialog(
               backgroundColor: const Color(0xFF1A1D2E),
-              title: const Text("Choose New Leader", style: TextStyle(color: Colors.white)),
+              title: const Text("Choose New Leader",
+                  style: TextStyle(color: Colors.white)),
               content: DropdownButton<String>(
                 dropdownColor: const Color(0xFF1A1D2E),
                 value: selectedLeaderId,
-                hint: const Text("Select member", style: TextStyle(color: Colors.white)),
+                hint: const Text("Select member",
+                    style: TextStyle(color: Colors.white)),
                 items: members.map((m) {
                   return DropdownMenuItem<String>(
                     value: m['_id'],
-                    child: Text(m['name'] ?? "", style: const TextStyle(color: Colors.white)),
+                    child: Text(m['name'] ?? "",
+                        style: const TextStyle(color: Colors.white)),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -449,7 +526,9 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                 },
               ),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text("Cancel")),
+                TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    child: const Text("Cancel")),
                 ElevatedButton(
                   onPressed: () async {
                     if (selectedLeaderId == null) {
@@ -461,16 +540,21 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                     Navigator.pop(dialogContext);
 
                     try {
-                      setState(() { dashboardFuture = null; }); // وضع التحميل فوراً
-                      final success = await LeaveTeamService.leaveTeam(newLeaderId: selectedLeaderId);
+                      setState(() {
+                        dashboardFuture = null;
+                      });
+                      final success = await LeaveTeamService.leaveTeam(
+                          newLeaderId: selectedLeaderId);
 
                       if (!context.mounted) return;
 
                       if (success) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Leader changed & Left team successfully"), backgroundColor: Colors.green),
+                          const SnackBar(
+                              content: Text(
+                                  "Leader changed & Left team successfully"),
+                              backgroundColor: Colors.green),
                         );
-                        // تأخير نصف ثانية لضمان تحديث الـ Database على السيرفر
                         await Future.delayed(const Duration(milliseconds: 500));
                         _refreshDashboard();
                       } else {
@@ -479,7 +563,8 @@ class _StudentDashboardMobileState extends State<StudentDashboardMobile> {
                     } catch (e) {
                       _refreshDashboard();
                       if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(e.toString())));
                     }
                   },
                   child: const Text("Confirm"),

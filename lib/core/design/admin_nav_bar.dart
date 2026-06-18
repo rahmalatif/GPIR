@@ -55,7 +55,7 @@ class AdminNavBar extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
-            label: 'Home',
+            label: 'Teams',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
