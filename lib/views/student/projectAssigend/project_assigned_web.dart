@@ -322,7 +322,7 @@ class _ProjectAssignedWebViewState extends State<ProjectAssignedWebView> {
         return "Project Accepted";
 
       case 'pending':
-        return "Project Under Review";
+        return "Waiting";
 
       case 'rejected':
         return "Project Rejected";
