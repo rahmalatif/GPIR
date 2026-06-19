@@ -6,6 +6,8 @@ import 'package:graduation_project_recommender/views/model/project_idea.dart';
 import '../../../core/design/app_image.dart';
 import '../../../services/doctor_service.dart';
 
+enum SupervisorStatus { available, full }
+
 class ChooseSupervisorMobileView extends StatefulWidget {
   final ProjectIdea projectIdea;
 
@@ -23,19 +25,14 @@ class ChooseSupervisorMobileView extends StatefulWidget {
 class _ChooseSupervisorMobileViewState
     extends State<ChooseSupervisorMobileView> {
   int? selectedIndex;
-
   List<dynamic> doctors = [];
-
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-
     loadDoctors();
   }
-
-  List<Doctor> doctor = [];
 
   Future<void> loadDoctors() async {
     final List<dynamic> data = await DoctorService.getDoctors();
@@ -47,6 +44,16 @@ class _ChooseSupervisorMobileViewState
 
       isLoading = false;
     });
+  }
+
+  SupervisorStatus _getDoctorStatus(Doctor doc) {
+    if (doc.available == false ||
+        (doc.currentProjects != null &&
+            doc.maxProjects != null &&
+            doc.currentProjects >= doc.maxProjects)) {
+      return SupervisorStatus.full;
+    }
+    return SupervisorStatus.available;
   }
 
   @override
@@ -93,11 +100,22 @@ class _ChooseSupervisorMobileViewState
                     itemCount: doctors.length,
                     itemBuilder: (context, index) {
                       final doctor = doctors[index];
+                      final status = _getDoctorStatus(doctor);
 
                       return DoctorContainer(
                         doctor: doctor,
+                        status: status,
                         isSelected: selectedIndex == index,
                         onTap: () {
+                          if (status == SupervisorStatus.full) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("This supervisor is full!"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
                           setState(() {
                             selectedIndex = index;
                           });
@@ -119,7 +137,6 @@ class _ChooseSupervisorMobileViewState
                       backgroundColor: Colors.red,
                     ),
                   );
-
                   return;
                 }
 
@@ -160,12 +177,14 @@ class _ChooseSupervisorMobileViewState
 
 class DoctorContainer extends StatelessWidget {
   final Doctor doctor;
+  final SupervisorStatus status;
   final bool isSelected;
   final VoidCallback onTap;
 
   const DoctorContainer({
     super.key,
     required this.doctor,
+    required this.status,
     required this.isSelected,
     required this.onTap,
   });
@@ -192,48 +211,40 @@ class DoctorContainer extends StatelessWidget {
         ),
         child: Row(
           children: [
-
             const SizedBox(width: 12),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    doctor.name ?? 'No name',
-                    style: const TextStyle(
-                      fontSize: 18,
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.transparent,
+                    child: Icon(
+                      Icons.person,
                       color: Colors.white,
-                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    doctor.track ?? 'No Specialization',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 10,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  /*      Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-
-               //   doctor['available_slots'],
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
                       Text(
-                        " ${doctor.slots}",
+                        doctor.name ?? 'No name',
                         style: const TextStyle(
-                          fontSize: 12,
+                          fontSize: 18,
                           color: Colors.white,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
+                      const SizedBox(height: 4),
+                      Text(
+                        doctor.track ?? 'No Specialization',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 10,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                     ],
-                  ),*/
+                  ),
                 ],
               ),
             ),
@@ -243,11 +254,20 @@ class DoctorContainer extends StatelessWidget {
                 vertical: 4,
               ),
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.2),
+                color: _statusColor(status).withOpacity(0.15),
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: _statusColor(status),
+                  width: 1,
+                ),
               ),
-              child: const Text(
-                "Available",
+              child: Text(
+                _status(status),
+                style: TextStyle(
+                  color: _statusColor(status),
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -260,10 +280,6 @@ class DoctorContainer extends StatelessWidget {
     switch (status) {
       case SupervisorStatus.available:
         return "Available";
-
-      case SupervisorStatus.almostFull:
-        return "Almost Full";
-
       case SupervisorStatus.full:
         return "Full";
     }
@@ -273,10 +289,6 @@ class DoctorContainer extends StatelessWidget {
     switch (status) {
       case SupervisorStatus.available:
         return Colors.green;
-
-      case SupervisorStatus.almostFull:
-        return Colors.orange;
-
       case SupervisorStatus.full:
         return Colors.red;
     }

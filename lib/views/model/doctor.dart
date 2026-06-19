@@ -5,7 +5,9 @@ class Doctor {
   final String apiId;
   final String name;
   final String track;
-  final int slots;
+  final int currentProjects;
+  final int maxProjects;
+  final bool available;
   final SupervisorStatus status;
   final String image;
   final String email;
@@ -15,38 +17,37 @@ class Doctor {
     required this.apiId,
     required this.name,
     required this.track,
-    required this.slots,
+    required this.currentProjects,
+    required this.maxProjects,
+    required this.available,
     required this.status,
     required this.image,
     required this.email,
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json, String firebaseUid) {
+    final int current = json['currentProjects'] ?? 0;
+    final int max = json['maxProjects'] ?? 4;
+    final bool isAvailable = json['available'] ?? true;
+
+    SupervisorStatus calculatedStatus = SupervisorStatus.available;
+    if (!isAvailable || current >= max) {
+      calculatedStatus = SupervisorStatus.full;
+    } else if (max - current == 1) {
+      calculatedStatus = SupervisorStatus.almostFull;
+    }
+
     return Doctor(
       uid: firebaseUid,
       apiId: json['_id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       track: json['track'] ?? '',
-      slots: json['slots'] ?? 0,
-      status: _parseStatus(json['status']),
+      currentProjects: current,
+      maxProjects: max,
+      available: isAvailable,
+      status: calculatedStatus,
       image: json['image'] ?? '',
     );
-  }
-
-
-
-
-  static SupervisorStatus _parseStatus(dynamic value) {
-    switch (value) {
-      case 'available':
-        return SupervisorStatus.available;
-      case 'full':
-        return SupervisorStatus.full;
-      case 'almostFull':
-        return SupervisorStatus.almostFull;
-      default:
-        return SupervisorStatus.available;
-    }
   }
 }
