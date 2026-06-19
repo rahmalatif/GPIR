@@ -38,6 +38,7 @@ import 'package:graduation_project_recommender/views/model/doctor.dart';
 import 'package:graduation_project_recommender/views/student/dashboard/student_project_details.dart';
 import 'package:graduation_project_recommender/views/teacher_assistant/dashboard/ta_dashboard_responsive.dart';
 import 'package:graduation_project_recommender/views/teacher_assistant/projects/ta_project_details_responsive.dart';
+import 'package:graduation_project_recommender/views/teacher_assistant/projects/ta_project_responsive.dart';
 import '../../views/admin/admin_dashboard.dart';
 import '../../views/admin/admin_notifications.dart';
 import '../../views/admin/approved_projects.dart';
@@ -86,6 +87,7 @@ import '../../views/student/profile/st_profile_mobile.dart';
 
 import '../../views/student/time_plan.dart';
 import '../../views/teacher_assistant/profile/ta_profile.dart';
+import '../../views/teacher_assistant/projects/ta_project_web.dart';
 import '../../views/teacher_assistant/timePlan/ta_time_plan.dart';
 import '../design/admin_nav_bar.dart';
 import '../design/dr_nav_bar.dart';
@@ -239,7 +241,6 @@ final GoRouter appRouter = GoRouter(
       path: '/taNotifications',
       builder: (context, state) => const StudentNotificationsResponsive(),
     ),
-
 
     GoRoute(
       path: '/studentProfile',
@@ -429,6 +430,10 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) {
             return const TADashboardResponsive();
           },
+        ),
+        GoRoute(
+          path: '/taProjects',
+          builder: (context, state) => const TAProjectsResponsive(),
         ),
         GoRoute(
           path: '/taChats',

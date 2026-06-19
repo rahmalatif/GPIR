@@ -15,8 +15,9 @@ class TANavBar extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
 
     if (location.startsWith('/taDashboard')) return 0;
-    if (location.startsWith('/taChats')) return 1;
-    if (location.startsWith('/taProfile')) return 2;
+    if (location.startsWith('/taProjects')) return 1;
+    if (location.startsWith('/taChats')) return 2;
+    if (location.startsWith('/taProfile')) return 3;
 
     return 0;
   }
@@ -36,11 +37,13 @@ class TANavBar extends StatelessWidget {
               case 0:
                 context.go('/taDashboard');
                 break;
-
               case 1:
-                context.go('/taChats');
+                context.go('/taProjects');
                 break;
               case 2:
+                context.go('/taChats');
+                break;
+              case 3:
                 context.go('/taProfile');
                 break;
             }
@@ -51,9 +54,13 @@ class TANavBar extends StatelessWidget {
               label: 'Home',
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.assignment),
+              label: 'Projects',
+            ),
+            BottomNavigationBarItem(
               icon: Stack(
                 clipBehavior: Clip.none,
-                children: const [
+                children: [
                   Icon(Icons.chat),
                   ChatBadge(),
                 ],

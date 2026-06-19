@@ -8,7 +8,6 @@ import '../../../services/ta_dashboard_services.dart';
 import '../../model/user_model.dart';
 
 class TADashboardWebView extends StatefulWidget {
-
   const TADashboardWebView({
     super.key,
   });
@@ -207,31 +206,7 @@ class _TADashboardWebViewState extends State<TADashboardWebView> {
                                   ),
                                 ],
                               ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Search',
-                            hintStyle: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                            ),
-                            filled: true,
-                            fillColor: const Color(
-                              0xFF1A1D2E,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                14,
-                              ),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
+
                         const SizedBox(
                           height: 30,
                         ),
@@ -310,53 +285,46 @@ Widget _projectcardTA(
   String number,
   BuildContext context,
 ) {
-  return GestureDetector(
-    onTap: () {
-      context.push(
-        '/taProjects',
-      );
-    },
-    child: Container(
-      height: 140,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1D2E),
-        borderRadius: BorderRadius.circular(
-          20,
+  return Container(
+    height: 140,
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: const Color(0xFF1A1D2E),
+      borderRadius: BorderRadius.circular(
+        20,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+      ],
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          number,
+          style: const TextStyle(
+            color: Colors.cyan,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            number,
-            style: const TextStyle(
-              color: Colors.cyan,
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        Text(
+          projectType,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.cyan,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(
-            height: 12,
-          ),
-          Text(
-            projectType,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.cyan,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }

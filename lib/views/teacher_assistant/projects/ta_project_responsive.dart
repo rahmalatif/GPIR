@@ -12,7 +12,7 @@ class TAProjectsResponsive extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ResponsiveLayout(
-      mobile: TAProjectsMobileView(),
+      mobile: TaAcceptedProjectsMobileView(),
       web: TAProjectsWebView(),
     );
   }

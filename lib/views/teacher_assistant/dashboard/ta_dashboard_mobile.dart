@@ -6,8 +6,10 @@ import '../../model/user_model.dart';
 
 class TADashboardMobileView extends StatefulWidget {
   final UserModel? user;
+
   const TADashboardMobileView({
-    super.key, this.user,
+    super.key,
+    this.user,
   });
 
   @override
@@ -127,31 +129,6 @@ class _TADashboardMobileViewState extends State<TADashboardMobileView> {
                   ],
                 ),
                 const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    hintStyle: const TextStyle(
-                      color: Colors.grey,
-                    ),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                    ),
-                    filled: true,
-                    fillColor: const Color(
-                      0xFF1A1D2E,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        14,
-                      ),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(
                   height: 30,
                 ),
                 const Align(
@@ -209,7 +186,6 @@ class _TADashboardMobileViewState extends State<TADashboardMobileView> {
                 const SizedBox(
                   height: 30,
                 ),
-
               ],
             ),
           ),

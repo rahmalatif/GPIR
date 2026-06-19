@@ -1,44 +1,29 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import 'auth_service.dart';
 
-class TAProjectsService {
+class TaApprovedProjectsService {
   static const String baseUrl =
       "https://graduationbackend-production-ec83.up.railway.app";
 
-  static Future<List<dynamic>> getProjects() async {
+  static Future<List<dynamic>> getApprovedProjects() async {
     try {
-      final token = AuthService.token;
-
       final response = await http.get(
-        Uri.parse(
-          '$baseUrl/api/projects',
-        ),
+        Uri.parse("$baseUrl/api/projects/ta/approved-projects"),
         headers: {
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer ${AuthService.token}',
           'Content-Type': 'application/json',
         },
       );
 
-      print("TA PROJECTS STATUS: "
-          "${response.statusCode}");
-
-      print("TA PROJECTS RESPONSE: "
-          "${response.body}");
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         return data['projects'] ?? [];
+      } else {
+        throw Exception('Failed to load approved projects: ${response.statusCode}');
       }
-
-      return [];
     } catch (e) {
-      print("TA PROJECTS ERROR: $e");
-
-      return [];
+      throw Exception('Error fetching projects: $e');
     }
   }
 }

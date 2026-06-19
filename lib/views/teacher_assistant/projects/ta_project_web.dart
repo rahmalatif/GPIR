@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../services/doctor_dashboard_service.dart';
-import '../../../services/doctor_project_details_service.dart';
-import '../../../services/doctor_projects_service.dart';
+import '../../../services/ta_project_approved.dart';
 import '../../../services/ta_project_service.dart';
-import '../../model/DR_project.dart';
 
 class TAProjectsWebView extends StatefulWidget {
   const TAProjectsWebView({
@@ -32,7 +29,7 @@ class _ProjectsWebViewState extends State<TAProjectsWebView>
       length: 3,
       vsync: this,
     );
-    projectsFuture = TAProjectsService.getProjects();
+    projectsFuture = TaApprovedProjectsService.getApprovedProjects();
   }
 
   @override
@@ -44,7 +41,19 @@ class _ProjectsWebViewState extends State<TAProjectsWebView>
             return const Scaffold(
               backgroundColor: Color(0xFF0D0F1A),
               body: Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Colors.cyan),
+              ),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Scaffold(
+              backgroundColor: const Color(0xFF0D0F1A),
+              body: Center(
+                child: Text(
+                  "Error: ${snapshot.error}",
+                  style: const TextStyle(color: Colors.red),
+                ),
               ),
             );
           }
@@ -104,18 +113,17 @@ class _ProjectsWebViewState extends State<TAProjectsWebView>
                         child: TabBarView(
                           controller: _tabController,
                           children: statuses.map(
-                                (
-                                status,
-                                ) {
+                            (
+                              status,
+                            ) {
                               final allProjects = snapshot.data ?? [];
 
                               final projects = allProjects.where(
-                                    (project) {
-                                      final taStatus =
-                                      (project['ta_status']
-                                          ?? "pending")
-                                      .toString()
-                                      .toLowerCase();
+                                (project) {
+                                  final taStatus =
+                                      (project['ta_status'] ?? "pending")
+                                          .toString()
+                                          .toLowerCase();
 
                                   if (status == "Pending") {
                                     return taStatus == "pending";
@@ -132,16 +140,16 @@ class _ProjectsWebViewState extends State<TAProjectsWebView>
                               return GridView.builder(
                                 itemCount: projects.length,
                                 gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 20,
                                   mainAxisSpacing: 20,
                                   childAspectRatio: 2,
                                 ),
                                 itemBuilder: (
-                                    context,
-                                    index,
-                                    ) {
+                                  context,
+                                  index,
+                                ) {
                                   return _projectCard(
                                     projects[index],
                                     context,
@@ -163,9 +171,23 @@ class _ProjectsWebViewState extends State<TAProjectsWebView>
 }
 
 Widget _projectCard(
-    dynamic project,
-    BuildContext context,
-    ) {
+  dynamic project,
+  BuildContext context,
+) {
+  final List<dynamic> members =
+      project['team']?['members'] as List<dynamic>? ?? [];
+  final String memberNames = members
+      .map((m) => m['name']?.toString() ?? 'Unknown')
+      .where((name) => name.isNotEmpty)
+      .join(", ");
+
+  final String createdAt = project['createdAt']?.toString() ?? "";
+  final String dateDisplay =
+      createdAt.length >= 10 ? createdAt.substring(0, 10) : "N/A";
+
+  final String taStatus =
+      (project['ta_status'] ?? "pending").toString().toLowerCase();
+
   return Container(
     padding: const EdgeInsets.all(22),
     decoration: BoxDecoration(
@@ -193,17 +215,11 @@ Widget _projectCard(
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                color: (project['ta_status'] ?? "pending")
-                    .toString()
-                    .toLowerCase() ==
-                    "approved"
+                color: taStatus == "approved"
                     ? Colors.green
-                    : (project['ta_status'] ?? "pending")
-                    .toString()
-                    .toLowerCase() ==
-                    "rejected"
-                    ? Colors.red
-                    : Colors.orange,
+                    : taStatus == "rejected"
+                        ? Colors.red
+                        : Colors.orange,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -217,19 +233,17 @@ Widget _projectCard(
         ),
         const SizedBox(height: 12),
         Text(
-          (project['team']?['members'] as List<dynamic>? ?? [])
-              .map(
-                (m) => m['name'],
-          )
-              .join(", "),
+          memberNames.isEmpty ? "No members" : memberNames,
           style: const TextStyle(
             color: Colors.grey,
             fontSize: 15,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 10),
         Text(
-          "Date: ${project['createdAt']?.toString().substring(0, 10) ?? ""}",
+          "Date: $dateDisplay",
           style: const TextStyle(
             color: Colors.grey,
           ),
@@ -245,7 +259,6 @@ Widget _projectCard(
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-
         ),
         Align(
           alignment: Alignment.centerRight,
